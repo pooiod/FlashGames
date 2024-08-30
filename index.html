@@ -166,6 +166,17 @@
         });
 
         function loadruffle() {
+            setTimeout(function () {
+                const shadowHost = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
+                const shadowRoot = shadowHost.shadowRoot;
+                const container = shadowRoot.querySelector('#container');
+
+                if (container) {
+                    container.style.width = '100vw';
+                    container.style.height = '100vh';
+                }
+            }, 1000);
+            
             const ruffleScript = document.createElement('script');
             ruffleScript.src = 'https://unpkg.com/@ruffle-rs/ruffle';
             ruffleScript.onload = () => {
@@ -176,6 +187,7 @@
                         const ruffleContainer = document.createElement('div');
                         ruffleContainer.style.width = "100vw";
                         ruffleContainer.style.height = "100vh";
+                        ruffleContainer.style.position = "fixed";
                         obj.parentNode.replaceChild(ruffleContainer, obj);
                         ruffle.load(obj.getAttribute('data')).then(instance => {
                             instance.appendChild(ruffleContainer);

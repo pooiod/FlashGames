@@ -164,47 +164,64 @@
             }
         });
 
-        function loadruffle() { 
-            document.getElementById('gameListContainer').style.display = 'none';
-            setTimeout(function () {
+        function fixruffle {
                 const shadowHost = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
                 const shadowRoot = shadowHost.shadowRoot;
                 const container = shadowRoot.querySelector('#container');
+                
+                const style = document.createElement('style');
+                style.textContent = `
+                  #save-manager {
+                    width: 100vw;
+                    height: 100vh;
+                  }
+                  #modal-area {
+                    margin-top: calc(50% - 350px)
+                  }
+                `;
+                
+                shadowRoot.appendChild(style);
 
                 if (container) {
                     container.style.width = '100vw';
                     container.style.height = '100vh';
                 }
+        }
+
+        function loadruffle() { 
+            document.getElementById('gameListContainer').style.display = 'none';
+            setTimeout(function () {
+                fixruffle();
             }, 1000);
             
             const ruffleScript = document.createElement('script');
             ruffleScript.src = 'https://unpkg.com/@ruffle-rs/ruffle';
-            ruffleScript.onload = () => {
-                const ruffle = window.RufflePlayer.new();
-                window.addEventListener('load', () => {
-                    const flashObjects = document.querySelectorAll('object[type="application/x-shockwave-flash"], embed[type="application/x-shockwave-flash"]');
-                    flashObjects.forEach(obj => {
-                        const ruffleContainer = document.createElement('div');
-                        ruffleContainer.style.width = "100vw";
-                        ruffleContainer.style.height = "100vh";
-                        ruffleContainer.style.position = "fixed";
-                        obj.parentNode.replaceChild(ruffleContainer, obj);
-                        ruffle.load(obj.getAttribute('data')).then(instance => {
-                            instance.appendChild(ruffleContainer);
-                            setTimeout(function () {
-                                const shadowHost = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
-                                const shadowRoot = shadowHost.shadowRoot;
-                                const container = shadowRoot.querySelector('#container');
-                                document.getElementById('gameListContainer').style.display = 'none';
-                                if (container) {
-                                    container.style.width = '100vw';
-                                    container.style.height = '100vh';
-                                }
-                            }, 100);
-                        });
-                    });
-                });
-            };
+            // ruffleScript.onload = () => {
+            //     const ruffle = window.RufflePlayer.new();
+            //     window.addEventListener('load', () => {
+            //         const flashObjects = document.querySelectorAll('object[type="application/x-shockwave-flash"], embed[type="application/x-shockwave-flash"]');
+            //         flashObjects.forEach(obj => {
+            //             const ruffleContainer = document.createElement('div');
+            //             ruffleContainer.style.width = "100vw";
+            //             ruffleContainer.style.height = "100vh";
+            //             ruffleContainer.style.position = "fixed";
+            //             obj.parentNode.replaceChild(ruffleContainer, obj);
+            //             ruffle.load(obj.getAttribute('data')).then(instance => {
+            //                 instance.appendChild(ruffleContainer);
+            //                 setTimeout(function () {
+            //                     const shadowHost = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
+            //                     const shadowRoot = shadowHost.shadowRoot;
+            //                     const container = shadowRoot.querySelector('#container');
+            //                     document.getElementById('gameListContainer').style.display = 'none';
+            //                     if (container) {
+            //                         container.style.width = '100vw';
+            //                         container.style.height = '100vh';
+            //                     }
+            //                 }, 100);
+            //             });
+            //         });
+            //     });
+            // };
             document.head.appendChild(ruffleScript);
         }
 

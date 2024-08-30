@@ -227,7 +227,16 @@
             //         });
             //     });
             // };
-            document.head.appendChild(ruffleScript);
+            function isFlashSupported() {
+                try {
+                    return !!new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
+                } catch (e) {
+                    return 'ShockwaveFlash' in window;
+                }
+            }
+            if (!isFlashSupported()) {
+                document.head.appendChild(ruffleScript);
+            }
         }
 
         async function loadGames() {

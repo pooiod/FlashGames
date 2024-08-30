@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,8 +7,8 @@
     <title>Flash Loader</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <script>
-        var gamesJson = "/games.json";
-        var gamesPath = "/games/";
+        var gamesJson = "games.json";
+        var gamesPath = "games";
     </script>
     <style>
         body {
@@ -145,6 +146,7 @@
         }
 
         window.addEventListener('hashchange', function() {
+            showLoading(true);
             window.location.reload();
         });
 
@@ -175,9 +177,9 @@
                     width: 100vw;
                     height: 100vh;
                   }
-                  #modal-area {
+                  /*#modal-area {
                     margin-top: calc(50% - 350px)
-                  }
+                  }*/
                 `;
                 
                 shadowRoot.appendChild(style);

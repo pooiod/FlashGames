@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flash Loader</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #000;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+        }
+
+        #loading,
+        #error {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            color: #000;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        #loading {
+            animation: pulse-opacity 2s infinite;
+        }
+
+        #error {
+            background-color: #ffffff;
+            /* Changed background color */
+        }
+
+        #error pre {
+            margin: 0;
+            color: #000;
+        }
+
+        #gameList {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
+            padding: 20px;
+            z-index: 1000;
+        }
+
+        .game-item {
+            padding: 10px 20px;
+            background-color: #e0e0e0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .game-item:hover {
+            background-color: #d0d0d0;
+        }
+
+
+      }
+    </style>
+</head>
+
+<body>
+    <div id="loading">Loading...</div>
+    <div id="error">
+        <pre id="errorMessage"></pre>
+        <input type="file" id="fileInput" style="display: none;" accept=".swf">
+    </div>
+    <div id="gameList"></div>
+    <div id="gameContainer"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script>
+        const loadingScreen = document.getElementById('loading');
+        const errorScreen = document.getElementById('error');
+        const errorMessage = document.getElementById('errorMessage');
+        const gameList = document.getElementById('gameList');
+        const gameContainer = document.getElementById('gameContainer');
+        const fileInput = document.getElementById('fileInput');
+
+        function showLoading(show) {
+            loadingScreen.style.display = show ? 'flex' : 'none';
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorScreen.style.display = 'flex';
+        }
+
+        fileInput.addEventListener('change', function () {
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                if (file.type === 'application/x-shockwave-flash' || true) {
+                    const gameUrl = URL.createObjectURL(file);
+                    gameContainer.innerHTML = `<object data="${gameUrl}" type="application/x-shockwave-flash"></object>`;
+                    document.title = file.name;
+                    gameContainer.style.display = 'block';
+                    gameContainer.style.width = "100vw";
+                    gameContainer.style.height = "100vh";
+                    loadruffle();
+                    errorScreen.style.display = 'none';
+                } else {
+                    showError('Selected file is not a valid SWF.');
+                }
+            }
+        });
+
+        function loadruffle() {
+            setTimeout(function () {
+                const shadowHost = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
+                const shadowRoot = shadowHost.shadowRoot;
+                const container = shadowRoot.querySelector('#container');
+
+                if (container) {
+                    container.style.width = '100vw';
+                    container.style.height = '100vh';
+                }
+            }, 1000);
+
+            const ruffleScript = document.createElement('script');
+            ruffleScript.src = 'https://unpkg.com/@ruffle-rs/ruffle';
+            ruffleScript.onload = () => {
+                const ruffle = window.RufflePlayer.new();
+                window.addEventListener('load', () => {
+                    const flashObjects = document.querySelectorAll('object[type="application/x-shockwave-flash"], embed[type="application/x-shockwave-flash"]');
+                    flashObjects.forEach(obj => {
+                        const ruffleContainer = document.createElement('div');
+                        ruffleContainer.style.width = "100vw";
+                        ruffleContainer.style.height = "100vh";
+                        obj.parentNode.replaceChild(ruffleContainer, obj);
+
+                        setTimeout(function () {
+                            const shadowHost = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
+                            const shadowRoot = shadowHost.shadowRoot;
+                            const container = shadowRoot.querySelector('#container');
+
+                            if (container) {
+                                container.style.width = '100vw';
+                                container.style.height = '100vh';
+                            }
+                        }, 500);
+
+                        ruffle.load(obj.getAttribute('data')).then(instance => {
+                            instance.appendChild(ruffleContainer);
+                        });
+                    });
+                });
+            };
+            document.head.appendChild(ruffleScript);
+        }
+
+        async function loadGames() {
+            showLoading(true);
+            try {
+                const response = await fetch('/games.json');
+                const games = await response.json();
+
+                games.forEach(game => {
+                    const gameItem = document.createElement('div');
+                    gameItem.classList.add('game-item');
+                    gameItem.textContent = game.name;
+                    gameItem.onclick = () => loadGame(`/games/${game.file}`, game.name);
+                    gameList.appendChild(gameItem);
+                });
+
+                const customSwfItem = document.createElement('div');
+                customSwfItem.classList.add('game-item');
+                customSwfItem.textContent = 'Select Custom SWF';
+                customSwfItem.onclick = () => fileInput.click();
+                gameList.appendChild(customSwfItem);
+
+                if (gameList.children.length === 0) {
+                    showError('No games found.');
+                }
+            } catch (error) {
+                showError(`Error loading games: ${error.message}`);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function loadGame(filePath, name) {
+            showLoading(true);
+            document.title = name;
+            try {
+                gameContainer.innerHTML = `<object data="${filePath}" type="application/x-shockwave-flash"></object>`;
+                gameContainer.style.display = 'block';
+                gameContainer.style.width = "100vw";
+                gameContainer.style.height = "100vh";
+                loadruffle();
+            } catch (error) {
+                showError(`Error loading game: ${error.message}`);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        window.onload = loadGames;
+    </script>
+</body>
+</html>

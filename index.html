@@ -135,6 +135,11 @@
         const fileInput = document.getElementById('fileInput');
         const searchBar = document.getElementById('searchBar');
 
+        
+        setTimeout(function () {
+            gameContainer.style.display = "block";
+        }, 1000);
+
         function showLoading(show) {
             loadingScreen.style.display = show ? 'flex' : 'none';
         }
@@ -186,6 +191,13 @@
             try {
                 const response = await fetch(gamesJson);
                 const gameNames = await response.json();
+                
+                const customSwfItem = document.createElement('div');
+                customSwfItem.classList.add('game-item');
+                customSwfItem.textContent = 'Select Custom SWF';
+                customSwfItem.onclick = () => fileInput.click();
+                gameList.appendChild(customSwfItem);
+                
                 gameNames.forEach(gameName => {
                     const gameItem = document.createElement('div');
                     gameItem.classList.add('game-item');
@@ -193,12 +205,6 @@
                     gameItem.onclick = () => loadGame(gameName);
                     gameList.appendChild(gameItem);
                 });
-
-                const customSwfItem = document.createElement('div');
-                customSwfItem.classList.add('game-item');
-                customSwfItem.textContent = 'Select Custom SWF';
-                customSwfItem.onclick = () => fileInput.click();
-                gameList.appendChild(customSwfItem);
                 
                 if (gameList.children.length === 0) {
                     showError('No games found.');

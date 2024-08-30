@@ -196,7 +196,7 @@
                                 const shadowHost = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
                                 const shadowRoot = shadowHost.shadowRoot;
                                 const container = shadowRoot.querySelector('#container');
-                
+                                document.getElementById('gameListContainer').style.display = 'none';
                                 if (container) {
                                     container.style.width = '100vw';
                                     container.style.height = '100vh';

@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -135,7 +134,6 @@
         const fileInput = document.getElementById('fileInput');
         const searchBar = document.getElementById('searchBar');
 
-        
         setTimeout(function () {
             gameContainer.style.display = "none";
         }, 1000);
@@ -259,6 +257,7 @@
                 gameContainer.innerHTML = `<object data="${gameUrl}" type="application/x-shockwave-flash"></object>`;
                 gameContainer.style.display = "block";
                 loadruffle();
+                window.location.hash = `#${gameName}`;
             } catch (error) {
                 showError(`Error loading game: ${error.message}`);
             } finally {
@@ -266,9 +265,19 @@
             }
         }
 
+        function handleHash() {
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                loadGame(hash);
+            }
+        }
+
         searchBar.addEventListener('input', filterGames);
 
-        window.onload = loadGames;
+        window.onload = function() {
+            loadGames();
+            handleHash();
+        };
     </script>
 </body>
 </html>

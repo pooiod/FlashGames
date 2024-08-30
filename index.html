@@ -164,7 +164,7 @@
             }
         });
 
-        function fixruffle {
+        function fixruffle() {
                 const shadowHost = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
                 const shadowRoot = shadowHost.shadowRoot;
                 const container = shadowRoot.querySelector('#container');
@@ -193,6 +193,9 @@
             setTimeout(function () {
                 fixruffle();
             }, 1000);
+            setTimeout(function () {
+                fixruffle();
+            }, 500);
             
             const ruffleScript = document.createElement('script');
             ruffleScript.src = 'https://unpkg.com/@ruffle-rs/ruffle';

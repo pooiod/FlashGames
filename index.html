@@ -1,11 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flash Loader</title>
     <script>
-        var gamesJson = "games.json";
+        var gamesJson = "/games.json";
         var gamesPath = "/games/";
     </script>
     <style>
@@ -14,10 +15,10 @@
             font-family: Arial, sans-serif;
             background-color: #f0f0f0;
             color: #000;
-            overflow: hidden;
             height: 100vh;
             width: 100vw;
-            position: relative;
+            display: flex;
+            flex-direction: column;
         }
 
         #loading,
@@ -48,57 +49,59 @@
             color: #000;
         }
 
-        #gameList {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            overflow-y: auto;
+        #gameListContainer {
             padding: 20px;
-            z-index: 1000;
+            width: 300px;
+            overflow-y: auto;
+            background-color: #e0e0e0;
+            flex-shrink: 0;
+        }
+
+        #searchBar {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .game-item {
             padding: 10px 20px;
-            background-color: #e0e0e0;
+            background-color: #d0d0d0;
             border: 1px solid #ccc;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.2s;
+            margin-bottom: 10px;
         }
 
         .game-item:hover {
-            background-color: #d0d0d0;
+            background-color: #c0c0c0;
         }
 
         #gameContainer {
-            display: none;
-            width: 100vw;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 10000;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             background-color: #2e5390;
         }
 
         object {
             width: 100%;
             height: 100%;
-            display: block;
-        }
-
-        #container {
-            width: 100vw !important;
-            height: 100vh !important;
         }
 
         @keyframes pulse-opacity {
             0% {
                 opacity: 1;
             }
+
             50% {
                 opacity: 0.5;
             }
+
             100% {
                 opacity: 1;
             }
@@ -112,7 +115,10 @@
         <pre id="errorMessage"></pre>
         <input type="file" id="fileInput" style="display: none;" accept=".swf">
     </div>
-    <div id="gameList"></div>
+    <div id="gameListContainer">
+        <input type="text" id="searchBar" placeholder="Search games...">
+        <div id="gameList"></div>
+    </div>
     <div id="gameContainer"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -123,6 +129,7 @@
         const gameList = document.getElementById('gameList');
         const gameContainer = document.getElementById('gameContainer');
         const fileInput = document.getElementById('fileInput');
+        const searchBar = document.getElementById('searchBar');
 
         function showLoading(show) {
             loadingScreen.style.display = show ? 'flex' : 'none';
@@ -140,9 +147,6 @@
                     const gameUrl = URL.createObjectURL(file);
                     gameContainer.innerHTML = `<object data="${gameUrl}" type="application/x-shockwave-flash"></object>`;
                     document.title = file.name;
-                    gameContainer.style.display = 'block';
-                    gameContainer.style.width = "100vw";
-                    gameContainer.style.height = "100vh";
                     loadruffle();
                     errorScreen.style.display = 'none';
                 } else {
@@ -152,17 +156,6 @@
         });
 
         function loadruffle() {
-            setTimeout(function () {
-                const shadowHost = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
-                const shadowRoot = shadowHost.shadowRoot;
-                const container = shadowRoot.querySelector('#container');
-
-                if (container) {
-                    container.style.width = '100vw';
-                    container.style.height = '100vh';
-                }
-            }, 1000);
-
             const ruffleScript = document.createElement('script');
             ruffleScript.src = 'https://unpkg.com/@ruffle-rs/ruffle';
             ruffleScript.onload = () => {
@@ -174,18 +167,6 @@
                         ruffleContainer.style.width = "100vw";
                         ruffleContainer.style.height = "100vh";
                         obj.parentNode.replaceChild(ruffleContainer, obj);
-
-                        setTimeout(function () {
-                            const shadowHost = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
-                            const shadowRoot = shadowHost.shadowRoot;
-                            const container = shadowRoot.querySelector('#container');
-
-                            if (container) {
-                                container.style.width = '100vw';
-                                container.style.height = '100vh';
-                            }
-                        }, 500);
-
                         ruffle.load(obj.getAttribute('data')).then(instance => {
                             instance.appendChild(ruffleContainer);
                         });
@@ -195,24 +176,16 @@
             document.head.appendChild(ruffleScript);
         }
 
-        async function loadGamesList() {
+        async function loadGames() {
             showLoading(true);
             try {
-                document.getElementById('loading').innerHTML = `Fetching games...`;
-
                 const response = await fetch(gamesJson);
-                if (!response.ok) throw new Error('Failed to fetch games list.');
-
-                const games = await response.json();
-                if (!Array.isArray(games) || games.length === 0) throw new Error('No games found in games.json.');
-
-                document.getElementById('loading').innerHTML = `Reading games...`;
-
-                games.forEach(game => {
+                const gameNames = await response.json();
+                gameNames.forEach(gameName => {
                     const gameItem = document.createElement('div');
                     gameItem.classList.add('game-item');
-                    gameItem.textContent = game;
-                    gameItem.onclick = () => loadGame(game);
+                    gameItem.textContent = gameName;
+                    gameItem.onclick = () => loadGame(gameName);
                     gameList.appendChild(gameItem);
                 });
 
@@ -221,7 +194,7 @@
                 customSwfItem.textContent = 'Select Custom SWF';
                 customSwfItem.onclick = () => fileInput.click();
                 gameList.appendChild(customSwfItem);
-
+                
                 if (gameList.children.length === 0) {
                     showError('No games found.');
                 }
@@ -232,15 +205,24 @@
             }
         }
 
+        function filterGames() {
+            const filterText = searchBar.value.toLowerCase();
+            const gameItems = document.querySelectorAll('.game-item');
+            gameItems.forEach(item => {
+                if (item.textContent.toLowerCase().includes(filterText)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
         async function loadGame(gameName) {
             showLoading(true);
             document.title = gameName;
             try {
-                const gameUrl = gamesPath + gameName + ".swf";
+                const gameUrl = `${gamesPath}${gameName}.swf`;
                 gameContainer.innerHTML = `<object data="${gameUrl}" type="application/x-shockwave-flash"></object>`;
-                gameContainer.style.display = 'block';
-                gameContainer.style.width = "100vw";
-                gameContainer.style.height = "100vh";
                 loadruffle();
             } catch (error) {
                 showError(`Error loading game: ${error.message}`);
@@ -249,7 +231,9 @@
             }
         }
 
-        window.onload = loadGamesList;
+        searchBar.addEventListener('input', filterGames);
+
+        window.onload = loadGames;
     </script>
 </body>
 </html>

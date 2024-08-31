@@ -327,7 +327,14 @@
                             }
                         }
                     }, 100);
-                    gameItem.onclick = () => loadGame(gameName);
+                    gameItem.onclick = (event) => {
+                        if (event.ctrlKey) {
+                            event.preventDefault();
+                            window.location.href = "download.html?game=" + gameName;
+                        } else {
+                            loadGame(gameName);
+                        }
+                    };
                     gameList.appendChild(gameItem);
                 });
                 

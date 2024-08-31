@@ -15,17 +15,21 @@
             "mutalate a doll 2",
             "sityopolis",
             "Bombs and Bees",
-            "Car Chase 3D"
-            ];
+            "Car Chase 3D",
+            "Red Ball - Definitive Edition",
+            "Red Ball 2 - Definitive Edition"
+        ];
         var somestudders = [
             "bloons tower defense 5",
             "Run 2",
             "Run 3",
-            "HappyWheels"
-            ];
+            "HappyWheels",
+            "Red Ball 3 - Definitive Edition"
+        ];
         var linkwarning = [
-            "Learn to fly 3"
-            ];
+            "Learn to fly 3",
+            "Red&Blue Balls 2 - Definitive Edition"
+        ];
     </script>
     <style>
         body {
@@ -114,7 +118,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #2e5390;
+            background-color: #37528c;
             width: 100%;
         }
 
@@ -236,9 +240,9 @@
 
         function fixruffle() {
             try {
-                const shadowHost = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
-                const shadowRoot = shadowHost.shadowRoot;
-                const container = shadowRoot.querySelector('#container');
+                var shadowHost = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
+                var shadowRoot = shadowHost.shadowRoot;
+                var container = shadowRoot.querySelector('#container');
                 
                 const style = document.createElement('style');
                 style.textContent = `
@@ -246,9 +250,10 @@
                     width: 100vw;
                     height: 100vh;
                   }
-                  /*#modal-area {
-                    margin-top: calc(50% - 350px)
-                  }*/
+                  #modal-area {
+                    /*margin-top: calc(50% - 350px);*/
+                    margin-top: 10%
+                  }
                 `;
                 
                 shadowRoot.appendChild(style);

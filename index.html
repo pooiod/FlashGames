@@ -158,11 +158,14 @@
 
         var installedActuallFlash = false;
         function isFlashSupported() {
-            try {
-                return !!new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
-            } catch (e) {
-                return 'ShockwaveFlash' in window;
+            var hasFlash = false;
+            if (navigator.plugins && navigator.plugins.length > 0) {
+            var flashPlugin = navigator.plugins['Shockwave Flash'];
+                if (flashPlugin) {
+                    hasFlash = true;
+                }
             }
+            return hasFlash;
         } installedActuallFlash = isFlashSupported();
 
         function displaymessage(msg, time) {

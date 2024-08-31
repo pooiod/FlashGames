@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Link Generator</title>
+</head>
+<body>
+    <div id="link-container"></div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const gameName = params.get('game');
+        if (gameName) {
+            const link = document.createElement('a');
+            link.href = `games/${gameName}.swf`;
+            link.textContent = `Play ${gameName}`;
+            document.getElementById('link-container').appendChild(link);
+        } else {
+            document.getElementById('link-container').textContent = 'No game specified in the URL.';
+        }
+    </script>
+</body>
+</html>

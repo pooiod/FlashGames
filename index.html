@@ -14,8 +14,12 @@
             "jelly-truck",
             "mutalate a doll 2",
             "Run 2",
-            "Run 3"
-            ]
+            "Run 3",
+            "HappyWheels"
+            ];
+        var somestudders = [
+            "bloons tower defense 5"
+            ];
     </script>
     <style>
         body {
@@ -277,6 +281,8 @@
 
                 if (lowperformance.includes(decodeURIComponent(window.location.hash.substring(1)))) {
                     displaymessage("This game may not run well on ruffle, try <a href='flash.pm'><p style='display:inline;color:white;'>flash.pm</p></a> for a better experience.", 5000);              
+                } else if (somestudders.includes(decodeURIComponent(window.location.hash.substring(1)))) {
+                    displaymessage("You may experience ocasional studders while playing this game.", 5000);              
                 }
             }
         }

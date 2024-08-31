@@ -103,6 +103,16 @@
             margin-bottom: 10px;
         }
 
+        .download-button {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            margin: 0;
+            background: #dbdbdb;
+            border: none;
+        }
+
         .lowsupport {
             opacity: 0.5;
         }
@@ -320,7 +330,7 @@
                     gameItem.textContent = gameName;
                     
                     var downloadButton = document.createElement('button');
-                    downloadButton.textContent = 'Download ' + gameName;
+                    downloadButton.textContent = 'Download';
                     downloadButton.classList.add('download-button');
                     downloadButton.onclick = () => {
                         window.location.href = "download.html?game=" + gameName;

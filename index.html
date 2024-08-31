@@ -286,10 +286,10 @@
                 } else if (somestudders.includes(decodeURIComponent(window.location.hash.substring(1)))) {
                     displaymessage("You may experience ocasional studders while playing this game.", 5000);
                     setTimeout(function(){
-                        displaymessage("Some external site links may cause this game to stop responding.", 3000);
-                    }, 500);
+                        displaymessage("Some external links may cause game crashing and data loss.", 3000);
+                    }, 5000);
                 } else if (linkwarning.includes(decodeURIComponent(window.location.hash.substring(1)))) {
-                    displaymessage("Some external site links may cause this game to stop responding.", 3000);
+                    displaymessage("Some external links may cause game crashing and data loss.", 3000);
                 }
             }
         }

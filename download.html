@@ -1,59 +1,85 @@
 <!DOCTYPE html>
+
+            border: solid 1px #555;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading-screen">
+        <h1>Preparing game files...</h1>
+        <div id="progress-bar"><div></div></div>
+    </div>
+    <div id="offline-screen">
+        <h1>The game failed to download</h1>
+        <p>Please ensure you have an active internet connection or try again later.</p>
+    </div>
+    <button id="download-button">Download [gamename]</button>
+    <script>
+        try {
+            var getGameFromUrl = async function() {
+                var urlParams = new URLSearchParams(window.location.search);
+                var gameName = urlParams.get('game');
+                if (!gameName) {
+                    alert('No game specified in URL');
+                    document.getElementById('loading-screen').style.display = 'none';
+                    return;
+                } document.title = "Download " + gameName;
+
+                var loadingScreen = document.getElementById('loading-screen');
+                var progressBar = document.getElementById('progress-bar').firstElementChild;
+                var downloadButton = document.getElementById('download-button');
+                var offlineScreen = document.getElementById('offline-screen');
+                
+                loadingScreen.style.display = 'flex';
+                offlineScreen.style.display = 'none';
+                downloadButton.style.display = 'none';
+    
+                var response = await fetch('games/' + gameName + '.swf');
+                if (!response.ok) {
+                    // alert('Failed to fetch the game');
+                    loadingScreen.style.display = 'none';
+                    document.getElementById('offline-screen').style.display = 'block';
+                    return;
+                }
+    
+                var reader = response.body.getReader();
+                var contentLength = +response.headers.get('Content-Length');
+                var receivedLength = 0;
+                var chunks = [];
+                
+                while (true) {
+                    var result = await reader.read();
+                    if (result.done) break;
+                    chunks.push(result.value);
+                    receivedLength += result.value.length;
+                    progressBar.style.width = (receivedLength / contentLength * 100) + '%';
+                    progressBar.textContent = Math.round(receivedLength / contentLength * 100) + '%';
+                }
+    
+                var arrayBuffer = new Uint8Array(await new Response(new Blob(chunks)).arrayBuffer());
+                var base64 = btoa(
+                    arrayBuffer.reduce(function(data, byte) {
+                        return data + String.fromCharCode(byte);
+                    }, '')
+                );
+                var dataUri = 'data:application/x-shockwave-flash;base64,' + base64;
+    
+                var downloadHtml = `
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Download Flash Game</title>
-    <script src="https://unpkg.com/@ruffle-rs/ruffle/"></script>
-</head>
-<body>
-    <div id="game-container"></div>
+    <title>${gameName}</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
 
-    <script>
-        const params = new URLSearchParams(window.location.search);
-        const gameName = params.get('game');
-        if (gameName) {
-            const flashUrl = `games/${gameName}.swf`;
-            const ruffle = window.RufflePlayer.newPlayer();
-            document.getElementById('game-container').appendChild(ruffle);
 
-            ruffle.load(flashUrl).catch(error => {
-                console.error('Failed to load Flash game:', error);
-            });
-
-            // Create and download the HTML file
-            const htmlContent = `
-                <!DOCTYPE html>
-                <html lang="en">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>${gameName} - Flash Game</title>
-                    <script src="https://unpkg.com/@ruffle-rs/ruffle/"></script>
-                </head>
-                <body>
-                    <div id="game-container"></div>
-                    <script>
-                        const ruffle = window.RufflePlayer.newPlayer();
-                        document.getElementById('game-container').appendChild(ruffle);
-                        ruffle.load("${flashUrl}").catch(error => {
-                            console.error('Failed to load Flash game:', error);
-                        });
-                    </script>
-                </body>
-                </html>
-            `;
-
-            const blob = new Blob([htmlContent], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `${gameName}.html`;
-            link.textContent = `Download HTML for ${gameName}`;
-            document.getElementById('game-container').appendChild(link);
-        } else {
-            document.getElementById('game-container').textContent = 'No game specified in the URL.';
-        }
-    </script>
-</body>
-</html>

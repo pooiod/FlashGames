@@ -28,7 +28,8 @@
         ];
         var linkwarning = [
             "Learn to fly 3",
-            "Red&Blue Balls 2 - Definitive Edition"
+            "Red&Blue Balls 2 - Definitive Edition",
+            "Run 3"
         ];
     </script>
     <style>
@@ -291,7 +292,9 @@
                 } else if (somestudders.includes(decodeURIComponent(window.location.hash.substring(1)))) {
                     displaymessage("You may experience ocasional studders while playing this game.", 5000);
                     setTimeout(function(){
-                        displaymessage("Some external links may cause game crashing and data loss.", 3000);
+                        if (linkwarning.includes(decodeURIComponent(window.location.hash.substring(1)))) {
+                            displaymessage("Some external links may cause game crashing and data loss.", 3000);
+                        }
                     }, 5000);
                 } else if (linkwarning.includes(decodeURIComponent(window.location.hash.substring(1)))) {
                     displaymessage("Some external links may cause game crashing and data loss.", 3000);

@@ -155,6 +155,15 @@
         const gameContainer = document.getElementById('gameContainer');
         const fileInput = document.getElementById('fileInput');
         const searchBar = document.getElementById('searchBar');
+
+        var installedActuallFlash = false;
+        function isFlashSupported() {
+            try {
+                return !!new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
+            } catch (e) {
+                return 'ShockwaveFlash' in window;
+            }
+        } installedActuallFlash = isFlashSupported();
         
         function displaymessage(msg, time) {
           const message = document.createElement("div");
@@ -252,14 +261,7 @@
             const ruffleScript = document.createElement('script');
             ruffleScript.src = 'https://unpkg.com/@ruffle-rs/ruffle';
             // ruffleScript.onload = () => {};
-            function isFlashSupported() {
-                try {
-                    return !!new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
-                } catch (e) {
-                    return 'ShockwaveFlash' in window;
-                }
-            }
-            if (!isFlashSupported()) {
+            if (!installedActuallFlash) {
                 document.head.appendChild(ruffleScript);
                 ruffleused = true;
 
@@ -287,10 +289,12 @@
                     const gameItem = document.createElement('div');
                     gameItem.classList.add('game-item');
                     gameItem.textContent = gameName;
-                    if (lowperformance.includes(gameName)) {
-                        gameItem.classList.add('lowsupport');
-                    } else if (somestudders.includes(gameName)) {
-                        gameItem.classList.add('lowperformance');
+                    if (!installedActuallFlash) {
+                        if (lowperformance.includes(gameName)) {
+                            gameItem.classList.add('lowsupport');
+                        } else if (somestudders.includes(gameName)) {
+                            gameItem.classList.add('lowperformance');
+                        }
                     }
                     gameItem.onclick = () => loadGame(gameName);
                     gameList.appendChild(gameItem);

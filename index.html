@@ -217,6 +217,9 @@
                     gameContainer.style.display = "block";
                     document.title = file.name;
                     loadruffle();
+                    setTimeout(function () {
+                        fixruffle();
+                    }, 2000);
                     errorScreen.style.display = 'none';
                 } else {
                     showError('Selected file is not a valid SWF.');

@@ -323,9 +323,19 @@
             showLoading(true);
             document.title = gameName;
             window.location.hash = gameName;
-            if (ruffleused && lowperformance.includes(gameName)) {
+            
+            function isFlashSupported() {
+                try {
+                    return !!new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
+                } catch (e) {
+                    return 'ShockwaveFlash' in window;
+                }
+            }
+            
+            if (!isFlashSupported() && lowperformance.includes(gameName)) {
                 displaymessage("This game may not run well on ruffle, try <a href='flash.pm'><p>flash.pm</p>");
             }
+            
             try {
                 const gameUrl = `${gamesPath}${gameName}.swf`;
                 gameContainer.innerHTML = `<object data="${gameUrl}" type="application/x-shockwave-flash"></object>`;

@@ -386,12 +386,14 @@
         async function loadGame(gameName) {
             showLoading(true);
             document.title = decodeURIComponent(gameName);
-            
-            stopreload = true;
-            window.location.hash = gameName;
+
             setTimeout(function () {
-                stopreload = false;
-            }, 500);
+                stopreload = true;
+                window.location.hash = gameName;
+                setTimeout(function () {
+                    stopreload = false;
+                }, 500);
+            }, 900);
 
             try {
                 const gameUrl = `${gamesPath}/${gameName}.swf`;

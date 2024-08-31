@@ -207,9 +207,12 @@
             errorScreen.style.display = 'flex';
         }
 
+        var stopreload = false;
         window.addEventListener('hashchange', function() {
-            showLoading(true);
-            window.location.reload();
+            if (!stopreload) {
+                showLoading(true);
+                window.location.reload();
+            }
         });
 
         fileInput.addEventListener('change', function () {
@@ -345,7 +348,12 @@
         async function loadGame(gameName) {
             showLoading(true);
             document.title = decodeURIComponent(gameName);
+            
+            stopreload = true;
             window.location.hash = gameName;
+            setTimeout(function () {
+                stopreload = false;
+            }, 500);
 
             try {
                 const gameUrl = `${gamesPath}/${gameName}.swf`;

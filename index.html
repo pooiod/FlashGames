@@ -315,18 +315,30 @@
                 gameList.appendChild(customSwfItem);
                 
                 gameNames.forEach(gameName => {
-                    const gameItem = document.createElement('div');
+                    var gameItem = document.createElement('div');
                     gameItem.classList.add('game-item');
                     gameItem.textContent = gameName;
+                    
+                    var downloadButton = document.createElement('button');
+                    downloadButton.textContent = 'Download ' + gameName;
+                    downloadButton.classList.add('download-button');
+                    downloadButton.onclick = () => {
+                        window.location.href = "download.html?game=" + gameName;
+                    };
+                
                     setTimeout(function(){
                         if (!isFlashSupported()) {
                             if (lowperformance.includes(gameName)) {
                                 gameItem.classList.add('lowsupport');
                             } else if (somestudders.includes(gameName)) {
                                 gameItem.classList.add('lowperformance');
+                                gameItem.appendChild(downloadButton);
+                            } else {
+                                gameItem.appendChild(downloadButton);
                             }
                         }
                     }, 100);
+                
                     gameItem.onclick = (event) => {
                         if (event.ctrlKey) {
                             event.preventDefault();
@@ -335,6 +347,7 @@
                             loadGame(gameName);
                         }
                     };
+                
                     gameList.appendChild(gameItem);
                 });
                 

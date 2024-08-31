@@ -8,7 +8,7 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <script>
         var gamesJson = "games.json";
-        var gamesPath = "games/";
+        var gamesPath = "games";
         var lowperformance = [
             "One-Man World",
             "jelly-truck",
@@ -271,7 +271,7 @@
                 installedActuallFlash = isFlashSupported();
 
                 if (lowperformance.includes(decodeURIComponent(window.location.hash.substring(1)))) {
-                    displaymessage("This game is not yet fully supported by ruffle, try <a href='flash.pm'><p style='display:inline;color:white;'>flash.pm</p></a> for a better gaming experience.", 5000);              
+                    displaymessage("This game is not yet fully supported by ruffle, try <a href='https://flash.pm'><p style='display:inline;color:white;'>flash.pm</p></a> for a better gaming experience.", 5000);              
                 } else if (somestudders.includes(decodeURIComponent(window.location.hash.substring(1)))) {
                     displaymessage("You may experience ocasional studders while playing this game.", 5000);              
                 }
@@ -302,7 +302,7 @@
                                 gameItem.classList.add('lowperformance');
                             }
                         }
-                    }, 1000);
+                    }, 100);
                     gameItem.onclick = () => loadGame(gameName);
                     gameList.appendChild(gameItem);
                 });
@@ -331,11 +331,11 @@
 
         async function loadGame(gameName) {
             showLoading(true);
-            document.title = gameName;
+            document.title = decodeURIComponent(gameName);
             window.location.hash = gameName;
 
             try {
-                const gameUrl = `${gamesPath}${gameName}.swf`;
+                const gameUrl = `${gamesPath}/${gameName}.swf`;
                 gameContainer.innerHTML = `<object data="${gameUrl}" type="application/x-shockwave-flash"></object>`;
                 gameContainer.style.display = "block";
                 loadruffle();

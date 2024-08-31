@@ -164,7 +164,7 @@
                 return 'ShockwaveFlash' in window;
             }
         } installedActuallFlash = isFlashSupported();
-        
+
         function displaymessage(msg, time) {
           const message = document.createElement("div");
           message.innerHTML = msg;
@@ -265,6 +265,8 @@
                 document.head.appendChild(ruffleScript);
                 ruffleused = true;
 
+                installedActuallFlash = isFlashSupported();
+
                 if (lowperformance.includes(decodeURIComponent(window.location.hash.substring(1)))) {
                     displaymessage("This game is not yet fully supported by ruffle, try <a href='flash.pm'><p style='display:inline;color:white;'>flash.pm</p></a> for a better gaming experience.", 5000);              
                 } else if (somestudders.includes(decodeURIComponent(window.location.hash.substring(1)))) {
@@ -289,13 +291,15 @@
                     const gameItem = document.createElement('div');
                     gameItem.classList.add('game-item');
                     gameItem.textContent = gameName;
-                    if (!installedActuallFlash) {
-                        if (lowperformance.includes(gameName)) {
-                            gameItem.classList.add('lowsupport');
-                        } else if (somestudders.includes(gameName)) {
-                            gameItem.classList.add('lowperformance');
+                    setTimeout(function(){
+                        if (!isFlashSupported()) {
+                            if (lowperformance.includes(gameName)) {
+                                gameItem.classList.add('lowsupport');
+                            } else if (somestudders.includes(gameName)) {
+                                gameItem.classList.add('lowperformance');
+                            }
                         }
-                    }
+                    }, 1000);
                     gameItem.onclick = () => loadGame(gameName);
                     gameList.appendChild(gameItem);
                 });

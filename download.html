@@ -3,21 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Link Generator</title>
+    <title>Download Flash Game</title>
+    <script src="https://unpkg.com/@ruffle-rs/ruffle/"></script>
 </head>
 <body>
-    <div id="link-container"></div>
+    <div id="game-container"></div>
 
     <script>
         const params = new URLSearchParams(window.location.search);
         const gameName = params.get('game');
         if (gameName) {
+            const flashUrl = `games/${gameName}.swf`;
+            const ruffle = window.RufflePlayer.newPlayer();
+            document.getElementById('game-container').appendChild(ruffle);
+
+            ruffle.load(flashUrl).catch(error => {
+                console.error('Failed to load Flash game:', error);
+            });
+
+            // Create and download the HTML file
+            const htmlContent = `
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>${gameName} - Flash Game</title>
+                    <script src="https://unpkg.com/@ruffle-rs/ruffle/"></script>
+                </head>
+                <body>
+                    <div id="game-container"></div>
+                    <script>
+                        const ruffle = window.RufflePlayer.newPlayer();
+                        document.getElementById('game-container').appendChild(ruffle);
+                        ruffle.load("${flashUrl}").catch(error => {
+                            console.error('Failed to load Flash game:', error);
+                        });
+                    </script>
+                </body>
+                </html>
+            `;
+
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
-            link.href = `games/${gameName}.swf`;
-            link.textContent = `Play ${gameName}`;
-            document.getElementById('link-container').appendChild(link);
+            link.href = url;
+            link.download = `${gameName}.html`;
+            link.textContent = `Download HTML for ${gameName}`;
+            document.getElementById('game-container').appendChild(link);
         } else {
-            document.getElementById('link-container').textContent = 'No game specified in the URL.';
+            document.getElementById('game-container').textContent = 'No game specified in the URL.';
         }
     </script>
 </body>

@@ -110,6 +110,7 @@
             float: right;
             padding-left: 5px;
             padding-right: 5px;
+            border: 1px solid #ccc;
         }
 
         .lowsupport {
@@ -336,6 +337,9 @@
                         event.preventDefault();
                         downloading = true;
                         window.location.href = "download.html?game=" + gameName;
+                        setTimeout(function(){
+                            downloading = false;
+                        }, 500);
                     };
                 
                     setTimeout(function(){

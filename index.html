@@ -257,13 +257,21 @@
                 
                 const style = document.createElement('style');
                 style.textContent = `
-                  #save-manager {
+                  #save-manager, #volume-controls-modal {
                     width: 100vw;
                     height: 100vh;
                   }
                   #modal-area {
                     /*margin-top: calc(50% - 350px);*/
-                    margin-top: 10%
+                    margin-top: 10%;
+                    width: 70vw;
+                    height: 60vh;
+                    max-height: 70vh;
+                    min-width: 250px;
+                    min-height: 100px;
+                  }
+                  #volume-controls-modal > div:nth-child(1) {
+                      margin-top: 40vh;
                   }
                 `;
                 

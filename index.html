@@ -309,6 +309,7 @@
             }
         }
 
+        var downloading = false;
         async function loadGames() {
             showLoading(true);
             try {
@@ -329,7 +330,9 @@
                     var downloadButton = document.createElement('button');
                     downloadButton.textContent = 'Download';
                     downloadButton.classList.add('download-button');
-                    downloadButton.onclick = () => {
+                    downloadButton.onclick = (event) => {
+                        event.preventDefault();
+                        downloading = true;
                         window.location.href = "download.html?game=" + gameName;
                     };
                 
@@ -351,7 +354,9 @@
                             event.preventDefault();
                             window.location.href = "download.html?game=" + gameName;
                         } else {
-                            loadGame(gameName);
+                            if (!downloading) {
+                                loadGame(gameName);
+                            }
                         }
                     };
                 
@@ -384,13 +389,11 @@
             showLoading(true);
             document.title = decodeURIComponent(gameName);
 
+            stopreload = true;
+            window.location.hash = gameName;
             setTimeout(function () {
-                stopreload = true;
-                window.location.hash = gameName;
-                setTimeout(function () {
-                    stopreload = false;
-                }, 500);
-            }, 900);
+                stopreload = false;
+            }, 500);
 
             try {
                 const gameUrl = `${gamesPath}/${gameName}.swf`;

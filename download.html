@@ -200,6 +200,31 @@
             }
         }
 
+        function displaymessage(msg, time) {
+          const message = document.createElement("div");
+          message.innerHTML = msg;
+          message.style.position = "fixed";
+          message.style.top = "0";
+          message.style.right = "0";
+          message.style.zIndex = "9999";
+          message.style.backgroundColor = "#333";
+          message.style.color = "#fff";
+          message.style.padding = "10px";
+          message.style.opacity = "0";
+          message.style.transition = "opacity 0.5s";
+          document.body.appendChild(message);
+          
+          setTimeout(() => {
+              message.style.opacity = "1";
+          }, 100);
+          setTimeout(() => {
+              message.style.opacity = "0";
+          }, time);
+          setTimeout(() => {
+              document.body.removeChild(message);
+          }, time+600);
+        }
+
         var ruffleused = false;
         function loadruffle() { 
             document.getElementById('gameListContainer').style.display = 'none';
@@ -209,6 +234,10 @@
             setTimeout(function () {
                 fixruffle();
             }, 500);
+
+            if (window.location.protocol === 'file:') { // offline limitation message
+                displaymessage("Saves may not work on this build. Please upload to a web histing site like <a href='https://tiiny.host/host-html-file/'><p style='display:inline;color:white;'>tiiny.host</p></a>.", 5000)
+            }
             
             var ruffleScript = document.createElement('script');
             ruffleScript.src = 'https://unpkg.com/@ruffle-rs/ruffle';

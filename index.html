@@ -321,6 +321,8 @@
                     }, 5000);
                 } else if (linkwarning.includes(decodeURIComponent(window.location.hash.substring(1)))) {
                     displaymessage("Some external links may cause game crashing and data loss.", 3000);
+                } if (decodeURIComponent(window.location.hash.substring(1)) == "Jefs big adventure") {
+                    displaymessage("Loud sound warning!", 5000);
                 }
             }
         }

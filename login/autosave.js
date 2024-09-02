@@ -216,10 +216,10 @@ async function loadSavedDataAfterRuffle() {
                     }
                 }
 
-                document.cookie = 'dataLoaded=true; max-age=3600'; // 1 hour
+                document.cookie = 'dataLoaded=true; max-age=60';
                 location.reload();
             } else {
-                document.cookie = 'dataLoaded=true; max-age=3600'; // 1 hour
+                document.cookie = 'dataLoaded=true; max-age=60';
             }
             try { hideLoader(); } catch(err) { err = err; }
         } catch (error) {

@@ -90,7 +90,9 @@
             var expires = document.getElementById('remember').checked ? 90 : 1;
             var date = new Date();
             date.setTime(date.getTime() + (expires*24*60*60*1000));
-            document.cookie = "rufflesave=" + hashedPassword + "; expires=" + date.toUTCString() + "; path=/;";
+            if (password) {
+                document.cookie = "rufflesave=" + hashedPassword + "; expires=" + date.toUTCString() + "; path=/;";
+            }
             window.location.href = "/";
         }
     </script>

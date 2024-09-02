@@ -278,8 +278,8 @@ function isMobileDevice() {
 const saveButton = document.createElement('button');
 saveButton.textContent = '💾';
 saveButton.style.position = 'fixed';
-saveButton.style.top = '5px';
-saveButton.style.left = '5px';
+saveButton.style.top = '2px';
+saveButton.style.left = '2px';
 saveButton.style.padding = '10px';
 saveButton.style.backgroundColor = 'transparent';
 saveButton.style.color = 'black';

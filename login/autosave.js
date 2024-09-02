@@ -55,6 +55,16 @@ setTimeout(function(){
     var shadowRoot = shadowHost.shadowRoot;
     rufflecontainer = shadowRoot.querySelector('#container');
 }, 500);
+setTimeout(function(){
+    var shadowHost = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
+    var shadowRoot = shadowHost.shadowRoot;
+    rufflecontainer = shadowRoot.querySelector('#container');
+}, 1500);
+setTimeout(function(){
+    var shadowHost = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
+    var shadowRoot = shadowHost.shadowRoot;
+    rufflecontainer = shadowRoot.querySelector('#container');
+}, 4000);
 
 // Autosave ui and function code
 function showCloudIcon() {
@@ -136,7 +146,7 @@ function showNotification(message, color) {
     notification.style.opacity = '0';
     notification.style.transition = 'opacity 1s ease-in-out';
     notification.style.fontSize = '16px';
-    document.body.appendChild(notification);
+    rufflecontainer.appendChild(notification);
 
     setTimeout(() => {
         notification.style.opacity = '1';
@@ -268,8 +278,8 @@ function isMobileDevice() {
 const saveButton = document.createElement('button');
 saveButton.textContent = '💾';
 saveButton.style.position = 'fixed';
-saveButton.style.top = '10px';
-saveButton.style.left = '10px';
+saveButton.style.top = '5px';
+saveButton.style.left = '5px';
 saveButton.style.padding = '10px';
 saveButton.style.backgroundColor = 'transparent';
 saveButton.style.color = 'black';
@@ -281,7 +291,7 @@ saveButton.addEventListener('click', userSaveIntervalFunction);
 if (isMobileDevice()) {
     setTimeout(function() {
         rufflecontainer.appendChild(saveButton);
-    }, 1000);
+    }, 2000);
 }
 
 document.addEventListener('keydown', handleKeyDown);

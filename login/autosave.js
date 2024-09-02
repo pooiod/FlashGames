@@ -181,32 +181,29 @@ async function userSaveIntervalFunction() {
 }
 
 async function loadSavedDataAfterRuffle() {
-    let ruffleObject = document.querySelector('ruffle-object');
-    if (ruffleObject) {
-        setTimeout(async () => {
-            try {
-                let dataURIs = [];
-                Object.keys(localStorage).forEach(function(key) {
-                    let solName = key.split('/').pop();
-                    let solData = localStorage.getItem(key);
-                    if (isB64SOL(solData)) {
-                        dataURIs.push({ filename: solName + '.sol', data: solData });
-                    }
-                });
-
-                showLoader();
-
-                for (let data of dataURIs) {
-                    await loadUserData(data.filename);
+    setTimeout(async () => {
+        try {
+            let dataURIs = [];
+            Object.keys(localStorage).forEach(function(key) {
+                let solName = key.split('/').pop();
+                let solData = localStorage.getItem(key);
+                if (isB64SOL(solData)) {
+                    dataURIs.push({ filename: solName + '.sol', data: solData });
                 }
+            });
 
-                hideLoader();
-            } catch (error) {
-                showNotification('An error occurred while loading data.', '#f8d7da');
-                console.error(error);
+            showLoader();
+
+            for (let data of dataURIs) {
+                await loadUserData(data.filename);
             }
-        }, 1000);
-    }
+
+            hideLoader();
+        } catch (error) {
+            showNotification('An error occurred while loading data.', '#f8d7da');
+            console.error(error);
+        }
+    }, 1000);
 }
 
 function isB64SOL(str) {

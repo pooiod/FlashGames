@@ -57,6 +57,15 @@ async function saveUserData(filename, txtdata) {
   return saveToServer("Rufflesavedatafromid"+passwordMD5hash+filename, txtdata);
 }
 
+async function loadUserFilesList() {
+  var passwordMD5hash = document.cookie.split('; ').find(row => row.startsWith('rufflesave=')).split('=')[1];
+  return loadFromServer("Rufflesavedatafromid"+passwordMD5hash+"RuffleInstanceFiles");
+}
+async function saveUserFilesList(filename, array) {
+  var passwordMD5hash = document.cookie.split('; ').find(row => row.startsWith('rufflesave=')).split('=')[1];
+  return saveToServer("Rufflesavedatafromid"+passwordMD5hash+"RuffleInstanceFiles", JSON.stringify(txtdata));
+}
+
 // Autosave ui and function code
 function showCloudIcon() { // Ignore that it's called "Cloud Icon" when it's clearly a floppy disc
     let cloudIcon = document.createElement('div');

@@ -186,8 +186,31 @@
                     hasFlash = true;
                 }
             }
-            return hasFlash;
+            return hasFlash && !window.RufflePlayer;
         } installedActuallFlash = isFlashSupported();
+
+        if (!installedActuallFlash) {
+            if (!document.cookie.split('; ').find(row => row.startsWith('rufflesave='))) {
+                const button = document.createElement('button');
+                button.textContent = 'Log in to save online';
+                button.style.position = 'fixed';
+                button.style.bottom = '10px';
+                button.style.left = '10px';
+                button.style.padding = '10px 15px';
+                button.style.backgroundColor = '#007bff';
+                button.style.color = '#fff';
+                button.style.border = 'none';
+                button.style.borderRadius = '5px';
+                button.style.cursor = 'pointer';
+                button.style.zIndex = '1000';
+                
+                button.addEventListener('click', () => {
+                    window.location.href = 'login';
+                });
+            
+                document.body.appendChild(button);
+            }
+        }
 
         function displaymessage(msg, time) {
           const message = document.createElement("div");

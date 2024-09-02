@@ -40,7 +40,8 @@ async function saveUserData(filename, txtdata) {
 
 async function loadUserFilesList() {
     var passwordMD5hash = document.cookie.split('; ').find(row => row.startsWith('rufflesave=')).split('=')[1];
-    return loadFromServer("Rufflesavedatafromid" + passwordMD5hash + "RuffleInstanceFiles");
+    let content = await loadFromServer("Rufflesavedatafromid" + passwordMD5hash + "RuffleInstanceFiles");
+    return JSON.parse(content) || [];
 }
 
 async function saveUserFilesList(array) {
@@ -161,10 +162,8 @@ async function userSaveIntervalFunction() {
         await saveUserFilesList(fileNames);
 
         for (let data of dataURIs) {
-            showLoader();
             await saveUserData(data.filename, data.data);
             await new Promise(resolve => setTimeout(resolve, 1000));
-            hideLoader();
         }
     } catch (error) {
         showNotification('An error occurred while saving data.', '#f8d7da');
@@ -178,7 +177,9 @@ async function userSaveIntervalFunction() {
 async function loadSavedDataAfterRuffle() {
     setTimeout(async () => {
         try {
-            let fileNames = await loadUserFilesList();
+            showLoader();
+            
+            let fileNames = await loadUserFilesList() || [];
             let dataURIs = [];
 
             fileNames.forEach(filename => {
@@ -186,8 +187,6 @@ async function loadSavedDataAfterRuffle() {
                     dataURIs.push({ filename: filename });
                 }
             });
-
-            showLoader();
 
             for (let data of dataURIs) {
                 await loadUserData(data.filename);

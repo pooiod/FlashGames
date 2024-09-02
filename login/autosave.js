@@ -63,9 +63,11 @@ function showCloudIcon() {
     cloudIcon.style.zIndex = '9999999999999999';
     document.body.appendChild(cloudIcon);
     cloudIcon.style.animation = 'fade 2s infinite';
+    saveButton.style.display = "none";
 }
 
 function hideCloudIcon() {
+    saveButton.style.display = "block";
     let cloudIcon = document.getElementById('saveCloudIcon');
     if (cloudIcon) {
         setTimeout(() => cloudIcon.remove(), 1000);
@@ -78,8 +80,8 @@ function showLoader() {
     loader.style.position = 'fixed';
     loader.style.top = '0';
     loader.style.left = '0';
-    loader.style.width = '100%';
-    loader.style.height = '100%';
+    loader.style.width = '100vw';
+    loader.style.height = '100vh';
     loader.style.backgroundColor = '#fff';
     loader.style.display = 'flex';
     loader.style.justifyContent = 'center';
@@ -193,6 +195,8 @@ async function loadSavedDataAfterRuffle() {
     let cookie = document.cookie.split('; ').find(row => row.startsWith('dataLoaded='));
     if (!cookie) {
       showLoader();
+    } else {
+        showNotification('Please do not close the game while the save icon is blinking', '#e2e3e5');
     }
     setTimeout(async () => {
         try {
@@ -247,9 +251,27 @@ function handleKeyDown(event) {
     }
 }
 
-document.addEventListener('keydown', handleKeyDown);
+function isMobileDevice() {
+    return /Mobi|Android/i.test(navigator.userAgent);
+}
+const saveButton = document.createElement('button');
+saveButton.textContent = '💾';
+saveButton.style.position = 'fixed';
+saveButton.style.top = '10px';
+saveButton.style.left = '10px';
+saveButton.style.padding = '10px';
+saveButton.style.backgroundColor = 'transparent';
+saveButton.style.color = 'black';
+saveButton.style.border = 'none';
+saveButton.style.borderRadius = '5px';
+saveButton.style.cursor = 'pointer';
+saveButton.style.fontSize = '24px';
+saveButton.addEventListener('click', userSaveIntervalFunction);
+if (isMobileDevice()) {
+    document.body.appendChild(saveButton);
+}
 
-showNotification('Please do not close the game while the save icon is blinking', '#e2e3e5');
+document.addEventListener('keydown', handleKeyDown);
 
 setInterval(userSaveIntervalFunction, 600000);
 loadSavedDataAfterRuffle();

@@ -1,6 +1,6 @@
 
 // Server libs
-async function saveToServer(variableName, content) {
+async function saveToServer(variableName, content) { console.log("Saving", variableName);
   var serverURL = 'https://snapextensions.uni-goettingen.de/handleTextfile.php';
   var url =
     serverURL +
@@ -27,7 +27,7 @@ async function saveToServer(variableName, content) {
     });
 }
 
-async function loadFromServer(variableName) {
+async function loadFromServer(variableName) { console.log("Loading", variableName);
   var serverURL = 'https://snapextensions.uni-goettingen.de/handleTextfile.php';
   var url =
     serverURL +

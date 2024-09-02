@@ -49,9 +49,12 @@ async function saveUserFilesList(array) {
     return saveToServer("Rufflesavedatafromid" + passwordMD5hash + "RuffleInstanceFiles", JSON.stringify(array));
 }
 
-var shadowHost = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
-var shadowRoot = shadowHost.shadowRoot;
-var rufflecontainer = shadowRoot.querySelector('#container');
+var rufflecontainer = document.body;
+setTimeout(function(){
+    var shadowHost = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
+    var shadowRoot = shadowHost.shadowRoot;
+    rufflecontainer = shadowRoot.querySelector('#container');
+}
 
 // Autosave ui and function code
 function showCloudIcon() {

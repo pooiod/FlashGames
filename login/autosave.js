@@ -1,73 +1,55 @@
-
 // Server libs
-async function saveToServer(variableName, content) { console.log("Saving", variableName);
-  var serverURL = 'https://snapextensions.uni-goettingen.de/handleTextfile.php';
-  var url =
-    serverURL +
-    '?type=write' +
-    '&content=' +
-    encodeURIComponent(content) +
-    '&filename=./textfiles/' +
-    encodeURIComponent(variableName);
+async function saveToServer(variableName, content) {
+    console.log("Saving", variableName);
+    var serverURL = 'https://snapextensions.uni-goettingen.de/handleTextfile.php';
+    var url = serverURL + '?type=write' + '&content=' + encodeURIComponent(content) + '&filename=./textfiles/' + encodeURIComponent(variableName);
 
-  fetch(url)
-    .then(function (response) {
-      return response.text();
-    })
-    .then(function (result) {
-      if (result === 'ok') {
-        return(true);
-      } else {
-        return(false);
-      }
-    })
-    .catch(function (error) {
-      console.error('Failed to save data to the server:', error);
-      return(false);
-    });
+    try {
+        let response = await fetch(url);
+        let result = await response.text();
+        return result === 'ok';
+    } catch (error) {
+        console.error('Failed to save data to the server:', error);
+        return false;
+    }
 }
 
-async function loadFromServer(variableName) { console.log("Loading", variableName);
-  var serverURL = 'https://snapextensions.uni-goettingen.de/handleTextfile.php';
-  var url =
-    serverURL +
-    '?type=read' +
-    '&filename=./textfiles/' +
-    encodeURIComponent(variableName);
+async function loadFromServer(variableName) {
+    console.log("Loading", variableName);
+    var serverURL = 'https://snapextensions.uni-goettingen.de/handleTextfile.php';
+    var url = serverURL + '?type=read' + '&filename=./textfiles/' + encodeURIComponent(variableName);
 
-  fetch(url)
-    .then(function (response) {
-      return response.text();
-    })
-    .then(function (content) {
-      return(content);
-    })
-    .catch(function (error) {
-      console.error('Failed to load data from the server:', error);
-      return("can't get data");
-    });
+    try {
+        let response = await fetch(url);
+        return await response.text();
+    } catch (error) {
+        console.error('Failed to load data from the server:', error);
+        return "can't get data";
+    }
 }
 
 async function loadUserData(filename) {
-  var passwordMD5hash = document.cookie.split('; ').find(row => row.startsWith('rufflesave=')).split('=')[1];
-  return loadFromServer("Rufflesavedatafromid"+passwordMD5hash+filename);
+    var passwordMD5hash = document.cookie.split('; ').find(row => row.startsWith('rufflesave=')).split('=')[1];
+    return loadFromServer("Rufflesavedatafromid" + passwordMD5hash + filename);
 }
+
 async function saveUserData(filename, txtdata) {
-  var passwordMD5hash = document.cookie.split('; ').find(row => row.startsWith('rufflesave=')).split('=')[1];
-  return saveToServer("Rufflesavedatafromid"+passwordMD5hash+filename, txtdata);
+    var passwordMD5hash = document.cookie.split('; ').find(row => row.startsWith('rufflesave=')).split('=')[1];
+    return saveToServer("Rufflesavedatafromid" + passwordMD5hash + filename, txtdata);
 }
 
 async function loadUserFilesList() {
-  var passwordMD5hash = document.cookie.split('; ').find(row => row.startsWith('rufflesave=')).split('=')[1];
-  return loadFromServer("Rufflesavedatafromid"+passwordMD5hash+"RuffleInstanceFiles");
+    var passwordMD5hash = document.cookie.split('; ').find(row => row.startsWith('rufflesave=')).split('=')[1];
+    return loadFromServer("Rufflesavedatafromid" + passwordMD5hash + "RuffleInstanceFiles");
 }
-async function saveUserFilesList(filename, array) {
-  var passwordMD5hash = document.cookie.split('; ').find(row => row.startsWith('rufflesave=')).split('=')[1];
-  return saveToServer("Rufflesavedatafromid"+passwordMD5hash+"RuffleInstanceFiles", JSON.stringify(txtdata));
+
+async function saveUserFilesList(array) {
+    var passwordMD5hash = document.cookie.split('; ').find(row => row.startsWith('rufflesave=')).split('=')[1];
+    return saveToServer("Rufflesavedatafromid" + passwordMD5hash + "RuffleInstanceFiles", JSON.stringify(array));
 }
 
 // Autosave ui and function code
-function showCloudIcon() { // Ignore that it's called "Cloud Icon" when it's clearly a floppy disc
+function showCloudIcon() {
     let cloudIcon = document.createElement('div');
     cloudIcon.id = 'saveCloudIcon';
     cloudIcon.textContent = '💾';
@@ -96,7 +78,7 @@ function showCloudIcon() { // Ignore that it's called "Cloud Icon" when it's cle
 function hideCloudIcon() {
     let cloudIcon = document.getElementById('saveCloudIcon');
     if (cloudIcon) {
-        cloudIcon.remove();
+        setTimeout(() => cloudIcon.remove(), 1000);
     }
 }
 
@@ -117,7 +99,7 @@ function showLoader() {
 function hideLoader() {
     let loader = document.getElementById('dataLoader');
     if (loader) {
-        loader.remove();
+        setTimeout(() => loader.remove(), 1000);
     }
 }
 
@@ -175,15 +157,20 @@ async function userSaveIntervalFunction() {
             }
         });
 
+        let fileNames = dataURIs.map(data => data.filename);
+        await saveUserFilesList(fileNames);
+
         for (let data of dataURIs) {
             showLoader();
             await saveUserData(data.filename, data.data);
+            await new Promise(resolve => setTimeout(resolve, 1000));
             hideLoader();
         }
     } catch (error) {
         showNotification('An error occurred while saving data.', '#f8d7da');
         console.error(error);
     } finally {
+        await new Promise(resolve => setTimeout(resolve, 1000));
         hideCloudIcon();
     }
 }
@@ -191,12 +178,12 @@ async function userSaveIntervalFunction() {
 async function loadSavedDataAfterRuffle() {
     setTimeout(async () => {
         try {
+            let fileNames = await loadUserFilesList();
             let dataURIs = [];
-            Object.keys(localStorage).forEach(function(key) {
-                let solName = key.split('/').pop();
-                let solData = localStorage.getItem(key);
-                if (isB64SOL(solData)) {
-                    dataURIs.push({ filename: solName + '.sol', data: solData });
+
+            fileNames.forEach(filename => {
+                if (filename.endsWith('.sol')) {
+                    dataURIs.push({ filename: filename });
                 }
             });
 
@@ -206,6 +193,7 @@ async function loadSavedDataAfterRuffle() {
                 await loadUserData(data.filename);
             }
 
+            await new Promise(resolve => setTimeout(resolve, 1000));
             hideLoader();
         } catch (error) {
             showNotification('An error occurred while loading data.', '#f8d7da');

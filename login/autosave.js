@@ -196,7 +196,7 @@ async function loadSavedDataAfterRuffle() {
     }
     setTimeout(async () => {
         try {
-            if (document.cookie.split('; ').find(row => row.startsWith('dataLoaded=')) {
+            if (document.cookie.split('; ').find(row => row.startsWith('dataLoaded='))) {
                 // Clear existing saves
                 Object.keys(localStorage).forEach(async function(key) {
                     let solData = localStorage.getItem(key);

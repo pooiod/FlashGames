@@ -300,6 +300,14 @@
             setTimeout(function () {
                 fixruffle();
             }, 3000);
+
+            (function() {
+                if (document.cookie.includes('rufflesave')) {
+                    var script = document.createElement('script');
+                    script.src = 'login/autosave.js';
+                    document.head.appendChild(script);
+                }
+            })();
             
             const ruffleScript = document.createElement('script');
             ruffleScript.src = 'https://unpkg.com/@ruffle-rs/ruffle';

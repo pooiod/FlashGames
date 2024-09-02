@@ -49,6 +49,10 @@ async function saveUserFilesList(array) {
     return saveToServer("Rufflesavedatafromid" + passwordMD5hash + "RuffleInstanceFiles", JSON.stringify(array));
 }
 
+var shadowHost = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
+var shadowRoot = shadowHost.shadowRoot;
+var rufflecontainer = shadowRoot.querySelector('#container');
+
 // Autosave ui and function code
 function showCloudIcon() {
     let cloudIcon = document.createElement('div');
@@ -61,7 +65,7 @@ function showCloudIcon() {
     cloudIcon.style.opacity = '1';
     cloudIcon.style.transition = 'opacity 0.5s ease-in-out';
     cloudIcon.style.zIndex = '9999999999999999';
-    document.body.appendChild(cloudIcon);
+    rufflecontainer.appendChild(cloudIcon);
     cloudIcon.style.animation = 'fade 2s infinite';
     saveButton.style.display = "none";
 }
@@ -268,7 +272,7 @@ saveButton.style.cursor = 'pointer';
 saveButton.style.fontSize = '24px';
 saveButton.addEventListener('click', userSaveIntervalFunction);
 if (isMobileDevice()) {
-    document.body.appendChild(saveButton);
+    rufflecontainer.appendChild(saveButton);
 }
 
 document.addEventListener('keydown', handleKeyDown);

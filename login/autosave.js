@@ -22,7 +22,6 @@ async function saveToServer(variableName, content) {
       }
     })
     .catch(function (error) {
-      scripterror('Failed to save data to the server: '+ error);
       console.error('Failed to save data to the server:', error);
       return(false);
     });

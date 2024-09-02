@@ -54,7 +54,7 @@ setTimeout(function(){
     var shadowHost = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
     var shadowRoot = shadowHost.shadowRoot;
     rufflecontainer = shadowRoot.querySelector('#container');
-}
+}, 500);
 
 // Autosave ui and function code
 function showCloudIcon() {
@@ -275,7 +275,9 @@ saveButton.style.cursor = 'pointer';
 saveButton.style.fontSize = '24px';
 saveButton.addEventListener('click', userSaveIntervalFunction);
 if (isMobileDevice()) {
-    rufflecontainer.appendChild(saveButton);
+    setTimeout(function() {
+        rufflecontainer.appendChild(saveButton);
+    }, 1000);
 }
 
 document.addEventListener('keydown', handleKeyDown);

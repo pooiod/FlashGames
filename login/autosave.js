@@ -89,7 +89,7 @@ function showLoader() {
     let spinner = document.createElement('div');
     spinner.textContent = '💿';
     spinner.style.fontSize = '100px';
-    spinner.style.animation = 'spin 1s infinite linear';
+    spinner.style.animation = 'fade 2s infinite';
 
     let message = document.createElement('div');
     message.textContent = 'Loading save data';
@@ -145,10 +145,6 @@ style.textContent = `
         50% { opacity: 0.5; }
         100% { opacity: 1; }
     }
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
 `;
 document.head.appendChild(style);
 
@@ -200,7 +196,7 @@ async function loadSavedDataAfterRuffle() {
     }
     setTimeout(async () => {
         try {
-            if (true) {
+            if (document.cookie.split('; ').find(row => row.startsWith('dataLoaded=')) {
                 // Clear existing saves
                 Object.keys(localStorage).forEach(async function(key) {
                     let solData = localStorage.getItem(key);
@@ -225,10 +221,11 @@ async function loadSavedDataAfterRuffle() {
             } else {
                 document.cookie = 'dataLoaded=true; max-age=3600'; // 1 hour
             }
-            hideLoader();
+            try { hideLoader(); } catch(err) { err = err; }
         } catch (error) {
             showNotification('An error occurred while loading data.', '#f8d7da');
             console.error(error);
+            try { hideLoader(); } catch(err) { err = err; }
         }
     }, 1000);
 }

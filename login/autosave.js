@@ -217,10 +217,4 @@ function isB64SOL(str) {
 showNotification('Please do not close the game while the save icon is blinking', '#e2e3e5');
 
 setInterval(userSaveIntervalFunction, 10000);
-
-const observer = new MutationObserver(() => {
-    loadSavedDataAfterRuffle();
-    observer.disconnect();
-});
-
-observer.observe(document.body, { childList: true, subtree: true });
+loadSavedDataAfterRuffle();

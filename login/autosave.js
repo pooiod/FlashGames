@@ -88,7 +88,7 @@ function hideCloudIcon() {
     saveButton.style.display = "block";
     let cloudIcon = shadowRoot.getElementById('saveCloudIcon');
     if (cloudIcon) {
-        setTimeout(() => cloudIcon.remove(), 1000);
+        setTimeout(() => cloudIcon.remove(), 100);
     }
 }
 
@@ -218,7 +218,9 @@ async function loadSavedDataAfterRuffle() {
     if (!cookie) {
       showLoader();
     } else {
-        showNotification('Please do not close the game while the save icon is blinking', '#e2e3e5');
+        setTimeout(function(){
+            showNotification('Please do not close the game while the save icon is blinking', '#e2e3e5');
+        }, 3000);
     }
     setTimeout(async () => {
         try {

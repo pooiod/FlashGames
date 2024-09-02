@@ -64,7 +64,7 @@ function showCloudIcon() {
     cloudIcon.style.position = 'fixed';
     cloudIcon.style.top = '-5px';
     cloudIcon.style.left = '0';
-    cloudIcon.style.fontSize = '50px';
+    cloudIcon.style.fontSize = '30px';
     cloudIcon.style.opacity = '1';
     cloudIcon.style.transition = 'opacity 0.5s ease-in-out';
     cloudIcon.style.zIndex = '9999999999999999';
@@ -96,8 +96,8 @@ function showLoader() {
     loader.style.zIndex = '9999999999999999';
 
     let spinner = document.createElement('div');
-    spinner.textContent = '💿';
-    spinner.style.fontSize = '100px';
+    spinner.textContent = '💿 ';
+    spinner.style.fontSize = '50px';
     spinner.style.animation = 'fade 2s infinite';
 
     let message = document.createElement('div');
@@ -105,8 +105,9 @@ function showLoader() {
     message.style.color = '#000';
     message.style.fontSize = '24px';
     message.style.marginTop = '20px';
+    message.style.animation = 'fade 2s infinite';
 
-    loader.appendChild(spinner);
+    //loader.appendChild(spinner);
     loader.appendChild(message);
     document.body.appendChild(loader);
 }
@@ -156,6 +157,9 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+setTimeout(function(){
+    rufflecontainer.appendChild(style);
+}, 800);
 
 async function userSaveIntervalFunction() {
     showCloudIcon();

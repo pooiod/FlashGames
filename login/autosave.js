@@ -50,6 +50,7 @@ async function saveUserFilesList(array) {
 }
 
 var rufflecontainer = document.body;
+var shadowRoot = document;
 setTimeout(function(){
     var shadowHost = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
     var shadowRoot = shadowHost.shadowRoot;
@@ -57,12 +58,12 @@ setTimeout(function(){
 }, 500);
 setTimeout(function(){
     var shadowHost = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
-    var shadowRoot = shadowHost.shadowRoot;
+    shadowRoot = shadowHost.shadowRoot;
     rufflecontainer = shadowRoot.querySelector('#container');
 }, 1500);
 setTimeout(function(){
     var shadowHost = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
-    var shadowRoot = shadowHost.shadowRoot;
+    shadowRoot = shadowHost.shadowRoot;
     rufflecontainer = shadowRoot.querySelector('#container');
 }, 4000);
 
@@ -85,7 +86,7 @@ function showCloudIcon() {
 
 function hideCloudIcon() {
     saveButton.style.display = "block";
-    let cloudIcon = rufflecontainer.getElementById('saveCloudIcon');
+    let cloudIcon = shadowRoot.getElementById('saveCloudIcon');
     if (cloudIcon) {
         setTimeout(() => cloudIcon.remove(), 1000);
     }

@@ -216,7 +216,7 @@ async function loadSavedDataAfterRuffle() {
                 for (let filename of fileNames) {
                     if (filename.endsWith('.sol')) {
                         let content = await loadUserData(filename);
-                        localStorage.setItem(filename, content); // Store the data into local storage
+                        localStorage.setItem(filename.slice(0, -4), content); // Store the data into local storage
                         dataURIs.push({ filename: filename });
                     }
                 }

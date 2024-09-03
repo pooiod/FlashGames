@@ -24,8 +24,8 @@ async function loadFromServer(variableName) {
         return (await response.text()).slice(0, -1);
     } catch (error) {
         console.error('Error loading '+variableName, error);
-        alert('Error loading '+variableName)
-        return "ERROR: file does not exist";
+        throw new error("Can't load file");
+        //return "ERROR: file does not exist";
     }
 }
 

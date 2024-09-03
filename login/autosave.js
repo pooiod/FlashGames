@@ -102,7 +102,7 @@ async function decompress(str) {
         const charData = binaryString.split('').map(char => char.charCodeAt(0)); // Convert to array of char codes
         const binData = new Uint8Array(charData); // Create Uint8Array from char codes
         const decompressed = pako.inflate(binData, { to: 'string' }); // Decompress to string
-        return atob(decompressed);
+        return decompressed;
     } catch(err) {
         console.warn(err, str);
         return str;

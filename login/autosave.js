@@ -88,8 +88,8 @@ async function waitForCompressionLoaded() {
 async function compress(str) {
     await waitForCompressionLoaded();
     try {
-        const binaryString = pako.deflate(str, { to: 'string' });
-        return btoa(binaryString);
+        const compressed = pako.deflate(str); // Compress to a Uint8Array
+        return String.fromCharCode.apply(null, compressed); // Convert Uint8Array to string
     } catch(err) {
         console.warn(err);
         return str;
@@ -97,11 +97,12 @@ async function compress(str) {
 }
 async function decompress(str) {
     await waitForCompressionLoaded();
-    
     try {
-        const binaryString = atob(compressedStr); // Convert base64 back to binary
-        const decompressed = pako.inflate(binaryString, { to: 'string' });
-        return decompressed;
+        const charData = str.split('').map(function(c) {
+            return c.charCodeAt(0);
+        });
+        const binData = new Uint8Array(charData);
+        return pako.inflate(binData, { to: 'string' });
     } catch(err) {
         console.warn(err);
         return str;

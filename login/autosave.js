@@ -59,7 +59,7 @@ async function saveUserFilesList(array) {
 // Compression libs (wip)
 var compressionloaded = false;
 var compressionscript = document.createElement('script');
-compressionscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js';
+compressionscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.4/pako.min.js';
 compressionscript.onload = function() {
     compressionloaded = true
 };
@@ -88,7 +88,8 @@ async function waitForCompressionLoaded() {
 async function compress(str) {
     await waitForCompressionLoaded();
     try {
-        return LZString.compressToEncodedURIComponent(encodeURIComponent(str));
+        const binaryString = pako.deflate(str, { to: 'string' });
+        return btoa(binaryString);
     } catch(err) {
         console.warn(err);
         return str;
@@ -98,7 +99,9 @@ async function decompress(str) {
     await waitForCompressionLoaded();
     
     try {
-        return LZString.decompressFromEncodedURIComponent(decodeURIComponent(str));
+        const binaryString = atob(compressedStr); // Convert base64 back to binary
+        const decompressed = pako.inflate(binaryString, { to: 'string' });
+        return decompressed;
     } catch(err) {
         console.warn(err);
         return str;

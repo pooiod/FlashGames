@@ -1,6 +1,6 @@
 // Server libs
 async function saveToServer(variableName, content) {
-    // console.log("Saving", variableName);
+    //console.log("Saving", variableName);
     var serverURL = 'https://snapextensions.uni-goettingen.de/handleTextfile.php';
     var url = serverURL + '?type=write' + '&content=' + encodeURIComponent(content) + '&filename=./textfiles/' + encodeURIComponent(variableName);
 
@@ -9,13 +9,13 @@ async function saveToServer(variableName, content) {
         let result = await response.text();
         return result === 'ok';
     } catch (error) {
-        console.error('Failed to save data to the server:', error);
+        console.error('Error saving '+variableName, error);
         return false;
     }
 }
 
 async function loadFromServer(variableName) {
-    // console.log("Loading", variableName);
+    //console.log("Loading", variableName);
     var serverURL = 'https://snapextensions.uni-goettingen.de/handleTextfile.php';
     var url = serverURL + '?type=read' + '&filename=./textfiles/' + encodeURIComponent(variableName);
 
@@ -23,7 +23,7 @@ async function loadFromServer(variableName) {
         let response = await fetch(url);
         return (await response.text()).slice(0, -1);
     } catch (error) {
-        console.error('Failed to load data from the server:', error);
+        console.error('Error loading '+variableName, error);
         return "ERROR: file does not exist";
     }
 }

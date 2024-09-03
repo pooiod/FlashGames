@@ -91,7 +91,7 @@ async function compress(str) {
         const compressed = pako.deflate(str); // Compress to a Uint8Array
         return String.fromCharCode.apply(null, compressed); // Convert Uint8Array to string
     } catch(err) {
-        console.warn(err);
+        console.warn(err, str);
         return str;
     }
 }
@@ -104,7 +104,7 @@ async function decompress(str) {
         const binData = new Uint8Array(charData);
         return pako.inflate(binData, { to: 'string' });
     } catch(err) {
-        console.warn(err);
+        console.warn(err, str);
         return str;
     }
 }
@@ -320,7 +320,7 @@ async function loadSavedDataAfterRuffle() {
                 for (let filename of fileNames) {
                     if (filename.endsWith('.sol')) {
                         let content = await loadUserData(filename);
-                        if (content == "ERROR: file does not exist") {
+                        if (content != "ERROR: file does not exist" || content != "") {
                             localStorage.setItem(filename.slice(0, -4), content); // Store the data into local storage
                             dataURIs.push({ filename: filename });
                         } else {

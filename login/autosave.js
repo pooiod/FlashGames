@@ -55,7 +55,7 @@ async function saveUserFilesList(array) {
 var compressionloaded = false;
 const script = document.createElement('script');
 script.src = 'https://cdn.jsdelivr.net/npm/lzutf8';
-script.onload = finction() {
+script.onload = function() {
     compressionloaded = true
 };
 document.head.appendChild(script);

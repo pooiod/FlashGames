@@ -1,6 +1,6 @@
 // Server libs
 async function saveToServer(variableName, content) {
-    console.log("Saving", variableName);
+    // console.log("Saving", variableName);
     var serverURL = 'https://snapextensions.uni-goettingen.de/handleTextfile.php';
     var url = serverURL + '?type=write' + '&content=' + encodeURIComponent(content) + '&filename=./textfiles/' + encodeURIComponent(variableName);
 
@@ -15,13 +15,13 @@ async function saveToServer(variableName, content) {
 }
 
 async function loadFromServer(variableName) {
-    console.log("Loading", variableName);
+    // console.log("Loading", variableName);
     var serverURL = 'https://snapextensions.uni-goettingen.de/handleTextfile.php';
     var url = serverURL + '?type=read' + '&filename=./textfiles/' + encodeURIComponent(variableName);
 
     try {
         let response = await fetch(url);
-        return await response.text().slice(0, -1);
+        return (await response.text()).slice(0, -1);
     } catch (error) {
         console.error('Failed to load data from the server:', error);
         return "ERROR: file does not exist";
@@ -30,12 +30,12 @@ async function loadFromServer(variableName) {
 
 async function loadUserData(filename) {
     var passwordMD5hash = document.cookie.split('; ').find(row => row.startsWith('rufflesave=')).split('=')[1];
-    return loadFromServer("Rufflesavedatafromid" + passwordMD5hash + filename);
+    return await decompress(loadFromServer("Rufflesavedatafromid" + passwordMD5hash + filename));
 }
 
 async function saveUserData(filename, txtdata) {
     var passwordMD5hash = document.cookie.split('; ').find(row => row.startsWith('rufflesave=')).split('=')[1];
-    return saveToServer("Rufflesavedatafromid" + passwordMD5hash + filename, txtdata);
+    return saveToServer("Rufflesavedatafromid" + passwordMD5hash + filename, await compress(txtdata));
 }
 
 async function loadUserFilesList() {
@@ -50,7 +50,56 @@ async function saveUserFilesList(array) {
 }
 
 
-// Compression libs
+
+// Compression libs (wip)
+var compressionloaded = false;
+const script = document.createElement('script');
+script.src = 'https://cdn.jsdelivr.net/npm/lzutf8';
+script.onload = finction() {
+    compressionloaded = true
+};
+document.head.appendChild(script);
+async function waitForCompressionLoaded() {
+    return new Promise((resolve, reject) => {
+        const checkInterval = 100;
+        const maxAttempts = 300;
+        let attempts = 0;
+        if (compressionLoaded) {
+            resolve();
+        }
+        const intervalId = setInterval(() => {
+            if (compressionLoaded) {
+                clearInterval(intervalId);
+                resolve();
+            } else if (attempts >= maxAttempts) {
+                clearInterval(intervalId);
+                reject(new Error('Timeout: compressionLoaded did not become true.'));
+            }
+            attempts++;
+        }, checkInterval);
+    });
+}
+
+async function compress(base64Str) {
+    await waitForCompressionLoaded();
+    const binaryStr = atob(base64Str);
+    const bytes = new Uint8Array(binaryStr.length);
+    for (let i = 0; i < binaryStr.length; i++) {
+        bytes[i] = binaryStr.charCodeAt(i);
+    }
+    const compressed = LZUTF8.compress(bytes, { outputEncoding: 'BinaryString' });
+    return btoa(compressed);
+}
+async function decompress(base64Str) {
+    await waitForCompressionLoaded();
+    const compressed = atob(base64Str);
+    const bytes = LZUTF8.decompress(compressed, { inputEncoding: 'BinaryString' });
+    let binaryStr = '';
+    for (let i = 0; i < bytes.length; i++) {
+        binaryStr += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binaryStr);
+}
 
 
 
@@ -208,7 +257,7 @@ async function userSaveIntervalFunction() {
         });
 
         let fileNames = dataURIs.map(data => data.filename);
-        await saveUserFilesList(fileNames);
+        var fileNames2 = [];
 
         for (let data of dataURIs) {
             await saveUserData(data.filename, data.data);
@@ -216,8 +265,12 @@ async function userSaveIntervalFunction() {
             if (datacheck == "" || datacheck == "ERROR: file does not exist") {
                 console.warn("Unsaved file", data.filename);
                 unsavedfiles.push(data.filename);
+            } else {
+                fileNames2.push(data.filename);
             }
         }
+
+        await saveUserFilesList(fileNames2);
 
         for (let filename of unsavedfiles) {
             showNotification('Unable to save '+filename, '#f8f3d7');

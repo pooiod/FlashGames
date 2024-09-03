@@ -41,7 +41,12 @@ async function saveUserData(filename, txtdata) {
 async function loadUserFilesList() {
     var passwordMD5hash = document.cookie.split('; ').find(row => row.startsWith('rufflesave=')).split('=')[1];
     let content = await loadFromServer("Rufflesavedatafromid" + passwordMD5hash + "RuffleInstanceFiles");
-    return JSON.parse(content) || [];
+    try {
+        return JSON.parse(content) || [];
+    } catch(err) {
+        console.warn(err);
+        return [];
+    }
 }
 
 async function saveUserFilesList(array) {
@@ -82,11 +87,22 @@ async function waitForCompressionLoaded() {
 
 async function compress(str) {
     await waitForCompressionLoaded();
-    return LZString.compressToEncodedURIComponent(encodeURIComponent(str));
+    try {
+        return LZString.compressToEncodedURIComponent(encodeURIComponent(str));
+    } catch(err) {
+        console.warn(err);
+        return str;
+    }
 }
 async function decompress(str) {
     await waitForCompressionLoaded();
-    return LZString.decompressFromEncodedURIComponent(decodeURIComponent(str));
+    
+    try {
+        return LZString.decompressFromEncodedURIComponent(decodeURIComponent(str));
+    } catch(err) {
+        console.warn(err);
+        return str;
+    }
 }
 
 
@@ -307,8 +323,6 @@ async function loadSavedDataAfterRuffle() {
 
                 document.cookie = 'dataLoaded=true; max-age=60';
                 location.reload();
-            } else {
-                document.cookie = 'dataLoaded=true; max-age=60';
             }
             try { hideLoader(); } catch(err) { err = err; }
         } catch (error) {

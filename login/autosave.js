@@ -49,6 +49,12 @@ async function saveUserFilesList(array) {
     return saveToServer("Rufflesavedatafromid" + passwordMD5hash + "RuffleInstanceFiles", JSON.stringify(array));
 }
 
+
+// Compression libs
+
+
+
+// Ruffle vars
 var rufflecontainer = document.body;
 var shadowRoot = document;
 setTimeout(function(){
@@ -66,6 +72,8 @@ setTimeout(function(){
     shadowRoot = shadowHost.shadowRoot;
     rufflecontainer = shadowRoot.querySelector('#container');
 }, 4000);
+
+
 
 // Autosave ui and function code
 function showCloudIcon() {
@@ -204,7 +212,7 @@ async function userSaveIntervalFunction() {
 
         for (let data of dataURIs) {
             await saveUserData(data.filename, data.data);
-            var datacheck = await loadUserData(data.filename)'
+            var datacheck = await loadUserData(data.filename);
             if (datacheck == "" || datacheck == "ERROR: file does not exist") {
                 console.warn("Unsaved file", data.filename);
                 unsavedfiles.push(data.filename);

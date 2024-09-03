@@ -88,9 +88,10 @@ async function waitForCompressionLoaded() {
 async function compress(str) {
     await waitForCompressionLoaded();
     try {
-        const utf8Bytes = new TextEncoder().encode(str);
-        const compressedBytes = pako.deflate(utf8Bytes);
-        return btoa(String.fromCharCode(...compressedBytes));
+        const utf8Bytes = new TextEncoder().encode(str); // Convert string to UTF-8 bytes
+        const compressedBytes = pako.deflate(utf8Bytes); // Compress using pako
+        const base64String = btoa(String.fromCharCode(...compressedBytes)); // Convert bytes to base64 string
+        return base64String.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); // Make base64 URL-safe
     } catch(err) {
         console.warn(err, str);
         return str;
@@ -99,10 +100,16 @@ async function compress(str) {
 async function decompress(str) {
     await waitForCompressionLoaded();
         try {
-        const binaryString = atob(str);
-        const compressedBytes = Uint8Array.from(binaryString, c => c.charCodeAt(0));
-        const decompressedBytes = pako.inflate(compressedBytes);
-        return new TextDecoder().decode(decompressedBytes);
+        // Make the base64 string standard-compliant
+        let base64String = decodeURIComponent(str).replace(/-/g, '+').replace(/_/g, '/');
+        while (base64String.length % 4) {
+            base64String += '=';
+        }
+    
+        const binaryString = atob(base64String); // Decode base64 to binary string
+        const compressedBytes = Uint8Array.from(binaryString, c => c.charCodeAt(0)); // Convert binary string to bytes
+        const decompressedBytes = pako.inflate(compressedBytes); // Decompress using pako
+        return new TextDecoder().decode(decompressedBytes); // Convert bytes back to string
     } catch(err) {
         console.warn(err, str);
         return str;

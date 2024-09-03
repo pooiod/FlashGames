@@ -64,11 +64,11 @@ async function waitForCompressionLoaded() {
         const checkInterval = 100;
         const maxAttempts = 300;
         let attempts = 0;
-        if (compressionLoaded) {
+        if (compressionloaded) {
             resolve();
         }
         const intervalId = setInterval(() => {
-            if (compressionLoaded) {
+            if (compressionloaded) {
                 clearInterval(intervalId);
                 resolve();
             } else if (attempts >= maxAttempts) {

@@ -21,10 +21,10 @@ async function loadFromServer(variableName) {
 
     try {
         let response = await fetch(url);
-        return await response.text();
+        return await response.text().slice(0, -1);
     } catch (error) {
         console.error('Failed to load data from the server:', error);
-        return "can't get data";
+        return "ERROR: file does not exist";
     }
 }
 
@@ -73,8 +73,8 @@ function showCloudIcon() {
     cloudIcon.id = 'saveCloudIcon';
     cloudIcon.textContent = '💾';
     cloudIcon.style.position = 'fixed';
-    cloudIcon.style.top = '-5px';
-    cloudIcon.style.left = '0';
+    cloudIcon.style.top = '-1px';
+    cloudIcon.style.left = '5';
     cloudIcon.style.fontSize = '30px';
     cloudIcon.style.opacity = '1';
     cloudIcon.style.transition = 'opacity 0.5s ease-in-out';
@@ -172,8 +172,10 @@ setTimeout(function(){
     rufflecontainer.appendChild(style);
 }, 800);
 
+var unsavedfiles = [];
 async function userSaveIntervalFunction() {
     showCloudIcon();
+    unsavedfiles = [];
 
     function isB64SOL(str) {
         try {
@@ -202,7 +204,16 @@ async function userSaveIntervalFunction() {
 
         for (let data of dataURIs) {
             await saveUserData(data.filename, data.data);
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            var datacheck = await loadUserData(data.filename)'
+            if (datacheck == "" || datacheck == "ERROR: file does not exist") {
+                console.warn("Unsaved file", data.filename);
+                unsavedfiles.push(data.filename);
+            }
+        }
+
+        for (let filename of unsavedfiles) {
+            showNotification('Unable to save '+filename, '#f8f3d7');
+            await new Promise(resolve => setTimeout(resolve, 3000));
         }
     } catch (error) {
         showNotification('An error occurred while saving data.', '#f8d7da');

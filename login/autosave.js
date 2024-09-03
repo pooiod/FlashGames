@@ -54,7 +54,7 @@ async function saveUserFilesList(array) {
 // Compression libs (wip)
 var compressionloaded = false;
 const script = document.createElement('script');
-script.src = 'https://cdn.jsdelivr.net/npm/lzutf8';
+script.src = 'https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js';
 script.onload = function() {
     compressionloaded = true
 };
@@ -80,25 +80,13 @@ async function waitForCompressionLoaded() {
     });
 }
 
-async function compress(base64Str) {
+async function compress(str) {
     await waitForCompressionLoaded();
-    const binaryStr = atob(base64Str);
-    const bytes = new Uint8Array(binaryStr.length);
-    for (let i = 0; i < binaryStr.length; i++) {
-        bytes[i] = binaryStr.charCodeAt(i);
-    }
-    const compressed = LZUTF8.compress(bytes, { outputEncoding: 'BinaryString' });
-    return btoa(compressed);
+    return LZString.compressToUTF16(str);
 }
-async function decompress(base64Str) {
+async function decompress(str) {
     await waitForCompressionLoaded();
-    const compressed = atob(base64Str);
-    const bytes = LZUTF8.decompress(compressed, { inputEncoding: 'BinaryString' });
-    let binaryStr = '';
-    for (let i = 0; i < bytes.length; i++) {
-        binaryStr += String.fromCharCode(bytes[i]);
-    }
-    return btoa(binaryStr);
+    return LZString.compressToUTF16(str);
 }
 
 

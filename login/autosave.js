@@ -82,11 +82,11 @@ async function waitForCompressionLoaded() {
 
 async function compress(str) {
     await waitForCompressionLoaded();
-    return LZString.compressToBase64(encodeURIComponent(str));
+    return LZString.compressToEncodedURIComponent(str);
 }
 async function decompress(str) {
     await waitForCompressionLoaded();
-    return LZString.decompressFromBase64(decodeURIComponent(str));
+    return LZString.decompressFromEncodedURIComponent(str);
 }
 
 

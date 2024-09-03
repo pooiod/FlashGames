@@ -99,7 +99,7 @@ async function compress(str) {
 async function decompress(str) {
     await waitForCompressionLoaded();
         try {
-        const binaryString = atob(compressedStr);
+        const binaryString = atob(str);
         const compressedBytes = Uint8Array.from(binaryString, c => c.charCodeAt(0));
         const decompressedBytes = pako.inflate(compressedBytes);
         return new TextDecoder().decode(decompressedBytes);

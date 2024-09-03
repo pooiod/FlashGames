@@ -58,12 +58,12 @@ async function saveUserFilesList(array) {
 
 // Compression libs (wip)
 var compressionloaded = false;
-const script = document.createElement('script');
-script.src = 'https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js';
-script.onload = function() {
+var compressionscript = document.createElement('script');
+compressionscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js';
+compressionscript.onload = function() {
     compressionloaded = true
 };
-document.head.appendChild(script);
+document.head.appendChild(compressionscript);
 async function waitForCompressionLoaded() {
     return new Promise((resolve, reject) => {
         const checkInterval = 100;

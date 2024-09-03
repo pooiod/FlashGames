@@ -24,7 +24,6 @@ async function loadFromServer(variableName) {
         return (await response.text()).slice(0, -1);
     } catch (error) {
         console.error('Error loading '+variableName, error);
-        throw new error("Can't load file");
         return "ERROR: file does not exist";
     }
 }
@@ -321,7 +320,7 @@ async function loadSavedDataAfterRuffle() {
                             localStorage.setItem(filename.slice(0, -4), content); // Store the data into local storage
                             dataURIs.push({ filename: filename });
                         } else {
-                            throw new error("Unable to load " + filename);
+                            throw new Error("Unable to load " + filename);
                         }
                     }
                 }

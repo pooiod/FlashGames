@@ -25,7 +25,7 @@ async function loadFromServer(variableName) {
     } catch (error) {
         console.error('Error loading '+variableName, error);
         throw new error("Can't load file");
-        //return "ERROR: file does not exist";
+        return "ERROR: file does not exist";
     }
 }
 
@@ -317,8 +317,12 @@ async function loadSavedDataAfterRuffle() {
                 for (let filename of fileNames) {
                     if (filename.endsWith('.sol')) {
                         let content = await loadUserData(filename);
-                        localStorage.setItem(filename.slice(0, -4), content); // Store the data into local storage
-                        dataURIs.push({ filename: filename });
+                        if (content == "ERROR: file does not exist") {
+                            localStorage.setItem(filename.slice(0, -4), content); // Store the data into local storage
+                            dataURIs.push({ filename: filename });
+                        } else {
+                            throw new error("Unable to load " + filename);
+                        }
                     }
                 }
 

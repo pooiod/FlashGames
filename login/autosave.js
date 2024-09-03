@@ -1,6 +1,6 @@
 // Server libs
 async function saveToServer(variableName, content) {
-    //console.log("Saving", variableName);
+    console.log("Saving", variableName);
     var serverURL = 'https://snapextensions.uni-goettingen.de/handleTextfile.php';
     var url = serverURL + '?type=write' + '&content=' + encodeURIComponent(content) + '&filename=./textfiles/' + encodeURIComponent(variableName);
 
@@ -15,7 +15,7 @@ async function saveToServer(variableName, content) {
 }
 
 async function loadFromServer(variableName) {
-    //console.log("Loading", variableName);
+    console.log("Loading", variableName);
     var serverURL = 'https://snapextensions.uni-goettingen.de/handleTextfile.php';
     var url = serverURL + '?type=read' + '&filename=./textfiles/' + encodeURIComponent(variableName);
 
@@ -24,6 +24,7 @@ async function loadFromServer(variableName) {
         return (await response.text()).slice(0, -1);
     } catch (error) {
         console.error('Error loading '+variableName, error);
+        alert('Error loading '+variableName)
         return "ERROR: file does not exist";
     }
 }

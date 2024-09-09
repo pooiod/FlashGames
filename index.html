@@ -185,6 +185,13 @@
         const fileInput = document.getElementById('fileInput');
         const searchBar = document.getElementById('searchBar');
 
+        window.onload = function() {
+            const tmpsearch = new URLSearchParams(window.location.search).get('q');
+            if (tmpsearch) {
+                searchBar.value = tmpsearch;
+            }
+        };
+
         var installedActuallFlash = false;
         function isFlashSupported() {
             var hasFlash = false;

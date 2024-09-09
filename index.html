@@ -185,13 +185,6 @@
         const fileInput = document.getElementById('fileInput');
         const searchBar = document.getElementById('searchBar');
 
-        window.onload = function() {
-            const tmpsearch = new URLSearchParams(window.location.search).get('q');
-            if (tmpsearch) {
-                searchBar.value = tmpsearch;
-            }
-        };
-
         var installedActuallFlash = false;
         function isFlashSupported() {
             var hasFlash = false;
@@ -432,6 +425,13 @@
                 
                 if (gameList.children.length === 0) {
                     showError('No games found.');
+                } else {
+                    const tmpsearch = new URLSearchParams(window.location.search).get('q');
+                    if (tmpsearch) {
+                        searchBar.value = tmpsearch;
+                        filterGames();
+                        searchBar.style.display = "none";
+                    }
                 }
             } catch (error) {
                 showError(`Error loading games: ${error.message}`);

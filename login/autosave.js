@@ -87,6 +87,8 @@ function showNotification(message, color) {
     }, 3000);
 }
 
+var savekeydebounce = false;
+
 // Floppy disk save button
 function addSaveIcon() {
     const saveButton = document.createElement('div');
@@ -104,11 +106,17 @@ function addSaveIcon() {
     window.saveButton = saveButton;
 
     saveButton.addEventListener('click', async function() {
+        if (savekeydebounce) {
+            showNotification("Spamming may corrupt your save data!", "#ffbaba");
+            return;
+        }
+        savekeydebounce = true;
         saveButton.style.display = 'none';
         showSaveProgressBar();
         await savePackedData();
         hideSaveProgressBar();
         saveButton.style.display = 'block';
+        savekeydebounce = false;
     });
 
     if (window.navigator.userAgent.includes('Mobile') || !window.matchMedia('(pointer:fine)').matches) {
@@ -120,7 +128,6 @@ function addSaveIcon() {
     }
 }
 
-var savekeydebounce = false;
 document.addEventListener('keydown', async function(e) {
     if (e.ctrlKey && e.key === 's') {
         if (savekeydebounce) {

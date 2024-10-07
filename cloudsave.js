@@ -248,6 +248,7 @@ async function savePackedData() {
 
         return true;
     } catch (error) {
+        showNotification("Failed to save packed data!", "#ffbaba");
         console.error("Failed to save packed data", error);
     }
 }

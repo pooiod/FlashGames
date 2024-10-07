@@ -471,6 +471,9 @@ if (!new URLSearchParams(window.location.search).get('transfer')) {
         showSaveProgressBar();
         await savePackedData();
         hideSaveProgressBar();
-        window.location.href = "/";
+
+        setTimeout(() => {
+            window.location.href = "/";
+        }, 700);
     }, 100);
 }

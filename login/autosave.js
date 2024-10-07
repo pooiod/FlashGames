@@ -1,21 +1,18 @@
 // Server libs
 async function saveToServer(variableName, content) {
-    console.log("Saving", variableName);
     var serverURL = 'https://snapextensions.uni-goettingen.de/handleTextfile.php';
     var url = serverURL + '?type=write' + '&content=' + encodeURIComponent(content) + '&filename=./textfiles/' + encodeURIComponent(variableName);
 
     try {
         let response = await fetch(url);
-        let result = await response.text();
-        return result === 'ok';
+        return (await response.text()) === 'ok';
     } catch (error) {
-        console.error('Error saving '+variableName, error);
+        console.error('Error saving', variableName, error);
         return false;
     }
 }
 
 async function loadFromServer(variableName) {
-    console.log("Loading", variableName);
     var serverURL = 'https://snapextensions.uni-goettingen.de/handleTextfile.php';
     var url = serverURL + '?type=read' + '&filename=./textfiles/' + encodeURIComponent(variableName);
 
@@ -23,144 +20,132 @@ async function loadFromServer(variableName) {
         let response = await fetch(url);
         return (await response.text()).slice(0, -1);
     } catch (error) {
-        console.error('Error loading '+variableName, error);
+        console.error('Error loading', variableName, error);
         return "ERROR: file does not exist";
     }
 }
 
 async function loadUserData(filename) {
     var passwordMD5hash = document.cookie.split('; ').find(row => row.startsWith('rufflesave=')).split('=')[1];
-    return await decompress(loadFromServer("Rufflesavedatafromid" + passwordMD5hash + filename));
+    return await decompress(await loadFromServer("Rufflesavedatafromid" + passwordMD5hash + filename));
 }
 
 async function saveUserData(filename, txtdata) {
     var passwordMD5hash = document.cookie.split('; ').find(row => row.startsWith('rufflesave=')).split('=')[1];
-    return saveToServer("Rufflesavedatafromid" + passwordMD5hash + filename, await compress(txtdata));
+    return await saveToServer("Rufflesavedatafromid" + passwordMD5hash + filename, await compress(txtdata));
 }
 
-async function loadUserFilesList() {
-    var passwordMD5hash = document.cookie.split('; ').find(row => row.startsWith('rufflesave=')).split('=')[1];
-    let content = await loadFromServer("Rufflesavedatafromid" + passwordMD5hash + "RuffleInstanceFiles");
-    try {
-        return JSON.parse(content) || [];
-    } catch(err) {
-        console.warn(err);
-        return [];
-    }
-}
-
-async function saveUserFilesList(array) {
-    var passwordMD5hash = document.cookie.split('; ').find(row => row.startsWith('rufflesave=')).split('=')[1];
-    return saveToServer("Rufflesavedatafromid" + passwordMD5hash + "RuffleInstanceFiles", JSON.stringify(array));
-}
-
-
-
-// Compression libs (wip)
-var compressionloaded = false;
-var compressionscript = document.createElement('script');
-compressionscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.4/pako.min.js';
-compressionscript.onload = function() {
-    compressionloaded = true
-};
-document.head.appendChild(compressionscript);
-async function waitForCompressionLoaded() {
-    return new Promise((resolve, reject) => {
-        const checkInterval = 100;
-        const maxAttempts = 300;
-        let attempts = 0;
-        if (compressionloaded) {
-            resolve();
-        }
-        const intervalId = setInterval(() => {
-            if (compressionloaded) {
-                clearInterval(intervalId);
-                resolve();
-            } else if (attempts >= maxAttempts) {
-                clearInterval(intervalId);
-                reject(new Error('Timeout: compressionLoaded did not become true.'));
-            }
-            attempts++;
-        }, checkInterval);
-    });
-}
-
-async function compress(str) {
-    await waitForCompressionLoaded();
-    try {
-        const utf8Bytes = new TextEncoder().encode(str); // Convert string to UTF-8 bytes
-        const compressedBytes = pako.deflate(utf8Bytes); // Compress using pako
-        const base64String = btoa(String.fromCharCode(...compressedBytes)); // Convert bytes to base64 string
-        return base64String.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); // Make base64 URL-safe
-    } catch(err) {
-        console.warn(err, str);
-        return str;
-    }
-}
-async function decompress(str) {
-    await waitForCompressionLoaded();
-        try {
-        // Make the base64 string standard-compliant
-        let base64String = decodeURIComponent(str).replace(/-/g, '+').replace(/_/g, '/');
-        while (base64String.length % 4) {
-            base64String += '=';
-        }
-    
-        const binaryString = atob(base64String); // Decode base64 to binary string
-        const compressedBytes = Uint8Array.from(binaryString, c => c.charCodeAt(0)); // Convert binary string to bytes
-        const decompressedBytes = pako.inflate(compressedBytes); // Decompress using pako
-        return new TextDecoder().decode(decompressedBytes); // Convert bytes back to string
-    } catch(err) {
-        console.warn(err, str);
-        return str;
-    }
-}
-
-
-
-// Ruffle vars
+// UI code for the floppy disk icon
 var rufflecontainer = document.body;
 var shadowRoot = document;
+
 setTimeout(function(){
     var shadowHost = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
-    var shadowRoot = shadowHost.shadowRoot;
+    shadowRoot = shadowHost.shadowRoot;
     rufflecontainer = shadowRoot.querySelector('#container');
+    addSaveIcon();
 }, 500);
 setTimeout(function(){
     var shadowHost = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
     shadowRoot = shadowHost.shadowRoot;
     rufflecontainer = shadowRoot.querySelector('#container');
+    addSaveIcon();
 }, 1500);
 setTimeout(function(){
     var shadowHost = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
     shadowRoot = shadowHost.shadowRoot;
     rufflecontainer = shadowRoot.querySelector('#container');
+    addSaveIcon();
 }, 4000);
 
+// Floppy disk save button
+function addSaveIcon() {
+    const saveButton = document.createElement('div');
+    saveButton.textContent = '💾'; // Floppy disc emoji
+    saveButton.style.position = 'fixed';
+    saveButton.style.top = '10px';
+    saveButton.style.left = '10px';
+    saveButton.style.padding = '5px';
+    saveButton.style.fontSize = '30px';
+    saveButton.style.cursor = 'pointer';
+    saveButton.style.zIndex = '999999999';
+    saveButton.style.opacity = '1';
+    saveButton.style.transition = 'opacity 0.5s ease-in-out';
 
+    rufflecontainer.appendChild(saveButton);
 
-// Autosave ui and function code
-function showCloudIcon() {
-    let cloudIcon = document.createElement('div');
-    cloudIcon.id = 'saveCloudIcon';
-    cloudIcon.textContent = '💾';
-    cloudIcon.style.position = 'fixed';
-    cloudIcon.style.top = '-1px';
-    cloudIcon.style.left = '5';
-    cloudIcon.style.fontSize = '30px';
-    cloudIcon.style.opacity = '1';
-    cloudIcon.style.transition = 'opacity 0.5s ease-in-out';
-    cloudIcon.style.zIndex = '9999999999999999';
-    rufflecontainer.appendChild(cloudIcon);
-    cloudIcon.style.animation = 'fade 2s infinite';
-    saveButton.style.display = "none";
+    saveButton.addEventListener('click', async function() {
+        saveButton.style.opacity = '0.5'; // Dim while saving
+        await savePackedData(); // Trigger the save function
+        saveButton.style.opacity = '1'; // Restore opacity after save
+    });
 }
 
-function hideCloudIcon() {
-    saveButton.style.display = "block";
-    let cloudIcon = shadowRoot.getElementById('saveCloudIcon');
-    if (cloudIcon) {
-        setTimeout(() => cloudIcon.remove(), 100);
+// Save data in chunks of 1000 chars
+async function savePackedData() {
+    let allData = [];
+    Object.keys(localStorage).forEach(key => {
+        let solData = localStorage.getItem(key);
+        if (isB64SOL(solData)) {
+            allData.push({ key: key, value: solData });
+        }
+    });
+
+    let packedData = JSON.stringify(allData);
+    let chunks = packedData.match(/.{1,1000}/g); // Split into 1000-character chunks
+
+    try {
+        for (let i = 0; i < chunks.length; i++) {
+            await saveUserData(`completeSave_part${i + 1}`, chunks[i]);
+        }
+        await saveUserData(`completeSave_part${chunks.length + 1}`, "ERROR: file does not exist");
+        console.log("Data saved successfully.");
+    } catch (error) {
+        console.error("Failed to save packed data", error);
+    }
+}
+
+// Load data and refresh the page
+async function loadPackedData() {
+    let allParts = [];
+    let partIndex = 1;
+    let partData;
+
+    Object.keys(localStorage).forEach(key => {
+        let solData = localStorage.getItem(key);
+        if (isB64SOL(solData)) {
+            localStorage.removeItem(key);
+        }
+    });
+
+    try {
+        while (true) {
+            partData = await loadUserData(`completeSave_part${partIndex}`);
+            if (partData === "ERROR: file does not exist") break;
+            allParts.push(partData);
+            partIndex++;
+        }
+
+        let combinedData = allParts.join('');
+        let parsedData = JSON.parse(combinedData);
+
+        parsedData.forEach(item => {
+            localStorage.setItem(item.key, item.value);
+        });
+
+        console.log("Data loaded successfully.");
+    } catch (error) {
+        console.error("Failed to load packed data", error);
+    }
+}
+
+// Automatically load data when the page starts, then reload
+async function autoLoadAndReload() {
+    if (!document.cookie.split('; ').find(row => row.startsWith('dataLoaded='))) {
+        showLoader();
+        await loadPackedData();
+        document.cookie = 'dataLoaded=true; max-age=60'; // Prevent endless reloading
+        location.reload();
     }
 }
 
@@ -178,19 +163,12 @@ function showLoader() {
     loader.style.alignItems = 'center';
     loader.style.zIndex = '9999999999999999';
 
-    let spinner = document.createElement('div');
-    spinner.textContent = '💿 ';
-    spinner.style.fontSize = '50px';
-    spinner.style.animation = 'fade 2s infinite';
-
     let message = document.createElement('div');
     message.textContent = 'Loading save data';
     message.style.color = '#000';
     message.style.fontSize = '24px';
     message.style.marginTop = '20px';
-    message.style.animation = 'fade 2s infinite';
 
-    //loader.appendChild(spinner);
     loader.appendChild(message);
     document.body.appendChild(loader);
 }
@@ -198,156 +176,11 @@ function showLoader() {
 function hideLoader() {
     let loader = document.getElementById('dataLoader');
     if (loader) {
-        setTimeout(() => loader.remove(), 1000);
+        loader.remove();
     }
 }
 
-function showNotification(message, color) {
-    let notification = document.createElement('div');
-    notification.id = 'saveNotification';
-    notification.textContent = message;
-    notification.style.position = 'fixed';
-    notification.style.bottom = '10px';
-    notification.style.left = '50%';
-    notification.style.transform = 'translateX(-50%)';
-    notification.style.backgroundColor = color;
-    notification.style.color = '#000';
-    notification.style.padding = '10px 20px';
-    notification.style.border = '1px solid #ccc';
-    notification.style.borderRadius = '5px';
-    notification.style.zIndex = '9999999999999999';
-    notification.style.opacity = '0';
-    notification.style.transition = 'opacity 1s ease-in-out';
-    notification.style.fontSize = '16px';
-    rufflecontainer.appendChild(notification);
-
-    setTimeout(() => {
-        notification.style.opacity = '1';
-    }, 10);
-
-    setTimeout(() => {
-        notification.style.opacity = '0';
-        setTimeout(() => notification.remove(), 1000);
-    }, 3000);
-}
-
-let style = document.createElement('style');
-style.textContent = `
-    @keyframes fade {
-        0% { opacity: 1; }
-        50% { opacity: 0.5; }
-        100% { opacity: 1; }
-    }
-`;
-document.head.appendChild(style);
-setTimeout(function(){
-    rufflecontainer.appendChild(style);
-}, 800);
-
-var unsavedfiles = [];
-async function userSaveIntervalFunction() {
-    showCloudIcon();
-    unsavedfiles = [];
-
-    function isB64SOL(str) {
-        try {
-            let decodedData = atob(str);
-            return decodedData.slice(6, 10) === 'TCSO';
-        } catch(e) {
-            return false;
-        }
-    }
-
-    let dataURIs = [];
-
-    try {
-        Object.keys(localStorage).forEach(function(key) {
-            let solName = key.split('/').pop();
-            let solData = localStorage.getItem(key);
-            if (isB64SOL(solData)) {
-                let mimeType = 'application/octet-stream';
-                let dataURI = 'data:' + mimeType + ';base64,' + solData;
-                dataURIs.push({ filename: solName + '.sol', data: solData });
-            }
-        });
-
-        let fileNames = dataURIs.map(data => data.filename);
-        var fileNames2 = [];
-
-        for (let data of dataURIs) {
-            await saveUserData(data.filename, data.data);
-            var datacheck = await loadUserData(data.filename);
-            if (datacheck == "" || datacheck == "ERROR: file does not exist") {
-                console.warn("Unsaved file", data.filename);
-                unsavedfiles.push(data.filename);
-            } else {
-                fileNames2.push(data.filename);
-            }
-        }
-
-        await saveUserFilesList(fileNames2);
-
-        for (let filename of unsavedfiles) {
-            showNotification('Unable to save '+filename, '#f8f3d7');
-            await new Promise(resolve => setTimeout(resolve, 3000));
-        }
-    } catch (error) {
-        showNotification('An error occurred while saving data.', '#f8d7da');
-        console.error(error);
-    } finally {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        hideCloudIcon();
-    }
-}
-
-async function loadSavedDataAfterRuffle() {
-    let cookie = document.cookie.split('; ').find(row => row.startsWith('dataLoaded='));
-    if (!cookie) {
-      showLoader();
-    } else {
-        setTimeout(function(){
-            showNotification('Please do not close the game while the save icon is blinking', '#e2e3e5');
-        }, 3000);
-    }
-    setTimeout(async () => {
-        try {
-            if (!document.cookie.split('; ').find(row => row.startsWith('dataLoaded='))) {
-                /** Clear code (disabled)
-                Object.keys(localStorage).forEach(async function(key) {
-                    let solData = localStorage.getItem(key);
-                    if (isB64SOL(solData)) {
-                        localStorage.removeItem(key);
-                    }
-                });
-                **/
-
-                let fileNames = await loadUserFilesList() || [];
-                let dataURIs = [];
-
-                for (let filename of fileNames) {
-                    if (filename.endsWith('.sol')) {
-                        let content = await loadUserData(filename);
-                        if (content != "ERROR: file does not exist" || content != "") {
-                            localStorage.setItem(filename.slice(0, -4), content); // Store the data into local storage
-                            dataURIs.push({ filename: filename });
-                        } else {
-                            throw new Error("Unable to load " + filename);
-                        }
-                    }
-                }
-
-                document.cookie = 'dataLoaded=true; max-age=60';
-                location.reload();
-            }
-            try { hideLoader(); } catch(err) { err = err; }
-        } catch (error) {
-            showNotification('An error occurred while loading data.', '#f8d7da');
-            console.error(error);
-            try { hideLoader(); } catch(err) { err = err; }
-        }
-    }, 1000);
-}
-
+// Utility function to check if the data is Base64 SOL
 function isB64SOL(str) {
     try {
         let decodedData = atob(str);
@@ -357,36 +190,5 @@ function isB64SOL(str) {
     }
 }
 
-function handleKeyDown(event) {
-    if (event.ctrlKey && event.key === 's') {
-        event.preventDefault();
-        userSaveIntervalFunction();
-    }
-}
-
-function isMobileDevice() {
-    return /Mobi|Android/i.test(navigator.userAgent);
-}
-const saveButton = document.createElement('button');
-saveButton.textContent = '💾';
-saveButton.style.position = 'fixed';
-saveButton.style.top = '0px';
-saveButton.style.left = '0px';
-saveButton.style.padding = '5px';
-saveButton.style.backgroundColor = 'transparent';
-saveButton.style.color = 'black';
-saveButton.style.border = 'none';
-saveButton.style.borderRadius = '5px';
-saveButton.style.cursor = 'pointer';
-saveButton.style.fontSize = '24px';
-saveButton.addEventListener('click', userSaveIntervalFunction);
-if (isMobileDevice()) {
-    setTimeout(function() {
-        rufflecontainer.appendChild(saveButton);
-    }, 2000);
-}
-
-document.addEventListener('keydown', handleKeyDown);
-
-setInterval(userSaveIntervalFunction, 600000);
-loadSavedDataAfterRuffle();
+// Initialize the automatic load and reload process
+autoLoadAndReload();

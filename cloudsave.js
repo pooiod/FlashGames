@@ -501,7 +501,6 @@ if (!new URLSearchParams(window.location.search).get('transfer')) {
         if (!shadowRoot.getElementById('saveProgressBarContainer') && document.hasFocus()){
             showSaveProgressBar();
             await savePackedData();
-            hideSaveProgressBar();
         }
     }, 60 * 1000);
 } else {
@@ -525,7 +524,6 @@ if (!new URLSearchParams(window.location.search).get('transfer')) {
 
         showSaveProgressBar();
         await savePackedData();
-        hideSaveProgressBar();
 
         setTimeout(() => {
             window.location.href = "/";

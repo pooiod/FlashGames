@@ -244,7 +244,7 @@ async function savePackedData() {
         await saveUserData(`completeSave_part${chunks.length + 1}`, "end");
         console.log("Data saved successfully.");
 
-        showNotification("Your data has been saved.", "#fff", 1000);
+        // showNotification("Your data has been saved.", "#fff", 1000);
         hideSaveProgressBar();
         savekeydebounce = false;
     } catch (error) {

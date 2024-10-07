@@ -114,7 +114,9 @@ function addSaveIcon() {
     if (window.navigator.userAgent.includes('Mobile') || !window.matchMedia('(pointer:fine)').matches) {
         rufflecontainer.appendChild(saveButton);
     } else {
-        showNotification("Press \"CTRL + S\" to save your data.", "#fff");
+        setTimeout(function(){
+            showNotification("Press \"CTRL + S\" to save your data.", "#fff");
+        }, 1000);
     }
 }
 

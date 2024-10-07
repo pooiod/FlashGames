@@ -114,7 +114,7 @@ function addSaveIcon() {
     if (window.navigator.userAgent.includes('Mobile') || !window.matchMedia('(pointer:fine)').matches) {
         rufflecontainer.appendChild(saveButton);
     } else {
-        showNotification("Press \"CTRL + S\" to save your data before leaving.", "")
+        showNotification("Press \"CTRL + S\" to save your data before leaving.", "#fff")
     }
 }
 

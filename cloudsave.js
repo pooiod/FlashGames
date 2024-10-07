@@ -262,7 +262,7 @@ function showSaveProgressBar() {
     progressBarContainer.style.zIndex = '99999999999';
     progressBarContainer.style.opacity = '0'; // Start hidden
     progressBarContainer.style.transform = 'translateY(-100%)'; // Slide up
-    progressBarContainer.style.transition = 'opacity 0.5s ease-in-out, transform 0.7s ease-in-out';
+    progressBarContainer.style.transition = 'opacity 0.7s ease-in-out, transform 0.7s ease-in-out';
     
     const progressBar = document.createElement('div');
     progressBar.style.height = '100%';
@@ -363,7 +363,7 @@ function showLoadingBar() {
     loadingBarContainer.style.zIndex = '99999999999';
     loadingBarContainer.style.opacity = '0'; // Start hidden
     loadingBarContainer.style.transform = 'translateY(-100%)'; // Slide up
-    loadingBarContainer.style.transition = 'opacity 0.5s ease-in-out, transform 0.7s ease-in-out';
+    loadingBarContainer.style.transition = 'opacity 0.7s ease-in-out, transform 0.7s ease-in-out';
     
     const loadingBar = document.createElement('div');
     loadingBar.style.height = '100%';

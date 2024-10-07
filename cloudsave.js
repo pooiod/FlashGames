@@ -266,8 +266,8 @@ function showSaveProgressBar() {
     progressBarContainer.style.width = '100%';
     progressBarContainer.style.height = '10px';
     // progressBarContainer.style.backgroundColor = '#5475ba';
-    progressBarContainer.style.backgroundColor = '#5475ba';
-    progressBarContainer.style.pointerEvents = "rgba(255, 255, 255, 0.2)";
+    progressBarContainer.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+    progressBarContainer.style.pointerEvents = "none";
     progressBarContainer.style.zIndex = '99999999999';
     progressBarContainer.style.opacity = '0'; // Start hidden
     progressBarContainer.style.transform = 'translateY(-100%)'; // Slide up

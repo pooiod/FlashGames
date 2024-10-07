@@ -264,7 +264,7 @@ function showSaveProgressBar() {
     progressBarContainer.style.left = '0';
     progressBarContainer.style.width = '100%';
     progressBarContainer.style.height = '10px';
-    progressBarContainer.style.backgroundColor = '#ddd';
+    progressBarContainer.style.backgroundColor = '#475e8f';
     progressBarContainer.style.zIndex = '99999999999';
     progressBarContainer.style.opacity = '0'; // Start hidden
     progressBarContainer.style.transform = 'translateY(-100%)'; // Slide up
@@ -350,7 +350,7 @@ async function loadPackedData() {
                         overlay.style.left = '0';
                         overlay.style.width = '100%';
                         overlay.style.height = '100%';
-                        overlay.style.backgroundColor = 'rgba(255, 255, 255, 1)';
+                        overlay.style.backgroundColor = '#37528c';
                         overlay.style.zIndex = '99999999';
                         overlay.style.transition = 'opacity 0.5s ease-in-out';
                         document.body.appendChild(overlay);
@@ -405,7 +405,7 @@ function showLoadingBar() {
     loadingBarContainer.style.left = '0';
     loadingBarContainer.style.width = '100%';
     loadingBarContainer.style.height = '10px';
-    loadingBarContainer.style.backgroundColor = '#ddd';
+    loadingBarContainer.style.backgroundColor = '#475e8f';
     loadingBarContainer.style.zIndex = '99999999999';
     loadingBarContainer.style.opacity = '0'; // Start hidden
     loadingBarContainer.style.transform = 'translateY(-100%)'; // Slide up

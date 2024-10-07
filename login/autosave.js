@@ -162,49 +162,43 @@ function hideSaveProgressBar() {
     }
 }
 
-// Show full-page loading spinner
-function showLoadingSpinner() {
-    const loadingOverlay = document.createElement('div');
-    loadingOverlay.id = 'loadingOverlay';
-    loadingOverlay.style.position = 'fixed';
-    loadingOverlay.style.top = '0';
-    loadingOverlay.style.left = '0';
-    loadingOverlay.style.width = '100%';
-    loadingOverlay.style.height = '100%';
-    loadingOverlay.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
-    loadingOverlay.style.zIndex = '99999999999';
-    loadingOverlay.style.display = 'flex';
-    loadingOverlay.style.alignItems = 'center';
-    loadingOverlay.style.justifyContent = 'center';
-    loadingOverlay.style.opacity = '0';
-    loadingOverlay.style.transition = 'opacity 0.5s ease-in-out';
+// Show full-page loading screen with spinner
+function showLoadingScreen() {
+    const loadingScreen = document.createElement('div');
+    loadingScreen.id = 'loadingScreen';
+    loadingScreen.style.position = 'fixed';
+    loadingScreen.style.top = '0';
+    loadingScreen.style.left = '0';
+    loadingScreen.style.width = '100%';
+    loadingScreen.style.height = '100%';
+    loadingScreen.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+    loadingScreen.style.zIndex = '99999999999';
+    loadingScreen.style.display = 'flex';
+    loadingScreen.style.alignItems = 'center';
+    loadingScreen.style.justifyContent = 'center';
 
     const spinner = document.createElement('div');
     spinner.className = 'spinner';
     spinner.style.width = '50px';
     spinner.style.height = '50px';
-    spinner.style.border = '8px solid #ddd';
-    spinner.style.borderTop = '8px solid #3498db';
+    spinner.style.border = '5px solid #ddd';
+    spinner.style.borderTop = '5px solid #4caf50';
     spinner.style.borderRadius = '50%';
     spinner.style.animation = 'spin 1s linear infinite';
-
-    loadingOverlay.appendChild(spinner);
-    document.body.appendChild(loadingOverlay);
-
-    // Trigger the animation to show the overlay
-    setTimeout(() => {
-        loadingOverlay.style.opacity = '1';
-    }, 0);
+    
+    loadingScreen.appendChild(spinner);
+    document.body.appendChild(loadingScreen);
+    
+    // Add spinner animation keyframes
+    const styleSheet = document.styleSheets[0];
+    styleSheet.insertRule('@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }', styleSheet.cssRules.length);
 }
 
-// Hide full-page loading spinner
-function hideLoadingSpinner() {
-    const loadingOverlay = document.getElementById('loadingOverlay');
-    if (loadingOverlay) {
-        loadingOverlay.style.opacity = '0'; // Fade out
-        setTimeout(() => {
-            loadingOverlay.remove();
-        }, 500); // Wait for animation to finish
+// Hide loading screen
+function hideLoadingScreen() {
+    const loadingScreen = document.getElementById('loadingScreen');
+    if (loadingScreen) {
+        loadingScreen.remove();
     }
 }
 
@@ -221,7 +215,7 @@ async function loadPackedData() {
         }
     });
 
-    showLoadingSpinner(); // Show loading spinner
+    showLoadingScreen(); // Show full-page loading screen
 
     // Remove current Ruffle instance
     let ruffleObject = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
@@ -235,76 +229,24 @@ async function loadPackedData() {
             if (partData === "ERROR: file does not exist") break;
             allParts.push(partData);
             partIndex++;
-            updateLoadingBar((partIndex - 1) / (partIndex + 1) * 100); // Update loading bar
         }
-
-        const completeData = allParts.join('');
-        localStorage.setItem('loadedData', completeData); // Store data in localStorage
-        console.log('Data loaded successfully.');
+        
+        let loadedData = allParts.join('');
+        if (isB64SOL(loadedData)) {
+            localStorage.setItem('packedData', loadedData);
+        }
     } catch (error) {
-        console.error('Failed to load packed data', error);
-    } finally {
-        hideLoadingSpinner(); // Hide loading spinner
+        console.error("Failed to load packed data", error);
     }
-}
 
-// Create a loading progress bar in body
-function createLoadingBar() {
-    const loadingBarContainer = document.createElement('div');
-    loadingBarContainer.id = 'loadingProgressBarContainer';
-    loadingBarContainer.style.position = 'fixed';
-    loadingBarContainer.style.top = '0';
-    loadingBarContainer.style.left = '0';
-    loadingBarContainer.style.width = '100%';
-    loadingBarContainer.style.height = '5px';
-    loadingBarContainer.style.backgroundColor = '#ddd';
-    loadingBarContainer.style.zIndex = '99999999999';
-    loadingBarContainer.style.opacity = '0';
-    loadingBarContainer.style.transform = 'translateY(-100%)'; // Slide up
-    loadingBarContainer.style.transition = 'opacity 0.5s ease-in-out, transform 0.5s ease-in-out';
-
-    const loadingBar = document.createElement('div');
-    loadingBar.style.height = '100%';
-    loadingBar.style.backgroundColor = '#4caf50';
-    loadingBar.style.width = '0%';
-
-    loadingBarContainer.appendChild(loadingBar);
-    document.body.appendChild(loadingBarContainer);
-
-    // Trigger the animation to show the bar
-    setTimeout(() => {
-        loadingBarContainer.style.opacity = '1';
-        loadingBarContainer.style.transform = 'translateY(0)'; // Slide down
-    }, 0);
-    
-    window.loadingProgressBar = loadingBar; // Make loading progress bar accessible globally
-}
-
-// Update loading progress bar
-function updateLoadingBar(percentage) {
-    if (window.loadingProgressBar) {
-        window.loadingProgressBar.style.width = percentage + '%';
-    }
-}
-
-// Hide loading progress bar
-function hideLoadingBar() {
-    const loadingBarContainer = document.getElementById('loadingProgressBarContainer');
-    if (loadingBarContainer) {
-        loadingBarContainer.style.opacity = '0'; // Fade out
-        loadingBarContainer.style.transform = 'translateY(-100%)'; // Slide up
-        setTimeout(() => {
-            loadingBarContainer.remove();
-            window.loadingProgressBar = null; // Clear reference to avoid issues
-        }, 500); // Wait for animation to finish
-    }
+    hideLoadingScreen(); // Hide loading screen after loading
 }
 
 // Automatically load data when the page starts, then reload
 async function autoLoadAndReload() {
     if (!document.cookie.split('; ').find(row => row.startsWith('dataLoaded='))) {
         await loadPackedData();
-        document.cookie = 'dataLoaded=true; max-age=60'; // Prevent endless reloading
+        document.cookie = 'dataLoaded=true; max-age=60'; // Prevent endless reloading for 1 minute
         location.reload();
     }
 }

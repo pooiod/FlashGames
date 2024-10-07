@@ -162,20 +162,53 @@ function hideSaveProgressBar() {
     }
 }
 
-// Show loading progress bar with white background overlay
+// Load data and refresh the page
+async function loadPackedData() {
+    let allParts = [];
+    let partIndex = 1;
+    let partData;
+
+    Object.keys(localStorage).forEach(key => {
+        let solData = localStorage.getItem(key);
+        if (isB64SOL(solData)) {
+            localStorage.removeItem(key);
+        }
+    });
+
+    showLoadingBar(); // Show loading bar in Ruffle container
+
+    // Remove current Ruffle instance
+    let ruffleObject = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
+    if (ruffleObject) {
+        ruffleObject.remove();
+    }
+
+    try {
+        while (true) {
+            partData = await loadUserData(`completeSave_part${partIndex}`);
+            if (partData === "ERROR: file does not exist") break;
+            allParts.push(partData);
+            partIndex++;
+            updateLoadingBar((partIndex - 1) / partIndex * 100); // Update loading progress
+        }
+
+        let combinedData = allParts.join('');
+        let parsedData = JSON.parse(combinedData);
+
+        parsedData.forEach(item => {
+            localStorage.setItem(item.key, item.value);
+        });
+
+        console.log("Data loaded successfully.");
+    } catch (error) {
+        console.error("Failed to load packed data", error);
+    } finally {
+        hideLoadingBar(); // Hide loading bar after loading
+    }
+}
+
+// Show loading progress bar in Ruffle container
 function showLoadingBar() {
-    const overlay = document.createElement('div');
-    overlay.id = 'loadingOverlay';
-    overlay.style.position = 'fixed';
-    overlay.style.top = '0';
-    overlay.style.left = '0';
-    overlay.style.width = '100%';
-    overlay.style.height = '100%';
-    overlay.style.backgroundColor = 'rgba(255, 255, 255, 0.8)'; // White background with slight transparency
-    overlay.style.zIndex = '99999999999';
-    overlay.style.opacity = '0'; // Start hidden
-    overlay.style.transition = 'opacity 0.5s ease-in-out';
-    
     const loadingBarContainer = document.createElement('div');
     loadingBarContainer.id = 'loadingProgressBarContainer';
     loadingBarContainer.style.position = 'absolute';
@@ -195,12 +228,10 @@ function showLoadingBar() {
     loadingBar.style.width = '0%';
     
     loadingBarContainer.appendChild(loadingBar);
-    overlay.appendChild(loadingBarContainer);
-    document.body.appendChild(overlay); // Append overlay to body
+    rufflecontainer.appendChild(loadingBarContainer);
 
-    // Trigger the animation to show the overlay and the bar
+    // Trigger the animation to show the bar
     setTimeout(() => {
-        overlay.style.opacity = '1';
         loadingBarContainer.style.opacity = '1';
         loadingBarContainer.style.transform = 'translateY(0)'; // Slide down
     }, 0);
@@ -215,11 +246,9 @@ function updateLoadingBar(percentage) {
     }
 }
 
-// Hide loading progress bar and overlay
+// Hide loading progress bar
 function hideLoadingBar() {
-    const loadingBarContainer = shadowRoot.getElementById('loadingProgressBarContainer');
-    const overlay = document.getElementById('loadingOverlay');
-    
+    const loadingBarContainer = document.getElementById('loadingProgressBarContainer');
     if (loadingBarContainer) {
         loadingBarContainer.style.opacity = '0'; // Fade out
         loadingBarContainer.style.transform = 'translateY(-100%)'; // Slide up
@@ -228,22 +257,26 @@ function hideLoadingBar() {
             window.loadingProgressBar = null; // Clear reference to avoid issues
         }, 500); // Wait for animation to finish
     }
-    
-    if (overlay) {
-        overlay.style.opacity = '0'; // Fade out
-        setTimeout(() => {
-            overlay.remove();
-        }, 500); // Wait for animation to finish
-    }
 }
 
 // Automatically load data when the page starts, then reload
 async function autoLoadAndReload() {
     if (!document.cookie.split('; ').find(row => row.startsWith('dataLoaded='))) {
-        showLoadingBar();
+        const overlay = document.createElement('div');
+        overlay.id = 'loadingOverlay';
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.backgroundColor = 'rgba(255, 255, 255, 0.8)'; // White background with slight transparency
+        overlay.style.zIndex = '9999999999';
+        overlay.style.opacity = '0'; // Start hidden
+        overlay.style.transition = 'opacity 0.5s ease-in-out';
+        document.body.appendChild(overlay);
+
         await loadPackedData();
         document.cookie = 'dataLoaded=true; max-age=60'; // Prevent endless reloading
-        hideLoadingBar();
         location.reload();
     }
 }

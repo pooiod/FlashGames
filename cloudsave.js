@@ -189,8 +189,6 @@ document.addEventListener('contextmenu', function(e) {
         savekeydebounce = true;
         showSaveProgressBar();
         await savePackedData();
-        hideSaveProgressBar();
-        savekeydebounce = false;
     });
     addButton('Back to games', async function() {
         shadowRoot.querySelector('#context-menu-overlay').classList.add("hidden");
@@ -247,6 +245,8 @@ async function savePackedData() {
         // showNotification("Your data has been saved.", "#fff", 1000);
         hideSaveProgressBar();
         savekeydebounce = false;
+
+        return true;
     } catch (error) {
         console.error("Failed to save packed data", error);
     }
@@ -369,11 +369,10 @@ async function loadPackedData() {
                     
                             showSaveProgressBar();
                             await savePackedData();
-                            hideSaveProgressBar();
                     
                             setTimeout(() => {
                                 window.location.reload();
-                            }, 700);
+                            }, 1000);
                         }, 100);
 
                         return;

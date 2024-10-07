@@ -63,7 +63,7 @@ setTimeout(function(){
 
 
 // everything else
-function showNotification(message, color) {
+function showNotification(message, color, time) {
     let notification = document.createElement('div');
     notification.id = 'saveNotification';
     notification.textContent = message;
@@ -89,7 +89,7 @@ function showNotification(message, color) {
     setTimeout(() => {
         notification.style.opacity = '0';
         setTimeout(() => notification.remove(), 1000);
-    }, 2000);
+    }, time || 2000);
 }
 
 var savekeydebounce = false;
@@ -249,6 +249,8 @@ async function savePackedData() {
         updateSaveProgressBar(100);
         await saveUserData(`completeSave_part${chunks.length + 1}`, "end");
         console.log("Data saved successfully.");
+
+        showNotification("Your data has been saved.", "#fff", 1000);
     } catch (error) {
         console.error("Failed to save packed data", error);
     }

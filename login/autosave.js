@@ -108,11 +108,11 @@ async function savePackedData() {
     }
 }
 
-// Show save progress bar in rufflecontainer
+// Show save progress bar
 function showSaveProgressBar() {
     const progressBarContainer = document.createElement('div');
     progressBarContainer.id = 'saveProgressBarContainer';
-    progressBarContainer.style.position = 'absolute'; // Changed to absolute for rufflecontainer
+    progressBarContainer.style.position = 'absolute';
     progressBarContainer.style.top = '0';
     progressBarContainer.style.left = '0';
     progressBarContainer.style.width = '100%';
@@ -149,7 +149,7 @@ function updateSaveProgressBar(percentage) {
 
 // Hide save progress bar
 function hideSaveProgressBar() {
-    const progressBarContainer = document.getElementById('saveProgressBarContainer');
+    const progressBarContainer = shadowRoot.getElementById('saveProgressBarContainer');
     if (progressBarContainer) {
         progressBarContainer.style.opacity = '0'; // Fade out
         progressBarContainer.style.transform = 'translateY(-100%)'; // Slide up
@@ -173,7 +173,7 @@ async function loadPackedData() {
         }
     });
 
-    showLoadingBar(); // Show loading bar in body
+    showLoadingBar(); // Show loading bar in Ruffle container
 
     // Remove current Ruffle instance
     let ruffleObject = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
@@ -205,11 +205,11 @@ async function loadPackedData() {
     }
 }
 
-// Show loading progress bar in body
+// Show loading progress bar in Ruffle container
 function showLoadingBar() {
     const loadingBarContainer = document.createElement('div');
     loadingBarContainer.id = 'loadingProgressBarContainer';
-    loadingBarContainer.style.position = 'fixed';
+    loadingBarContainer.style.position = 'absolute';
     loadingBarContainer.style.top = '0';
     loadingBarContainer.style.left = '0';
     loadingBarContainer.style.width = '100%';
@@ -226,7 +226,7 @@ function showLoadingBar() {
     loadingBar.style.width = '0%';
     
     loadingBarContainer.appendChild(loadingBar);
-    document.body.appendChild(loadingBarContainer);
+    rufflecontainer.appendChild(loadingBarContainer);
 
     // Trigger the animation to show the bar
     setTimeout(() => {
@@ -246,7 +246,7 @@ function updateLoadingBar(percentage) {
 
 // Hide loading progress bar
 function hideLoadingBar() {
-    const loadingBarContainer = document.getElementById('loadingProgressBarContainer');
+    const loadingBarContainer = shadowRoot.getElementById('loadingProgressBarContainer');
     if (loadingBarContainer) {
         loadingBarContainer.style.opacity = '0'; // Fade out
         loadingBarContainer.style.transform = 'translateY(-100%)'; // Slide up
@@ -260,10 +260,12 @@ function hideLoadingBar() {
 // Automatically load data when the page starts, then reload
 async function autoLoadAndReload() {
     if (!document.cookie.split('; ').find(row => row.startsWith('dataLoaded='))) {
-        const div = document.querySelector('div[style="position: fixed; top: 0px; right: 0px; z-index: 9999; background-color: rgb(51, 51, 51); color: rgb(255, 255, 255); padding: 10px; opacity: 0; transition: opacity 0.5s;"]');
-        if (div) {
-            div.remove();
-        }        
+        setTimeout(function(){
+            const div = document.querySelector('div[style="position: fixed; top: 0px; right: 0px; z-index: 9999; background-color: rgb(51, 51, 51); color: rgb(255, 255, 255); padding: 10px; opacity: 0; transition: opacity 0.5s;"]');
+            if (div) {
+                div.remove();
+            }            
+        }, 500);
         await loadPackedData();
         document.cookie = 'dataLoaded=true; max-age=60'; // Prevent endless reloading
         location.reload();

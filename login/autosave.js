@@ -58,6 +58,35 @@ setTimeout(function(){
     addSaveIcon();
 }, 4000);
 
+function showNotification(message, color) {
+    let notification = document.createElement('div');
+    notification.id = 'saveNotification';
+    notification.textContent = message;
+    notification.style.position = 'fixed';
+    notification.style.bottom = '10px';
+    notification.style.left = '50%';
+    notification.style.transform = 'translateX(-50%)';
+    notification.style.backgroundColor = color;
+    notification.style.color = '#000';
+    notification.style.padding = '10px 20px';
+    notification.style.border = '1px solid #ccc';
+    notification.style.borderRadius = '5px';
+    notification.style.zIndex = '9999999999999999';
+    notification.style.opacity = '0';
+    notification.style.transition = 'opacity 1s ease-in-out';
+    notification.style.fontSize = '16px';
+    rufflecontainer.appendChild(notification);
+
+    setTimeout(() => {
+        notification.style.opacity = '1';
+    }, 10);
+
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 1000);
+    }, 3000);
+}
+
 // Floppy disk save button
 function addSaveIcon() {
     const saveButton = document.createElement('div');
@@ -84,6 +113,8 @@ function addSaveIcon() {
 
     if (window.navigator.userAgent.includes('Mobile') || !window.matchMedia('(pointer:fine)').matches) {
         rufflecontainer.appendChild(saveButton);
+    } else {
+        showNotification("Press \"CTRL + S\" to save your data before leaving.", "")
     }
 }
 

@@ -35,7 +35,9 @@ async function saveUserData(filename, txtdata) {
     return await saveToServer("Rufflesavedatafromid" + passwordMD5hash + filename, txtdata);
 }
 
-// UI code for the floppy disk icon and loading bars
+
+
+// ruffle vars
 var rufflecontainer = document.body;
 var shadowRoot = document;
 
@@ -58,6 +60,9 @@ setTimeout(function(){
     addSaveIcon();
 }, 4000);
 
+
+
+// everything else
 function showNotification(message, color) {
     let notification = document.createElement('div');
     notification.id = 'saveNotification';

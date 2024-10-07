@@ -311,6 +311,18 @@
                 
                 shadowRoot.appendChild(style);
 
+                if (/Mobi|Android/i.test(navigator.userAgent)) {
+                    if (container.requestFullscreen) {
+                        container.requestFullscreen();
+                    } else if (container.mozRequestFullScreen) { // Firefox
+                        container.mozRequestFullScreen();
+                    } else if (container.webkitRequestFullscreen) { // Chrome, Safari, and Opera
+                        container.webkitRequestFullscreen();
+                    } else if (container.msRequestFullscreen) { // IE/Edge
+                        container.msRequestFullscreen();
+                    }
+                }
+
                 if (container) {
                     container.style.width = '100vw';
                     container.style.height = '100vh';

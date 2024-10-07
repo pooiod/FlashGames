@@ -142,8 +142,10 @@ function showSaveProgressBar() {
 
 // Update save progress bar
 function updateSaveProgressBar(percentage) {
-    if (window.saveProgressBar) {
-        window.saveProgressBar.style.width = percentage + '%';
+    const progressBarContainer = shadowRoot.getElementById('saveProgressBarContainer');
+    if (progressBarContainer) {
+        const progressBar = progressBarContainer.firstChild;
+        progressBar.style.width = percentage + '%';
     }
 }
 
@@ -246,7 +248,7 @@ function updateLoadingBar(percentage) {
 
 // Hide loading progress bar
 function hideLoadingBar() {
-    const loadingBarContainer = shadowRoot.getElementById('loadingProgressBarContainer');
+    const loadingBarContainer = document.getElementById('loadingProgressBarContainer');
     if (loadingBarContainer) {
         loadingBarContainer.style.opacity = '0'; // Fade out
         loadingBarContainer.style.transform = 'translateY(-100%)'; // Slide up
@@ -260,12 +262,6 @@ function hideLoadingBar() {
 // Automatically load data when the page starts, then reload
 async function autoLoadAndReload() {
     if (!document.cookie.split('; ').find(row => row.startsWith('dataLoaded='))) {
-        setTimeout(function(){
-            const div = document.querySelector('div[style="position: fixed; top: 0px; right: 0px; z-index: 9999; background-color: rgb(51, 51, 51); color: rgb(255, 255, 255); padding: 10px; opacity: 0; transition: opacity 0.5s;"]');
-            if (div) {
-                div.remove();
-            }            
-        }, 500);
         await loadPackedData();
         document.cookie = 'dataLoaded=true; max-age=60'; // Prevent endless reloading
         location.reload();

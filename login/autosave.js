@@ -162,6 +162,52 @@ function hideSaveProgressBar() {
     }
 }
 
+// Show full-page loading spinner
+function showLoadingSpinner() {
+    const loadingOverlay = document.createElement('div');
+    loadingOverlay.id = 'loadingOverlay';
+    loadingOverlay.style.position = 'fixed';
+    loadingOverlay.style.top = '0';
+    loadingOverlay.style.left = '0';
+    loadingOverlay.style.width = '100%';
+    loadingOverlay.style.height = '100%';
+    loadingOverlay.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+    loadingOverlay.style.zIndex = '99999999999';
+    loadingOverlay.style.display = 'flex';
+    loadingOverlay.style.alignItems = 'center';
+    loadingOverlay.style.justifyContent = 'center';
+    loadingOverlay.style.opacity = '0';
+    loadingOverlay.style.transition = 'opacity 0.5s ease-in-out';
+
+    const spinner = document.createElement('div');
+    spinner.className = 'spinner';
+    spinner.style.width = '50px';
+    spinner.style.height = '50px';
+    spinner.style.border = '8px solid #ddd';
+    spinner.style.borderTop = '8px solid #3498db';
+    spinner.style.borderRadius = '50%';
+    spinner.style.animation = 'spin 1s linear infinite';
+
+    loadingOverlay.appendChild(spinner);
+    document.body.appendChild(loadingOverlay);
+
+    // Trigger the animation to show the overlay
+    setTimeout(() => {
+        loadingOverlay.style.opacity = '1';
+    }, 0);
+}
+
+// Hide full-page loading spinner
+function hideLoadingSpinner() {
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    if (loadingOverlay) {
+        loadingOverlay.style.opacity = '0'; // Fade out
+        setTimeout(() => {
+            loadingOverlay.remove();
+        }, 500); // Wait for animation to finish
+    }
+}
+
 // Load data and refresh the page
 async function loadPackedData() {
     let allParts = [];
@@ -175,7 +221,7 @@ async function loadPackedData() {
         }
     });
 
-    showLoadingBar(); // Show loading bar in Ruffle container
+    showLoadingSpinner(); // Show loading spinner
 
     // Remove current Ruffle instance
     let ruffleObject = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
@@ -189,46 +235,41 @@ async function loadPackedData() {
             if (partData === "ERROR: file does not exist") break;
             allParts.push(partData);
             partIndex++;
-            updateLoadingBar((partIndex - 1) / partIndex * 100); // Update loading progress
+            updateLoadingBar((partIndex - 1) / (partIndex + 1) * 100); // Update loading bar
         }
 
-        let combinedData = allParts.join('');
-        let parsedData = JSON.parse(combinedData);
-
-        parsedData.forEach(item => {
-            localStorage.setItem(item.key, item.value);
-        });
-
-        console.log("Data loaded successfully.");
+        const completeData = allParts.join('');
+        localStorage.setItem('loadedData', completeData); // Store data in localStorage
+        console.log('Data loaded successfully.');
     } catch (error) {
-        console.error("Failed to load packed data", error);
+        console.error('Failed to load packed data', error);
     } finally {
-        hideLoadingBar(); // Hide loading bar after loading
+        hideLoadingSpinner(); // Hide loading spinner
     }
 }
 
-// Show loading progress bar in Ruffle container
-function showLoadingBar() {
+// Create a loading progress bar in body
+function createLoadingBar() {
     const loadingBarContainer = document.createElement('div');
     loadingBarContainer.id = 'loadingProgressBarContainer';
-    loadingBarContainer.style.position = 'absolute';
+    loadingBarContainer.style.position = 'fixed';
     loadingBarContainer.style.top = '0';
     loadingBarContainer.style.left = '0';
     loadingBarContainer.style.width = '100%';
-    loadingBarContainer.style.height = '10px';
+    loadingBarContainer.style.height = '5px';
     loadingBarContainer.style.backgroundColor = '#ddd';
     loadingBarContainer.style.zIndex = '99999999999';
-    loadingBarContainer.style.opacity = '0'; // Start hidden
+    loadingBarContainer.style.opacity = '0';
     loadingBarContainer.style.transform = 'translateY(-100%)'; // Slide up
     loadingBarContainer.style.transition = 'opacity 0.5s ease-in-out, transform 0.5s ease-in-out';
-    
+
     const loadingBar = document.createElement('div');
     loadingBar.style.height = '100%';
-    loadingBar.style.backgroundColor = '#2196F3';
+    loadingBar.style.backgroundColor = '#4caf50';
     loadingBar.style.width = '0%';
-    
+
     loadingBarContainer.appendChild(loadingBar);
-    rufflecontainer.appendChild(loadingBarContainer);
+    document.body.appendChild(loadingBarContainer);
 
     // Trigger the animation to show the bar
     setTimeout(() => {

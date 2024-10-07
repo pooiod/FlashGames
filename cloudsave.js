@@ -363,6 +363,8 @@ async function loadPackedData() {
                                 window.location.reload();
                             }, 700);
                         }, 100);
+
+                        return;
                     } else {
                         window.location.href = "/";
                     }

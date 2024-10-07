@@ -27,12 +27,12 @@ async function loadFromServer(variableName) {
 
 async function loadUserData(filename) {
     var passwordMD5hash = document.cookie.split('; ').find(row => row.startsWith('rufflesave=')).split('=')[1];
-    return await decompress(await loadFromServer("Rufflesavedatafromid" + passwordMD5hash + filename));
+    return await loadFromServer("Rufflesavedatafromid" + passwordMD5hash + filename);
 }
 
 async function saveUserData(filename, txtdata) {
     var passwordMD5hash = document.cookie.split('; ').find(row => row.startsWith('rufflesave=')).split('=')[1];
-    return await saveToServer("Rufflesavedatafromid" + passwordMD5hash + filename, await compress(txtdata));
+    return await saveToServer("Rufflesavedatafromid" + passwordMD5hash + filename, txtdata);
 }
 
 // UI code for the floppy disk icon

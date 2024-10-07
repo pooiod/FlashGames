@@ -119,11 +119,11 @@ function addSaveIcon() {
         savekeydebounce = false;
     });
 
-    if (window.navigator.userAgent.includes('Mobile') || !window.matchMedia('(pointer:fine)').matches) {
+    if (false) {
         rufflecontainer.appendChild(saveButton);
     } else {
         setTimeout(function(){
-            showNotification("Press \"CTRL + S\" to save your data.", "#fff");
+            showNotification("Always save with the context menu before leaving!", "#fff");
         }, 1000);
     }
 }
@@ -142,6 +142,79 @@ document.addEventListener('keydown', async function(e) {
         savekeydebounce = false;
     }
 });
+
+document.addEventListener('contextmenu', function(e) {
+    function addButton(text, onClick) {
+        const contextMenu = shadowRoot.querySelector('#context-menu');
+        
+        if (contextMenu) {
+            const menuItem = document.createElement('li');
+            menuItem.className = 'menu-item';
+            menuItem.textContent = text;
+    
+            menuItem.addEventListener('click', async function(e) {
+                e.preventDefault();
+                await onClick(e);
+            });
+    
+            contextMenu.appendChild(menuItem);
+        }
+    }
+    function addSeparator() {
+        const contextMenu = shadowRoot.querySelector('#context-menu');
+        
+        if (contextMenu) {
+            const separator = document.createElement('li');
+            separator.className = 'menu-separator';
+            separator.innerHTML = '<hr>';
+    
+            contextMenu.appendChild(separator);
+        }
+    }
+
+    const contextMenu = shadowRoot.querySelector('#context-menu');
+    
+    if (contextMenu && contextMenu.lastElementChild) {
+        contextMenu.removeChild(contextMenu.lastElementChild);
+    }
+
+    addButton('Save data to cloud', async function() {
+        shadowRoot.querySelector('#context-menu-overlay').classList.add("hidden");
+        if (savekeydebounce) {
+            showNotification("Spamming may corrupt your save data!", "#ffbaba");
+            return;
+        }
+        savekeydebounce = true;
+        showSaveProgressBar();
+        await savePackedData();
+        hideSaveProgressBar();
+        savekeydebounce = false;
+    });
+});
+
+const modalAreaDiv = shadowRoot.querySelector('#modal-area > div');
+
+if (modalAreaDiv) {
+    const modalButton = document.createElement('span');
+    modalButton.className = 'modal-button';
+    modalButton.textContent = 'Save data to cloud';
+    modalButton.style.marginLeft = '5px';
+
+    modalButton.addEventListener('click', async function(e) {
+        e.preventDefault();
+        if (savekeydebounce) {
+            showNotification("Spamming may corrupt your save data!", "#ffbaba");
+            return;
+        }
+        savekeydebounce = true;
+        showSaveProgressBar();
+        await savePackedData();
+        hideSaveProgressBar();
+        savekeydebounce = false;
+    });
+
+    modalAreaDiv.appendChild(modalButton);
+}
 
 // Save data in chunks of 1000 chars
 async function savePackedData() {

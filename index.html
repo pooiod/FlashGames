@@ -232,6 +232,7 @@
           message.style.padding = "10px";
           message.style.opacity = "0";
           message.style.transition = "opacity 0.5s";
+          message.id = "message";
           document.body.appendChild(message);
           
           setTimeout(() => {
@@ -454,7 +455,7 @@
 
         async function loadGame(gameName) {
             showLoading(true);
-            document.title = decodeURIComponent(gameName);
+            document.title = decodeURIComponent(gameName) + ".swf";
 
             stopreload = true;
             window.location.hash = gameName;

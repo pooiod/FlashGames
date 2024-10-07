@@ -72,8 +72,6 @@ function addSaveIcon() {
     saveButton.style.opacity = '1';
     saveButton.style.transition = 'opacity 0.5s ease-in-out';
 
-    rufflecontainer.appendChild(saveButton);
-
     saveButton.addEventListener('click', async function() {
         saveButton.style.display = 'none'; // Hide button while saving
         showSaveProgressBar();
@@ -81,6 +79,8 @@ function addSaveIcon() {
         hideSaveProgressBar();
         saveButton.style.display = 'block'; // Show button again after saving
     });
+
+    rufflecontainer.appendChild(saveButton);
 }
 
 // Save data in chunks of 1000 chars

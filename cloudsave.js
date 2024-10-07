@@ -316,8 +316,10 @@ function hideSaveProgressBar() {
             progressBarContainer.style.opacity = '0'; // Fade out
             progressBarContainer.style.transform = 'translateY(-100%)'; // Slide up
             setTimeout(() => {
-                progressBarContainer.remove();
-                window.saveProgressBar = null; // Clear reference to avoid issues
+                if (progressBarContainer.style.opacity == '0') {
+                    progressBarContainer.remove();
+                    window.saveProgressBar = null; // Clear reference to avoid issues
+                }
             }, 500); // Wait for animation to finish
         }
     }, 700);

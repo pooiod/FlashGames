@@ -162,43 +162,56 @@ function hideSaveProgressBar() {
     }
 }
 
-// Show full-page loading screen with spinner
-function showLoadingScreen() {
-    const loadingScreen = document.createElement('div');
-    loadingScreen.id = 'loadingScreen';
-    loadingScreen.style.position = 'fixed';
-    loadingScreen.style.top = '0';
-    loadingScreen.style.left = '0';
-    loadingScreen.style.width = '100%';
-    loadingScreen.style.height = '100%';
-    loadingScreen.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
-    loadingScreen.style.zIndex = '99999999999';
-    loadingScreen.style.display = 'flex';
-    loadingScreen.style.alignItems = 'center';
-    loadingScreen.style.justifyContent = 'center';
+// Show loading progress bar covering the whole page
+function showLoadingBar() {
+    const loadingBarContainer = document.createElement('div');
+    loadingBarContainer.id = 'loadingProgressBarContainer';
+    loadingBarContainer.style.position = 'fixed';
+    loadingBarContainer.style.top = '0';
+    loadingBarContainer.style.left = '0';
+    loadingBarContainer.style.width = '100%';
+    loadingBarContainer.style.height = '100%';
+    loadingBarContainer.style.backgroundColor = 'rgba(255, 255, 255, 0.8)'; // Semi-transparent white
+    loadingBarContainer.style.zIndex = '99999999999';
+    loadingBarContainer.style.opacity = '0'; // Start hidden
+    loadingBarContainer.style.transition = 'opacity 0.5s ease-in-out';
+    
+    const loadingBar = document.createElement('div');
+    loadingBar.style.position = 'absolute';
+    loadingBar.style.top = '50%';
+    loadingBar.style.left = '50%';
+    loadingBar.style.transform = 'translate(-50%, -50%)';
+    loadingBar.style.height = '10px';
+    loadingBar.style.backgroundColor = '#2196F3';
+    loadingBar.style.width = '0%';
 
-    const spinner = document.createElement('div');
-    spinner.className = 'spinner';
-    spinner.style.width = '50px';
-    spinner.style.height = '50px';
-    spinner.style.border = '5px solid #ddd';
-    spinner.style.borderTop = '5px solid #4caf50';
-    spinner.style.borderRadius = '50%';
-    spinner.style.animation = 'spin 1s linear infinite';
+    loadingBarContainer.appendChild(loadingBar);
+    document.body.appendChild(loadingBarContainer);
+
+    // Trigger the animation to show the bar
+    setTimeout(() => {
+        loadingBarContainer.style.opacity = '1';
+    }, 0);
     
-    loadingScreen.appendChild(spinner);
-    document.body.appendChild(loadingScreen);
-    
-    // Add spinner animation keyframes
-    const styleSheet = document.styleSheets[0];
-    styleSheet.insertRule('@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }', styleSheet.cssRules.length);
+    window.loadingProgressBar = loadingBar; // Make loading progress bar accessible globally
 }
 
-// Hide loading screen
-function hideLoadingScreen() {
-    const loadingScreen = document.getElementById('loadingScreen');
-    if (loadingScreen) {
-        loadingScreen.remove();
+// Update loading progress bar
+function updateLoadingBar(percentage) {
+    if (window.loadingProgressBar) {
+        window.loadingProgressBar.style.width = percentage + '%';
+    }
+}
+
+// Hide loading progress bar
+function hideLoadingBar() {
+    const loadingBarContainer = document.getElementById('loadingProgressBarContainer');
+    if (loadingBarContainer) {
+        loadingBarContainer.style.opacity = '0'; // Fade out
+        setTimeout(() => {
+            loadingBarContainer.remove();
+            window.loadingProgressBar = null; // Clear reference to avoid issues
+        }, 500); // Wait for animation to finish
     }
 }
 
@@ -215,38 +228,30 @@ async function loadPackedData() {
         }
     });
 
-    showLoadingScreen(); // Show full-page loading screen
+    showLoadingBar(); // Show loading bar covering the entire page
 
-    // Remove current Ruffle instance
-    let ruffleObject = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
-    if (ruffleObject) {
-        ruffleObject.remove();
+    while ((partData = await loadUserData(`completeSave_part${partIndex++}`)) !== "ERROR: file does not exist") {
+        allParts.push(partData);
+        updateLoadingBar((partIndex - 1) / (partIndex + 1) * 100); // Update loading progress
     }
 
-    try {
-        while (true) {
-            partData = await loadUserData(`completeSave_part${partIndex}`);
-            if (partData === "ERROR: file does not exist") break;
-            allParts.push(partData);
-            partIndex++;
-        }
-        
-        let loadedData = allParts.join('');
-        if (isB64SOL(loadedData)) {
-            localStorage.setItem('packedData', loadedData);
-        }
-    } catch (error) {
-        console.error("Failed to load packed data", error);
+    let combinedData = allParts.join('');
+    combinedData = combinedData.substring(combinedData.indexOf('{"')); // Remove any preceding text
+
+    // Process combined data
+    if (isB64SOL(combinedData)) {
+        localStorage.setItem('savedData', combinedData);
+        console.log("Data loaded successfully.");
     }
 
-    hideLoadingScreen(); // Hide loading screen after loading
+    hideLoadingBar(); // Hide loading bar
 }
 
 // Automatically load data when the page starts, then reload
 async function autoLoadAndReload() {
     if (!document.cookie.split('; ').find(row => row.startsWith('dataLoaded='))) {
         await loadPackedData();
-        document.cookie = 'dataLoaded=true; max-age=60'; // Prevent endless reloading for 1 minute
+        document.cookie = 'dataLoaded=true; max-age=60'; // Prevent endless reloading
         location.reload();
     }
 }

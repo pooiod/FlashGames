@@ -82,8 +82,19 @@ function addSaveIcon() {
         saveButton.style.display = 'block';
     });
 
-    rufflecontainer.appendChild(saveButton);
+    if (window.navigator.userAgent.includes('Mobile') || !window.matchMedia('(pointer:fine)').matches) {
+        rufflecontainer.appendChild(saveButton);
+    }
 }
+
+document.addEventListener('keydown', async function(e) {
+    if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+        showSaveProgressBar();
+        await savePackedData();
+        hideSaveProgressBar();
+    }
+});
 
 // Save data in chunks of 1000 chars
 async function savePackedData() {
@@ -303,7 +314,7 @@ if (!new URLSearchParams(window.location.search).get('transfer')) {
             await savePackedData();
             hideSaveProgressBar();
         }
-    }, 20000);
+    }, 60 * 1000);
 } else {
     const overlay = document.createElement('div');
     overlay.id = 'loadingOverlay';

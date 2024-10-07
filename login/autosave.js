@@ -142,6 +142,7 @@ function hideSaveProgressBar() {
     const progressBarContainer = rufflecontainer.querySelector('div[style*="fixed"]');
     if (progressBarContainer) {
         progressBarContainer.remove();
+        window.saveProgressBar = null; // Clear reference to avoid issues
     }
 }
 
@@ -159,6 +160,12 @@ async function loadPackedData() {
     });
 
     showLoadingBar(); // Show loading bar in body
+
+    // Remove current Ruffle instance
+    let ruffleObject = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
+    if (ruffleObject) {
+        ruffleObject.remove();
+    }
 
     try {
         while (true) {
@@ -218,6 +225,7 @@ function hideLoadingBar() {
     const loadingBarContainer = document.body.querySelector('div[style*="fixed"]');
     if (loadingBarContainer) {
         loadingBarContainer.remove();
+        window.loadingProgressBar = null; // Clear reference to avoid issues
     }
 }
 

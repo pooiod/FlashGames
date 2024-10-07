@@ -35,7 +35,7 @@ async function saveUserData(filename, txtdata) {
     return await saveToServer("Rufflesavedatafromid" + passwordMD5hash + filename, txtdata);
 }
 
-// UI code for the floppy disk icon
+// UI code for the floppy disk icon and loading bars
 var rufflecontainer = document.body;
 var shadowRoot = document;
 
@@ -75,11 +75,11 @@ function addSaveIcon() {
     rufflecontainer.appendChild(saveButton);
 
     saveButton.addEventListener('click', async function() {
-        saveButton.style.display = 'none'; // Hide save button while saving
-        showSavingProgressBar(); // Show saving progress bar
+        saveButton.style.display = 'none'; // Hide button while saving
+        showSaveProgressBar();
         await savePackedData(); // Trigger the save function
-        hideSavingProgressBar(); // Hide progress bar after save
-        saveButton.style.display = 'block'; // Restore save button
+        hideSaveProgressBar();
+        saveButton.style.display = 'block'; // Show button again after saving
     });
 }
 
@@ -99,7 +99,7 @@ async function savePackedData() {
     try {
         for (let i = 0; i < chunks.length; i++) {
             await saveUserData(`completeSave_part${i + 1}`, chunks[i]);
-            updateSavingProgressBar((i + 1) / chunks.length * 100); // Update progress
+            updateSaveProgressBar((i + 1) / chunks.length * 100); // Update progress bar
         }
         await saveUserData(`completeSave_part${chunks.length + 1}`, "ERROR: file does not exist");
         console.log("Data saved successfully.");
@@ -108,61 +108,40 @@ async function savePackedData() {
     }
 }
 
-// Loading progress bar
-function showLoadingProgressBar() {
-    const loadingBar = document.createElement('div');
-    loadingBar.id = 'loadingProgressBar';
-    loadingBar.style.position = 'fixed';
-    loadingBar.style.top = '0';
-    loadingBar.style.left = '0';
-    loadingBar.style.width = '100%';
-    loadingBar.style.height = '5px';
-    loadingBar.style.backgroundColor = 'green';
-    loadingBar.style.zIndex = '99999999999';
-    loadingBar.style.width = '0%'; // Start with 0% width
-    document.body.appendChild(loadingBar);
+// Show save progress bar
+function showSaveProgressBar() {
+    const progressBarContainer = document.createElement('div');
+    progressBarContainer.style.position = 'fixed';
+    progressBarContainer.style.top = '0';
+    progressBarContainer.style.left = '0';
+    progressBarContainer.style.width = '100%';
+    progressBarContainer.style.height = '10px';
+    progressBarContainer.style.backgroundColor = '#ddd';
+    progressBarContainer.style.zIndex = '99999999999';
+    
+    const progressBar = document.createElement('div');
+    progressBar.style.height = '100%';
+    progressBar.style.backgroundColor = '#4caf50';
+    progressBar.style.width = '0%';
+    
+    progressBarContainer.appendChild(progressBar);
+    rufflecontainer.appendChild(progressBarContainer);
+    
+    window.saveProgressBar = progressBar; // Make progress bar accessible globally
 }
 
-function updateLoadingProgressBar(percent) {
-    const loadingBar = document.getElementById('loadingProgressBar');
-    if (loadingBar) {
-        loadingBar.style.width = percent + '%'; // Update width based on percent
+// Update save progress bar
+function updateSaveProgressBar(percentage) {
+    if (window.saveProgressBar) {
+        window.saveProgressBar.style.width = percentage + '%';
     }
 }
 
-function hideLoadingProgressBar() {
-    const loadingBar = document.getElementById('loadingProgressBar');
-    if (loadingBar) {
-        loadingBar.remove();
-    }
-}
-
-// Saving progress bar
-function showSavingProgressBar() {
-    const savingBar = document.createElement('div');
-    savingBar.id = 'savingProgressBar';
-    savingBar.style.position = 'fixed';
-    savingBar.style.top = '0';
-    savingBar.style.left = '0';
-    savingBar.style.width = '100%';
-    savingBar.style.height = '5px';
-    savingBar.style.backgroundColor = 'blue';
-    savingBar.style.zIndex = '999999999';
-    savingBar.style.width = '0%'; // Start with 0% width
-    rufflecontainer.appendChild(savingBar);
-}
-
-function updateSavingProgressBar(percent) {
-    const savingBar = document.getElementById('savingProgressBar');
-    if (savingBar) {
-        savingBar.style.width = percent + '%'; // Update width based on percent
-    }
-}
-
-function hideSavingProgressBar() {
-    const savingBar = document.getElementById('savingProgressBar');
-    if (savingBar) {
-        savingBar.remove();
+// Hide save progress bar
+function hideSaveProgressBar() {
+    const progressBarContainer = rufflecontainer.querySelector('div[style*="fixed"]');
+    if (progressBarContainer) {
+        progressBarContainer.remove();
     }
 }
 
@@ -179,15 +158,15 @@ async function loadPackedData() {
         }
     });
 
-    showLoadingProgressBar(); // Show loading progress bar
+    showLoadingBar(); // Show loading bar in body
 
     try {
         while (true) {
             partData = await loadUserData(`completeSave_part${partIndex}`);
             if (partData === "ERROR: file does not exist") break;
             allParts.push(partData);
-            updateLoadingProgressBar((partIndex / (partIndex + 1)) * 100); // Update progress
             partIndex++;
+            updateLoadingBar((partIndex - 1) / partIndex * 100); // Update loading progress
         }
 
         let combinedData = allParts.join('');
@@ -201,48 +180,53 @@ async function loadPackedData() {
     } catch (error) {
         console.error("Failed to load packed data", error);
     } finally {
-        hideLoadingProgressBar(); // Hide loading progress bar after loading
+        hideLoadingBar(); // Hide loading bar after loading
+    }
+}
+
+// Show loading progress bar in body
+function showLoadingBar() {
+    const loadingBarContainer = document.createElement('div');
+    loadingBarContainer.style.position = 'fixed';
+    loadingBarContainer.style.top = '0';
+    loadingBarContainer.style.left = '0';
+    loadingBarContainer.style.width = '100%';
+    loadingBarContainer.style.height = '10px';
+    loadingBarContainer.style.backgroundColor = '#ddd';
+    loadingBarContainer.style.zIndex = '99999999999';
+    
+    const loadingBar = document.createElement('div');
+    loadingBar.style.height = '100%';
+    loadingBar.style.backgroundColor = '#2196F3';
+    loadingBar.style.width = '0%';
+    
+    loadingBarContainer.appendChild(loadingBar);
+    document.body.appendChild(loadingBarContainer);
+    
+    window.loadingProgressBar = loadingBar; // Make loading progress bar accessible globally
+}
+
+// Update loading progress bar
+function updateLoadingBar(percentage) {
+    if (window.loadingProgressBar) {
+        window.loadingProgressBar.style.width = percentage + '%';
+    }
+}
+
+// Hide loading progress bar
+function hideLoadingBar() {
+    const loadingBarContainer = document.body.querySelector('div[style*="fixed"]');
+    if (loadingBarContainer) {
+        loadingBarContainer.remove();
     }
 }
 
 // Automatically load data when the page starts, then reload
 async function autoLoadAndReload() {
     if (!document.cookie.split('; ').find(row => row.startsWith('dataLoaded='))) {
-        showLoader();
         await loadPackedData();
         document.cookie = 'dataLoaded=true; max-age=60'; // Prevent endless reloading
         location.reload();
-    }
-}
-
-function showLoader() {
-    let loader = document.createElement('div');
-    loader.id = 'dataLoader';
-    loader.style.position = 'fixed';
-    loader.style.top = '0';
-    loader.style.left = '0';
-    loader.style.width = '100vw';
-    loader.style.height = '100vh';
-    loader.style.backgroundColor = '#fff';
-    loader.style.display = 'flex';
-    loader.style.justifyContent = 'center';
-    loader.style.alignItems = 'center';
-    loader.style.zIndex = '9999999999999999';
-
-    let message = document.createElement('div');
-    message.textContent = 'Loading save data';
-    message.style.color = '#000';
-    message.style.fontSize = '24px';
-    message.style.marginTop = '20px';
-
-    loader.appendChild(message);
-    document.body.appendChild(loader);
-}
-
-function hideLoader() {
-    let loader = document.getElementById('dataLoader');
-    if (loader) {
-        loader.remove();
     }
 }
 

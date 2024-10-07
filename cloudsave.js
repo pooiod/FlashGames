@@ -198,33 +198,35 @@ document.addEventListener('contextmenu', function(e) {
     });
     addButton('Back to games', async function() {
         shadowRoot.querySelector('#context-menu-overlay').classList.add("hidden");
-        window.location.reload();
+        window.location.href = "/";
     });
 });
 
-const modalAreaDiv = shadowRoot.querySelector('#modal-area > div');
+setTimeout(function(){
+    const modalAreaDiv = shadowRoot.querySelector('#modal-area > div');
 
-if (modalAreaDiv) {
-    const modalButton = document.createElement('span');
-    modalButton.className = 'modal-button';
-    modalButton.textContent = 'Save data to cloud';
-    modalButton.style.marginLeft = '5px';
+    if (modalAreaDiv) {
+        const modalButton = document.createElement('span');
+        modalButton.className = 'modal-button';
+        modalButton.textContent = 'Save data to cloud';
+        modalButton.style.marginLeft = '5px';
 
-    modalButton.addEventListener('click', async function(e) {
-        e.preventDefault();
-        if (savekeydebounce) {
-            showNotification("Spamming may corrupt your save data!", "#ffbaba");
-            return;
-        }
-        savekeydebounce = true;
-        showSaveProgressBar();
-        await savePackedData();
-        hideSaveProgressBar();
-        savekeydebounce = false;
-    });
+        modalButton.addEventListener('click', async function(e) {
+            e.preventDefault();
+            if (savekeydebounce) {
+                showNotification("Spamming may corrupt your save data!", "#ffbaba");
+                return;
+            }
+            savekeydebounce = true;
+            showSaveProgressBar();
+            await savePackedData();
+            hideSaveProgressBar();
+            savekeydebounce = false;
+        });
 
-    modalAreaDiv.appendChild(modalButton);
-}
+        modalAreaDiv.appendChild(modalButton);
+    }
+}, 900);
 
 // Save data in chunks of 1000 chars
 async function savePackedData() {

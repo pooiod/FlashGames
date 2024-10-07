@@ -149,7 +149,7 @@ function updateSaveProgressBar(percentage) {
 
 // Hide save progress bar
 function hideSaveProgressBar() {
-    const progressBarContainer = document.getElementById('saveProgressBarContainer');
+    const progressBarContainer = rufflecontainer.getElementById('saveProgressBarContainer');
     if (progressBarContainer) {
         progressBarContainer.style.opacity = '0'; // Fade out
         progressBarContainer.style.transform = 'translateY(-100%)'; // Slide up

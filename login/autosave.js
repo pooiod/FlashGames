@@ -162,35 +162,47 @@ function hideSaveProgressBar() {
     }
 }
 
-// Show loading progress bar covering the whole page
+// Show loading progress bar with white background overlay
 function showLoadingBar() {
+    const overlay = document.createElement('div');
+    overlay.id = 'loadingOverlay';
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.backgroundColor = 'rgba(255, 255, 255, 0.8)'; // White background with slight transparency
+    overlay.style.zIndex = '99999999999';
+    overlay.style.opacity = '0'; // Start hidden
+    overlay.style.transition = 'opacity 0.5s ease-in-out';
+    
     const loadingBarContainer = document.createElement('div');
     loadingBarContainer.id = 'loadingProgressBarContainer';
-    loadingBarContainer.style.position = 'fixed';
+    loadingBarContainer.style.position = 'absolute';
     loadingBarContainer.style.top = '0';
     loadingBarContainer.style.left = '0';
     loadingBarContainer.style.width = '100%';
-    loadingBarContainer.style.height = '100%';
-    loadingBarContainer.style.backgroundColor = 'rgba(255, 255, 255, 0.8)'; // Semi-transparent white
+    loadingBarContainer.style.height = '10px';
+    loadingBarContainer.style.backgroundColor = '#ddd';
     loadingBarContainer.style.zIndex = '99999999999';
     loadingBarContainer.style.opacity = '0'; // Start hidden
-    loadingBarContainer.style.transition = 'opacity 0.5s ease-in-out';
+    loadingBarContainer.style.transform = 'translateY(-100%)'; // Slide up
+    loadingBarContainer.style.transition = 'opacity 0.5s ease-in-out, transform 0.5s ease-in-out';
     
     const loadingBar = document.createElement('div');
-    loadingBar.style.position = 'absolute';
-    loadingBar.style.top = '50%';
-    loadingBar.style.left = '50%';
-    loadingBar.style.transform = 'translate(-50%, -50%)';
-    loadingBar.style.height = '10px';
+    loadingBar.style.height = '100%';
     loadingBar.style.backgroundColor = '#2196F3';
     loadingBar.style.width = '0%';
-
+    
     loadingBarContainer.appendChild(loadingBar);
-    document.body.appendChild(loadingBarContainer);
+    overlay.appendChild(loadingBarContainer);
+    document.body.appendChild(overlay); // Append overlay to body
 
-    // Trigger the animation to show the bar
+    // Trigger the animation to show the overlay and the bar
     setTimeout(() => {
+        overlay.style.opacity = '1';
         loadingBarContainer.style.opacity = '1';
+        loadingBarContainer.style.transform = 'translateY(0)'; // Slide down
     }, 0);
     
     window.loadingProgressBar = loadingBar; // Make loading progress bar accessible globally
@@ -203,55 +215,35 @@ function updateLoadingBar(percentage) {
     }
 }
 
-// Hide loading progress bar
+// Hide loading progress bar and overlay
 function hideLoadingBar() {
-    const loadingBarContainer = document.getElementById('loadingProgressBarContainer');
+    const loadingBarContainer = shadowRoot.getElementById('loadingProgressBarContainer');
+    const overlay = document.getElementById('loadingOverlay');
+    
     if (loadingBarContainer) {
         loadingBarContainer.style.opacity = '0'; // Fade out
+        loadingBarContainer.style.transform = 'translateY(-100%)'; // Slide up
         setTimeout(() => {
             loadingBarContainer.remove();
             window.loadingProgressBar = null; // Clear reference to avoid issues
         }, 500); // Wait for animation to finish
     }
-}
-
-// Load data and refresh the page
-async function loadPackedData() {
-    let allParts = [];
-    let partIndex = 1;
-    let partData;
-
-    Object.keys(localStorage).forEach(key => {
-        let solData = localStorage.getItem(key);
-        if (isB64SOL(solData)) {
-            localStorage.removeItem(key);
-        }
-    });
-
-    showLoadingBar(); // Show loading bar covering the entire page
-
-    while ((partData = await loadUserData(`completeSave_part${partIndex++}`)) !== "ERROR: file does not exist") {
-        allParts.push(partData);
-        updateLoadingBar((partIndex - 1) / (partIndex + 1) * 100); // Update loading progress
+    
+    if (overlay) {
+        overlay.style.opacity = '0'; // Fade out
+        setTimeout(() => {
+            overlay.remove();
+        }, 500); // Wait for animation to finish
     }
-
-    let combinedData = allParts.join('');
-    combinedData = combinedData.substring(combinedData.indexOf('{"')); // Remove any preceding text
-
-    // Process combined data
-    if (isB64SOL(combinedData)) {
-        localStorage.setItem('savedData', combinedData);
-        console.log("Data loaded successfully.");
-    }
-
-    hideLoadingBar(); // Hide loading bar
 }
 
 // Automatically load data when the page starts, then reload
 async function autoLoadAndReload() {
     if (!document.cookie.split('; ').find(row => row.startsWith('dataLoaded='))) {
+        showLoadingBar();
         await loadPackedData();
         document.cookie = 'dataLoaded=true; max-age=60'; // Prevent endless reloading
+        hideLoadingBar();
         location.reload();
     }
 }

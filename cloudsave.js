@@ -246,6 +246,7 @@ async function savePackedData() {
             await saveUserData(`completeSave_part${i + 1}`, chunks[i]);
             updateSaveProgressBar((i + 1) / chunks.length * 100); // Update progress bar
         }
+        updateSaveProgressBar(100);
         await saveUserData(`completeSave_part${chunks.length + 1}`, "end");
         console.log("Data saved successfully.");
     } catch (error) {
@@ -316,7 +317,7 @@ function hideSaveProgressBar() {
                 window.saveProgressBar = null; // Clear reference to avoid issues
             }, 500); // Wait for animation to finish
         }
-    }, 650);
+    }, 700);
 }
 
 // Load data and refresh the page
@@ -410,7 +411,7 @@ function showLoadingBar() {
     loadingBarContainer.style.top = '0';
     loadingBarContainer.style.left = '0';
     loadingBarContainer.style.width = '100%';
-    loadingBarContainer.style.height = '20px';
+    loadingBarContainer.style.height = '10px';
     // loadingBarContainer.style.backgroundColor = '#5475ba';
     loadingBarContainer.style.pointerEvents = "none";
     loadingBarContainer.style.zIndex = '99999999999';

@@ -74,6 +74,7 @@ function addSaveIcon() {
 
     saveButton.addEventListener('click', async function() {
         saveButton.style.display = 'none'; // Hide button while saving
+        hideSaveProgressBar();
         showSaveProgressBar();
         await savePackedData(); // Trigger the save function
         hideSaveProgressBar();

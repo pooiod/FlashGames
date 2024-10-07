@@ -429,7 +429,7 @@ function isB64SOL(str) {
 if (!new URLSearchParams(window.location.search).get('transfer')) {
     autoLoadAndReload();
     setInterval(async function(){
-        if (!shadowRoot.getElementById('saveProgressBarContainer')){
+        if (!shadowRoot.getElementById('saveProgressBarContainer') && document.hasFocus()){
             showSaveProgressBar();
             await savePackedData();
             hideSaveProgressBar();

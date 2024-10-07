@@ -72,6 +72,8 @@ function addSaveIcon() {
     saveButton.style.opacity = '1';
     saveButton.style.transition = 'opacity 0.5s ease-in-out';
 
+    window.saveButton = saveButton;
+
     saveButton.addEventListener('click', async function() {
         saveButton.style.display = 'none'; // Hide button while saving
         hideSaveProgressBar();

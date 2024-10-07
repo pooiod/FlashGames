@@ -256,7 +256,7 @@ function showSaveProgressBar() {
     progressBarContainer.style.zIndex = '99999999999';
     progressBarContainer.style.opacity = '0'; // Start hidden
     progressBarContainer.style.transform = 'translateY(-100%)'; // Slide up
-    progressBarContainer.style.transition = 'opacity 0.5s ease-in-out, transform 0.5s ease-in-out';
+    progressBarContainer.style.transition = 'opacity 0.5s ease-in-out, transform 0.5s ease-in-out, width 0.5s ease-in-out';
     
     const progressBar = document.createElement('div');
     progressBar.style.height = '100%';
@@ -286,6 +286,7 @@ function updateSaveProgressBar(percentage) {
 
 // Hide save progress bar
 function hideSaveProgressBar() {
+    updateSaveProgressBar(100);
     const progressBarContainer = shadowRoot.getElementById('saveProgressBarContainer');
     if (progressBarContainer) {
         progressBarContainer.style.opacity = '0'; // Fade out
@@ -355,7 +356,7 @@ function showLoadingBar() {
     loadingBarContainer.style.zIndex = '99999999999';
     loadingBarContainer.style.opacity = '0'; // Start hidden
     loadingBarContainer.style.transform = 'translateY(-100%)'; // Slide up
-    loadingBarContainer.style.transition = 'opacity 0.5s ease-in-out, transform 0.5s ease-in-out';
+    loadingBarContainer.style.transition = 'opacity 0.5s ease-in-out, transform 0.5s ease-in-out, width 0.5s ease-in-out';
     
     const loadingBar = document.createElement('div');
     loadingBar.style.height = '100%';
@@ -383,6 +384,7 @@ function updateLoadingBar(percentage) {
 
 // Hide loading progress bar
 function hideLoadingBar() {
+    updateLoadingBar(100);
     const loadingBarContainer = document.getElementById('loadingProgressBarContainer');
     if (loadingBarContainer) {
         loadingBarContainer.style.opacity = '0'; // Fade out

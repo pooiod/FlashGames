@@ -111,6 +111,7 @@ async function savePackedData() {
 // Show save progress bar
 function showSaveProgressBar() {
     const progressBarContainer = document.createElement('div');
+    progressBarContainer.id = 'saveProgressBarContainer';
     progressBarContainer.style.position = 'fixed';
     progressBarContainer.style.top = '0';
     progressBarContainer.style.left = '0';
@@ -120,29 +121,29 @@ function showSaveProgressBar() {
     progressBarContainer.style.zIndex = '99999999999';
     
     const progressBar = document.createElement('div');
+    progressBar.id = 'saveProgressBar';
     progressBar.style.height = '100%';
     progressBar.style.backgroundColor = '#4caf50';
     progressBar.style.width = '0%';
+    progressBar.style.transition = 'width 0.4s ease'; // Improved animation
     
     progressBarContainer.appendChild(progressBar);
     rufflecontainer.appendChild(progressBarContainer);
-    
-    window.saveProgressBar = progressBar; // Make progress bar accessible globally
 }
 
 // Update save progress bar
 function updateSaveProgressBar(percentage) {
-    if (window.saveProgressBar) {
-        window.saveProgressBar.style.width = percentage + '%';
+    const progressBar = document.getElementById('saveProgressBar');
+    if (progressBar) {
+        progressBar.style.width = percentage + '%';
     }
 }
 
 // Hide save progress bar
 function hideSaveProgressBar() {
-    const progressBarContainer = rufflecontainer.querySelector('div[style*="fixed"]');
+    const progressBarContainer = document.getElementById('saveProgressBarContainer');
     if (progressBarContainer) {
         progressBarContainer.remove();
-        window.saveProgressBar = null; // Clear reference to avoid issues
     }
 }
 
@@ -194,6 +195,7 @@ async function loadPackedData() {
 // Show loading progress bar in body
 function showLoadingBar() {
     const loadingBarContainer = document.createElement('div');
+    loadingBarContainer.id = 'loadingProgressBarContainer';
     loadingBarContainer.style.position = 'fixed';
     loadingBarContainer.style.top = '0';
     loadingBarContainer.style.left = '0';
@@ -203,29 +205,29 @@ function showLoadingBar() {
     loadingBarContainer.style.zIndex = '99999999999';
     
     const loadingBar = document.createElement('div');
+    loadingBar.id = 'loadingProgressBar';
     loadingBar.style.height = '100%';
     loadingBar.style.backgroundColor = '#2196F3';
     loadingBar.style.width = '0%';
+    loadingBar.style.transition = 'width 0.4s ease'; // Improved animation
     
     loadingBarContainer.appendChild(loadingBar);
     document.body.appendChild(loadingBarContainer);
-    
-    window.loadingProgressBar = loadingBar; // Make loading progress bar accessible globally
 }
 
 // Update loading progress bar
 function updateLoadingBar(percentage) {
-    if (window.loadingProgressBar) {
-        window.loadingProgressBar.style.width = percentage + '%';
+    const loadingBar = document.getElementById('loadingProgressBar');
+    if (loadingBar) {
+        loadingBar.style.width = percentage + '%';
     }
 }
 
 // Hide loading progress bar
 function hideLoadingBar() {
-    const loadingBarContainer = document.body.querySelector('div[style*="fixed"]');
+    const loadingBarContainer = document.getElementById('loadingProgressBarContainer');
     if (loadingBarContainer) {
         loadingBarContainer.remove();
-        window.loadingProgressBar = null; // Clear reference to avoid issues
     }
 }
 

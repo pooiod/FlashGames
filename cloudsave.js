@@ -331,7 +331,43 @@ async function loadPackedData() {
     try {
         while (true) {
             partData = await loadUserData(`completeSave_part${partIndex}`);
-            if (partData === "ERROR: file does not exist" || partData === "end") break;
+            if (partData === "end") break;
+            if (partData === "ERROR: file does not exist") {
+                if (confirm("Data load error, continue?")) {
+                    break
+                } else {
+                    if (confirm("Replace cloud data with local data?") {
+                        const overlay = document.createElement('div');
+                        overlay.id = 'loadingOverlay';
+                        overlay.style.position = 'fixed';
+                        overlay.style.top = '0';
+                        overlay.style.left = '0';
+                        overlay.style.width = '100%';
+                        overlay.style.height = '100%';
+                        overlay.style.backgroundColor = 'rgba(255, 255, 255, 1)';
+                        overlay.style.zIndex = '99999999';
+                        overlay.style.transition = 'opacity 0.5s ease-in-out';
+                        document.body.appendChild(overlay);
+                    
+                        setTimeout(async function(){
+                            let ruffleObject = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
+                            if (ruffleObject) {
+                                ruffleObject.remove();
+                            }
+                    
+                            showSaveProgressBar();
+                            await savePackedData();
+                            hideSaveProgressBar();
+                    
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 700);
+                        }, 100);
+                    } else [
+                        window.location.href = "/";
+                    ]
+                }
+            }
             allParts.push(partData);
             partIndex++;
             updateLoadingBar((partIndex - 1) / partIndex * 100); // Update loading progress

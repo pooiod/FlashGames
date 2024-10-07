@@ -256,12 +256,13 @@ function showSaveProgressBar() {
     progressBarContainer.style.zIndex = '99999999999';
     progressBarContainer.style.opacity = '0'; // Start hidden
     progressBarContainer.style.transform = 'translateY(-100%)'; // Slide up
-    progressBarContainer.style.transition = 'opacity 0.5s ease-in-out, transform 0.5s ease-in-out, width 0.5s ease-in-out';
+    progressBarContainer.style.transition = 'opacity 0.5s ease-in-out, transform 0.5s ease-in-out';
     
     const progressBar = document.createElement('div');
     progressBar.style.height = '100%';
     progressBar.style.backgroundColor = '#4caf50';
     progressBar.style.width = '0%';
+    progressBar.style.transition = 'width 0.5s ease-in-out';
     
     progressBarContainer.appendChild(progressBar);
     rufflecontainer.appendChild(progressBarContainer);
@@ -356,12 +357,13 @@ function showLoadingBar() {
     loadingBarContainer.style.zIndex = '99999999999';
     loadingBarContainer.style.opacity = '0'; // Start hidden
     loadingBarContainer.style.transform = 'translateY(-100%)'; // Slide up
-    loadingBarContainer.style.transition = 'opacity 0.5s ease-in-out, transform 0.5s ease-in-out, width 0.5s ease-in-out';
+    loadingBarContainer.style.transition = 'opacity 0.5s ease-in-out, transform 0.5s ease-in-out';
     
     const loadingBar = document.createElement('div');
     loadingBar.style.height = '100%';
     loadingBar.style.backgroundColor = '#2196F3';
     loadingBar.style.width = '0%';
+    loadingBar.style.transition = 'width 0.5s ease-in-out';
     
     loadingBarContainer.appendChild(loadingBar);
     rufflecontainer.appendChild(loadingBarContainer);

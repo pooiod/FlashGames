@@ -336,7 +336,7 @@ async function loadPackedData() {
                 if (confirm("Data load error, continue?")) {
                     break
                 } else {
-                    if (confirm("Replace cloud data with local data?") {
+                    if (confirm("Replace cloud data with local data?")) {
                         const overlay = document.createElement('div');
                         overlay.id = 'loadingOverlay';
                         overlay.style.position = 'fixed';

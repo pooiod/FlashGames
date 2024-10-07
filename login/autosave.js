@@ -58,7 +58,7 @@ setTimeout(function(){
     addSaveIcon();
 }, 4000);
 
-// Floppy disk save button
+// Floppy disk save button with loading bar
 function addSaveIcon() {
     const saveButton = document.createElement('div');
     saveButton.textContent = '💾'; // Floppy disc emoji
@@ -75,14 +75,36 @@ function addSaveIcon() {
     rufflecontainer.appendChild(saveButton);
 
     saveButton.addEventListener('click', async function() {
-        saveButton.style.opacity = '0.5'; // Dim while saving
-        await savePackedData(); // Trigger the save function
-        saveButton.style.opacity = '1'; // Restore opacity after save
+        saveButton.style.display = 'none'; // Hide button while saving
+        let progressBar = addProgressBar(rufflecontainer); // Show progress bar
+        await savePackedData(progressBar); // Trigger the save function
+        saveButton.style.display = 'block'; // Show button after saving
+        progressBar.remove(); // Remove the progress bar
     });
 }
 
-// Save data in chunks of 1000 chars
-async function savePackedData() {
+// Add a progress bar to the top of the container
+function addProgressBar(container) {
+    const progressBar = document.createElement('div');
+    progressBar.id = 'progressBar';
+    progressBar.style.position = 'fixed';
+    progressBar.style.top = '0';
+    progressBar.style.left = '0';
+    progressBar.style.width = '0%'; // Initial width at 0%
+    progressBar.style.height = '5px';
+    progressBar.style.backgroundColor = '#4caf50';
+    progressBar.style.zIndex = '999999999';
+    container.appendChild(progressBar);
+    return progressBar;
+}
+
+// Update progress bar percentage
+function updateProgressBar(progressBar, percentage) {
+    progressBar.style.width = percentage + '%';
+}
+
+// Save data in chunks of 1000 chars with progress bar
+async function savePackedData(progressBar) {
     let allData = [];
     Object.keys(localStorage).forEach(key => {
         let solData = localStorage.getItem(key);
@@ -93,23 +115,60 @@ async function savePackedData() {
 
     let packedData = JSON.stringify(allData);
     let chunks = packedData.match(/.{1,1000}/g); // Split into 1000-character chunks
+    let totalChunks = chunks.length + 1;
 
     try {
         for (let i = 0; i < chunks.length; i++) {
             await saveUserData(`completeSave_part${i + 1}`, chunks[i]);
+            updateProgressBar(progressBar, ((i + 1) / totalChunks) * 100); // Update progress
         }
         await saveUserData(`completeSave_part${chunks.length + 1}`, "ERROR: file does not exist");
+        updateProgressBar(progressBar, 100); // Complete the progress bar
         console.log("Data saved successfully.");
     } catch (error) {
         console.error("Failed to save packed data", error);
     }
 }
 
-// Load data and refresh the page
+// Loading bar in body when loading data
+function showLoaderWithProgress() {
+    const loader = document.createElement('div');
+    loader.id = 'dataLoader';
+    loader.style.position = 'fixed';
+    loader.style.top = '0';
+    loader.style.left = '0';
+    loader.style.width = '100vw';
+    loader.style.height = '5px'; // Loading bar height
+    loader.style.backgroundColor = '#fff';
+    loader.style.zIndex = '9999999999999999';
+
+    const progressBar = document.createElement('div');
+    progressBar.id = 'loadingProgressBar';
+    progressBar.style.width = '0%';
+    progressBar.style.height = '100%';
+    progressBar.style.backgroundColor = '#4caf50'; // Green progress bar
+
+    loader.appendChild(progressBar);
+    document.body.appendChild(loader);
+    return progressBar;
+}
+
+function updateLoaderProgress(progressBar, percentage) {
+    progressBar.style.width = percentage + '%';
+}
+
+function hideLoader() {
+    const loader = document.getElementById('dataLoader');
+    if (loader) loader.remove();
+}
+
+// Load data and refresh the page with loading bar
 async function loadPackedData() {
     let allParts = [];
     let partIndex = 1;
     let partData;
+
+    let progressBar = showLoaderWithProgress(); // Show loading progress bar
 
     Object.keys(localStorage).forEach(key => {
         let solData = localStorage.getItem(key);
@@ -123,6 +182,7 @@ async function loadPackedData() {
             partData = await loadUserData(`completeSave_part${partIndex}`);
             if (partData === "ERROR: file does not exist") break;
             allParts.push(partData);
+            updateLoaderProgress(progressBar, (partIndex / 10) * 100); // Update loader progress
             partIndex++;
         }
 
@@ -136,47 +196,18 @@ async function loadPackedData() {
         console.log("Data loaded successfully.");
     } catch (error) {
         console.error("Failed to load packed data", error);
+    } finally {
+        hideLoader(); // Hide the loading bar after load is complete
     }
 }
 
 // Automatically load data when the page starts, then reload
 async function autoLoadAndReload() {
     if (!document.cookie.split('; ').find(row => row.startsWith('dataLoaded='))) {
-        showLoader();
+        showLoaderWithProgress();
         await loadPackedData();
         document.cookie = 'dataLoaded=true; max-age=60'; // Prevent endless reloading
         location.reload();
-    }
-}
-
-function showLoader() {
-    let loader = document.createElement('div');
-    loader.id = 'dataLoader';
-    loader.style.position = 'fixed';
-    loader.style.top = '0';
-    loader.style.left = '0';
-    loader.style.width = '100vw';
-    loader.style.height = '100vh';
-    loader.style.backgroundColor = '#fff';
-    loader.style.display = 'flex';
-    loader.style.justifyContent = 'center';
-    loader.style.alignItems = 'center';
-    loader.style.zIndex = '9999999999999999';
-
-    let message = document.createElement('div');
-    message.textContent = 'Loading save data';
-    message.style.color = '#000';
-    message.style.fontSize = '24px';
-    message.style.marginTop = '20px';
-
-    loader.appendChild(message);
-    document.body.appendChild(loader);
-}
-
-function hideLoader() {
-    let loader = document.getElementById('dataLoader');
-    if (loader) {
-        loader.remove();
     }
 }
 

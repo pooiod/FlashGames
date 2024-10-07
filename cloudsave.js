@@ -89,7 +89,7 @@ function showNotification(message, color) {
     setTimeout(() => {
         notification.style.opacity = '0';
         setTimeout(() => notification.remove(), 1000);
-    }, 3000);
+    }, 2000);
 }
 
 var savekeydebounce = false;
@@ -124,7 +124,7 @@ function addSaveIcon() {
         savekeydebounce = false;
     });
 
-    if (false) {
+    if (false) { // replaced by context menu button
         rufflecontainer.appendChild(saveButton);
     } else {
         setTimeout(function(){
@@ -133,6 +133,7 @@ function addSaveIcon() {
     }
 }
 
+// does not work on all games
 document.addEventListener('keydown', async function(e) {
     if (e.ctrlKey && e.key === 's') {
         if (savekeydebounce) {
@@ -261,7 +262,7 @@ function showSaveProgressBar() {
     progressBarContainer.style.zIndex = '99999999999';
     progressBarContainer.style.opacity = '0'; // Start hidden
     progressBarContainer.style.transform = 'translateY(-100%)'; // Slide up
-    progressBarContainer.style.transition = 'opacity 0.5s ease-in-out, transform 0.5s ease-in-out';
+    progressBarContainer.style.transition = 'opacity 0.5s ease-in-out, transform 0.7s ease-in-out';
     
     const progressBar = document.createElement('div');
     progressBar.style.height = '100%';
@@ -362,7 +363,7 @@ function showLoadingBar() {
     loadingBarContainer.style.zIndex = '99999999999';
     loadingBarContainer.style.opacity = '0'; // Start hidden
     loadingBarContainer.style.transform = 'translateY(-100%)'; // Slide up
-    loadingBarContainer.style.transition = 'opacity 0.5s ease-in-out, transform 0.5s ease-in-out';
+    loadingBarContainer.style.transition = 'opacity 0.5s ease-in-out, transform 0.7s ease-in-out';
     
     const loadingBar = document.createElement('div');
     loadingBar.style.height = '100%';
@@ -377,7 +378,7 @@ function showLoadingBar() {
     setTimeout(() => {
         loadingBarContainer.style.opacity = '1';
         loadingBarContainer.style.transform = 'translateY(0)'; // Slide down
-    }, 0);
+    }, 100);
     
     window.loadingProgressBar = loadingBar; // Make loading progress bar accessible globally
 }

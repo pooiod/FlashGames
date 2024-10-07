@@ -80,12 +80,13 @@
             <input type="checkbox" id="remember">
             <label for="remember">Remember me for 3 months</label>
         </div>
-        <button class="login-button" onclick="savePassword()">Login</button>
+        <button class="login-button" onclick="savePassword(false)">Login</button>
+        <button class="login-button" onclick="savePassword(true)">Transfer data</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
     <script>
-        function savePassword() {
+        function savePassword(transfer) {
             var password = document.getElementById('password').value;
             var hashedPassword = CryptoJS.MD5(password).toString();
             var expires = document.getElementById('remember').checked ? 90 : 1;
@@ -94,7 +95,7 @@
             if (password) {
                 document.cookie = "rufflesave=" + hashedPassword + "; expires=" + date.toUTCString() + "; path=/;";
             }
-            window.location.href = "/";
+            window.location.href = "/" + transfer?"?transfer=true":"";
         }
     </script>
 </body>

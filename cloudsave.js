@@ -340,12 +340,6 @@ async function loadPackedData() {
 
     showLoadingBar(); // Show loading bar in Ruffle container
 
-    // Remove current Ruffle instance
-    let ruffleObject = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
-    if (ruffleObject) {
-        ruffleObject.remove();
-    }
-
     try {
         while (true) {
             partData = await loadUserData(`completeSave_part${partIndex}`);
@@ -479,6 +473,17 @@ async function autoLoadAndReload() {
         overlay.style.zIndex = '9999999999';
         overlay.style.transition = 'opacity 0.5s ease-in-out';
         document.body.appendChild(overlay);
+
+        // Remove current Ruffle instance
+        let ruffleObject = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
+        if (ruffleObject) {
+            ruffleObject.remove();
+        } setTimeout(function(){
+            ruffleObject = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
+            if (ruffleObject) {
+                ruffleObject.remove();
+            }
+        }, 1000);
 
         await loadPackedData();
         document.cookie = 'dataLoaded=true; max-age=60'; // Prevent endless reloading

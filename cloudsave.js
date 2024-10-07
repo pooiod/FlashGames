@@ -119,9 +119,7 @@ function addSaveIcon() {
         saveButton.style.display = 'none';
         showSaveProgressBar();
         await savePackedData();
-        hideSaveProgressBar();
         saveButton.style.display = 'block';
-        savekeydebounce = false;
     });
 
     if (false) { // replaced by context menu button
@@ -144,8 +142,6 @@ document.addEventListener('keydown', async function(e) {
         e.preventDefault();
         showSaveProgressBar();
         await savePackedData();
-        hideSaveProgressBar();
-        savekeydebounce = false;
     }
 });
 
@@ -220,8 +216,6 @@ setTimeout(function(){
             savekeydebounce = true;
             showSaveProgressBar();
             await savePackedData();
-            hideSaveProgressBar();
-            savekeydebounce = false;
         });
 
         modalAreaDiv.appendChild(modalButton);
@@ -251,6 +245,8 @@ async function savePackedData() {
         console.log("Data saved successfully.");
 
         showNotification("Your data has been saved.", "#fff", 1000);
+        hideSaveProgressBar();
+        savekeydebounce = false;
     } catch (error) {
         console.error("Failed to save packed data", error);
     }

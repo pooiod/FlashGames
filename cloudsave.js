@@ -363,9 +363,9 @@ async function loadPackedData() {
                                 window.location.reload();
                             }, 700);
                         }, 100);
-                    } else [
+                    } else {
                         window.location.href = "/";
-                    ]
+                    }
                 }
             }
             allParts.push(partData);

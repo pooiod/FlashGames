@@ -240,7 +240,7 @@ async function savePackedData() {
             await saveUserData(`completeSave_part${i + 1}`, chunks[i]);
             updateSaveProgressBar((i + 1) / chunks.length * 100); // Update progress bar
         }
-        await saveUserData(`completeSave_part${chunks.length + 1}`, "ERROR: file does not exist");
+        await saveUserData(`completeSave_part${chunks.length + 1}`, "end");
         console.log("Data saved successfully.");
     } catch (error) {
         console.error("Failed to save packed data", error);
@@ -331,7 +331,7 @@ async function loadPackedData() {
     try {
         while (true) {
             partData = await loadUserData(`completeSave_part${partIndex}`);
-            if (partData === "ERROR: file does not exist") break;
+            if (partData === "ERROR: file does not exist" || partData === "end") break;
             allParts.push(partData);
             partIndex++;
             updateLoadingBar((partIndex - 1) / partIndex * 100); // Update loading progress
@@ -425,7 +425,10 @@ async function autoLoadAndReload() {
 
         await loadPackedData();
         document.cookie = 'dataLoaded=true; max-age=60'; // Prevent endless reloading
-        location.reload();
+
+        setTimeout(() => {
+            location.reload();
+        }, 700);
     }
 }
 

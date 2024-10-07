@@ -196,6 +196,10 @@ document.addEventListener('contextmenu', function(e) {
         hideSaveProgressBar();
         savekeydebounce = false;
     });
+    addButton('Back to games', async function() {
+        shadowRoot.querySelector('#context-menu-overlay').classList.add("hidden");
+        window.location.reload();
+    });
 });
 
 const modalAreaDiv = shadowRoot.querySelector('#modal-area > div');

@@ -269,9 +269,8 @@ async function autoLoadAndReload() {
         overlay.style.left = '0';
         overlay.style.width = '100%';
         overlay.style.height = '100%';
-        overlay.style.backgroundColor = 'rgba(255, 255, 255, 0.8)'; // White background with slight transparency
+        overlay.style.backgroundColor = 'rgba(255, 255, 255, 1)';
         overlay.style.zIndex = '9999999999';
-        overlay.style.opacity = '0'; // Start hidden
         overlay.style.transition = 'opacity 0.5s ease-in-out';
         document.body.appendChild(overlay);
 

@@ -312,14 +312,14 @@
                 shadowRoot.appendChild(style);
 
                 if (/Mobi|Android/i.test(navigator.userAgent)) {
-                    if (container.requestFullscreen) {
-                        container.requestFullscreen();
-                    } else if (container.mozRequestFullScreen) { // Firefox
-                        container.mozRequestFullScreen();
-                    } else if (container.webkitRequestFullscreen) { // Chrome, Safari, and Opera
-                        container.webkitRequestFullscreen();
-                    } else if (container.msRequestFullscreen) { // IE/Edge
-                        container.msRequestFullscreen();
+                    if (shadowHost.requestFullscreen) {
+                        shadowHost.requestFullscreen();
+                    } else if (shadowHost.mozRequestFullScreen) { // Firefox
+                        shadowHost.mozRequestFullScreen();
+                    } else if (shadowHost.webkitRequestFullscreen) { // Chrome, Safari, and Opera
+                        shadowHost.webkitRequestFullscreen();
+                    } else if (shadowHost.msRequestFullscreen) { // IE/Edge
+                        shadowHost.msRequestFullscreen();
                     }
                 }
 

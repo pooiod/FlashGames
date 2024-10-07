@@ -296,6 +296,9 @@ function updateSaveProgressBar(percentage) {
     if (progressBarContainer) {
         const progressBar = progressBarContainer.firstChild;
         progressBar.style.width = percentage + '%';
+
+        progressBarContainer.style.opacity = '1';
+        progressBarContainer.style.transform = 'translateY(0)';
     }
 }
 

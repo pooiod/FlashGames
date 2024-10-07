@@ -300,7 +300,12 @@ function updateSaveProgressBar(percentage) {
 
 // Hide save progress bar
 function hideSaveProgressBar() {
-    updateSaveProgressBar(100);
+    const progressBarContainer = shadowRoot.getElementById('saveProgressBarContainer');
+    if (progressBarContainer) {
+        const progressBar = progressBarContainer.firstChild;
+        progressBar.style.width = '100%';
+    }
+
     setTimeout(() => {
         const progressBarContainer = shadowRoot.getElementById('saveProgressBarContainer');
         if (progressBarContainer) {
@@ -311,7 +316,7 @@ function hideSaveProgressBar() {
                 window.saveProgressBar = null; // Clear reference to avoid issues
             }, 500); // Wait for animation to finish
         }
-    }, 300);
+    }, 650);
 }
 
 // Load data and refresh the page

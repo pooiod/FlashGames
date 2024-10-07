@@ -120,12 +120,15 @@ function addSaveIcon() {
     }
 }
 
+var savekeydebounce = false;
 document.addEventListener('keydown', async function(e) {
-    if (e.ctrlKey && e.key === 's') {
+    if (e.ctrlKey && e.key === 's' && !savekeydebounce) {
+        savekeydebounce = true;
         e.preventDefault();
         showSaveProgressBar();
         await savePackedData();
         hideSaveProgressBar();
+        savekeydebounce = false;
     }
 });
 

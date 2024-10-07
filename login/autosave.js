@@ -75,12 +75,11 @@ function addSaveIcon() {
     window.saveButton = saveButton;
 
     saveButton.addEventListener('click', async function() {
-        saveButton.style.display = 'none'; // Hide button while saving
-        hideSaveProgressBar();
+        saveButton.style.display = 'none';
         showSaveProgressBar();
-        await savePackedData(); // Trigger the save function
+        await savePackedData();
         hideSaveProgressBar();
-        saveButton.style.display = 'block'; // Show button again after saving
+        saveButton.style.display = 'block';
     });
 
     rufflecontainer.appendChild(saveButton);
@@ -113,6 +112,8 @@ async function savePackedData() {
 
 // Show save progress bar
 function showSaveProgressBar() {
+    hideSaveProgressBar();
+
     const progressBarContainer = document.createElement('div');
     progressBarContainer.id = 'saveProgressBarContainer';
     progressBarContainer.style.position = 'absolute';
@@ -294,4 +295,20 @@ function isB64SOL(str) {
 }
 
 // Initialize the automatic load and reload process
-autoLoadAndReload();
+if (!new URLSearchParams(window.location.search).get('transfer')) {
+    autoLoadAndReload();
+    setInterval(async function(){
+        if (!shadowRoot.getElementById('saveProgressBarContainer')){
+            showSaveProgressBar();
+            await savePackedData();
+            hideSaveProgressBar();
+        }
+    }, 20000);
+} else {
+    setTimeout(async function(){
+        showSaveProgressBar();
+        await savePackedData();
+        hideSaveProgressBar();
+        window.location.href = "/";
+    }, 100);
+}

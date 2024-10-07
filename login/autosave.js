@@ -305,7 +305,24 @@ if (!new URLSearchParams(window.location.search).get('transfer')) {
         }
     }, 20000);
 } else {
+    const overlay = document.createElement('div');
+    overlay.id = 'loadingOverlay';
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.backgroundColor = 'rgba(255, 255, 255, 1)';
+    overlay.style.zIndex = '99999999';
+    overlay.style.transition = 'opacity 0.5s ease-in-out';
+    document.body.appendChild(overlay);
+
     setTimeout(async function(){
+        let ruffleObject = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
+        if (ruffleObject) {
+            ruffleObject.remove();
+        }
+
         showSaveProgressBar();
         await savePackedData();
         hideSaveProgressBar();

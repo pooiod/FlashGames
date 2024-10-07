@@ -95,7 +95,7 @@
             if (password) {
                 document.cookie = "rufflesave=" + hashedPassword + "; expires=" + date.toUTCString() + "; path=/;";
             }
-            window.location.href = "/" + transfer?"?transfer=true":"";
+            window.location.href = transfer?"/?transfer=true#login":"/";
         }
     </script>
 </body>

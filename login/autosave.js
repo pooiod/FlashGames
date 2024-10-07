@@ -122,7 +122,11 @@ function addSaveIcon() {
 
 var savekeydebounce = false;
 document.addEventListener('keydown', async function(e) {
-    if (e.ctrlKey && e.key === 's' && !savekeydebounce) {
+    if (e.ctrlKey && e.key === 's') {
+        if (savekeydebounce) {
+            showNotification("Spamming may corrupt your save data!", "#ffbaba");
+            return;
+        }
         savekeydebounce = true;
         e.preventDefault();
         showSaveProgressBar();

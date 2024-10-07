@@ -294,15 +294,17 @@ function updateSaveProgressBar(percentage) {
 // Hide save progress bar
 function hideSaveProgressBar() {
     updateSaveProgressBar(100);
-    const progressBarContainer = shadowRoot.getElementById('saveProgressBarContainer');
-    if (progressBarContainer) {
-        progressBarContainer.style.opacity = '0'; // Fade out
-        progressBarContainer.style.transform = 'translateY(-100%)'; // Slide up
-        setTimeout(() => {
-            progressBarContainer.remove();
-            window.saveProgressBar = null; // Clear reference to avoid issues
-        }, 500); // Wait for animation to finish
-    }
+    setTimeout(() => {
+        const progressBarContainer = shadowRoot.getElementById('saveProgressBarContainer');
+        if (progressBarContainer) {
+            progressBarContainer.style.opacity = '0'; // Fade out
+            progressBarContainer.style.transform = 'translateY(-100%)'; // Slide up
+            setTimeout(() => {
+                progressBarContainer.remove();
+                window.saveProgressBar = null; // Clear reference to avoid issues
+            }, 500); // Wait for animation to finish
+        }
+    }, 300);
 }
 
 // Load data and refresh the page
@@ -392,16 +394,18 @@ function updateLoadingBar(percentage) {
 
 // Hide loading progress bar
 function hideLoadingBar() {
-    updateLoadingBar(100);
-    const loadingBarContainer = document.getElementById('loadingProgressBarContainer');
-    if (loadingBarContainer) {
-        loadingBarContainer.style.opacity = '0'; // Fade out
-        loadingBarContainer.style.transform = 'translateY(-100%)'; // Slide up
-        setTimeout(() => {
-            loadingBarContainer.remove();
-            window.loadingProgressBar = null; // Clear reference to avoid issues
-        }, 500); // Wait for animation to finish
-    }
+    window.loadingProgressBar.style.width = '100%';
+    setTimeout(() => {
+        const loadingBarContainer = document.getElementById('loadingProgressBarContainer');
+        if (loadingBarContainer) {
+            loadingBarContainer.style.opacity = '0'; // Fade out
+            loadingBarContainer.style.transform = 'translateY(-100%)'; // Slide up
+            setTimeout(() => {
+                loadingBarContainer.remove();
+                window.loadingProgressBar = null; // Clear reference to avoid issues
+            }, 700); // Wait for animation to finish
+        }
+    }, 300);
 }
 
 // Automatically load data when the page starts, then reload

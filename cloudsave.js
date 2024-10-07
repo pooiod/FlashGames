@@ -266,7 +266,8 @@ function showSaveProgressBar() {
     progressBarContainer.style.width = '100%';
     progressBarContainer.style.height = '10px';
     // progressBarContainer.style.backgroundColor = '#5475ba';
-    progressBarContainer.style.pointerEvents = "none";
+    progressBarContainer.style.backgroundColor = '#5475ba';
+    progressBarContainer.style.pointerEvents = "rgba(255, 255, 255, 0.2)";
     progressBarContainer.style.zIndex = '99999999999';
     progressBarContainer.style.opacity = '0'; // Start hidden
     progressBarContainer.style.transform = 'translateY(-100%)'; // Slide up
@@ -413,6 +414,7 @@ function showLoadingBar() {
     loadingBarContainer.style.width = '100%';
     loadingBarContainer.style.height = '10px';
     // loadingBarContainer.style.backgroundColor = '#5475ba';
+    loadingBarContainer.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
     loadingBarContainer.style.pointerEvents = "none";
     loadingBarContainer.style.zIndex = '99999999999';
     loadingBarContainer.style.opacity = '0'; // Start hidden

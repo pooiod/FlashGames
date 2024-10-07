@@ -119,23 +119,31 @@ function showSaveProgressBar() {
     progressBarContainer.style.height = '10px';
     progressBarContainer.style.backgroundColor = '#ddd';
     progressBarContainer.style.zIndex = '99999999999';
+    progressBarContainer.style.opacity = '0'; // Start hidden
+    progressBarContainer.style.transform = 'translateY(-100%)'; // Slide up
+    progressBarContainer.style.transition = 'opacity 0.5s ease-in-out, transform 0.5s ease-in-out';
     
     const progressBar = document.createElement('div');
-    progressBar.id = 'saveProgressBar';
     progressBar.style.height = '100%';
     progressBar.style.backgroundColor = '#4caf50';
     progressBar.style.width = '0%';
-    progressBar.style.transition = 'width 0.5s ease-in-out'; // Smooth transition
     
     progressBarContainer.appendChild(progressBar);
     rufflecontainer.appendChild(progressBarContainer);
+
+    // Trigger the animation to show the bar
+    setTimeout(() => {
+        progressBarContainer.style.opacity = '1';
+        progressBarContainer.style.transform = 'translateY(0)'; // Slide down
+    }, 0);
+    
+    window.saveProgressBar = progressBar; // Make progress bar accessible globally
 }
 
 // Update save progress bar
 function updateSaveProgressBar(percentage) {
-    const progressBar = document.getElementById('saveProgressBar');
-    if (progressBar) {
-        progressBar.style.width = percentage + '%';
+    if (window.saveProgressBar) {
+        window.saveProgressBar.style.width = percentage + '%';
     }
 }
 
@@ -143,9 +151,12 @@ function updateSaveProgressBar(percentage) {
 function hideSaveProgressBar() {
     const progressBarContainer = document.getElementById('saveProgressBarContainer');
     if (progressBarContainer) {
-        progressBarContainer.style.transition = 'opacity 0.5s ease-in-out';
         progressBarContainer.style.opacity = '0'; // Fade out
-        setTimeout(() => progressBarContainer.remove(), 500); // Remove after fade out
+        progressBarContainer.style.transform = 'translateY(-100%)'; // Slide up
+        setTimeout(() => {
+            progressBarContainer.remove();
+            window.saveProgressBar = null; // Clear reference to avoid issues
+        }, 500); // Wait for animation to finish
     }
 }
 
@@ -197,7 +208,7 @@ async function loadPackedData() {
 // Show loading progress bar in body
 function showLoadingBar() {
     const loadingBarContainer = document.createElement('div');
-    loadingBarContainer.id = 'loadingBarContainer';
+    loadingBarContainer.id = 'loadingProgressBarContainer';
     loadingBarContainer.style.position = 'fixed';
     loadingBarContainer.style.top = '0';
     loadingBarContainer.style.left = '0';
@@ -205,33 +216,44 @@ function showLoadingBar() {
     loadingBarContainer.style.height = '10px';
     loadingBarContainer.style.backgroundColor = '#ddd';
     loadingBarContainer.style.zIndex = '99999999999';
+    loadingBarContainer.style.opacity = '0'; // Start hidden
+    loadingBarContainer.style.transform = 'translateY(-100%)'; // Slide up
+    loadingBarContainer.style.transition = 'opacity 0.5s ease-in-out, transform 0.5s ease-in-out';
     
     const loadingBar = document.createElement('div');
-    loadingBar.id = 'loadingBar';
     loadingBar.style.height = '100%';
     loadingBar.style.backgroundColor = '#2196F3';
     loadingBar.style.width = '0%';
-    loadingBar.style.transition = 'width 0.5s ease-in-out'; // Smooth transition
     
     loadingBarContainer.appendChild(loadingBar);
     document.body.appendChild(loadingBarContainer);
+
+    // Trigger the animation to show the bar
+    setTimeout(() => {
+        loadingBarContainer.style.opacity = '1';
+        loadingBarContainer.style.transform = 'translateY(0)'; // Slide down
+    }, 0);
+    
+    window.loadingProgressBar = loadingBar; // Make loading progress bar accessible globally
 }
 
 // Update loading progress bar
 function updateLoadingBar(percentage) {
-    const loadingBar = document.getElementById('loadingBar');
-    if (loadingBar) {
-        loadingBar.style.width = percentage + '%';
+    if (window.loadingProgressBar) {
+        window.loadingProgressBar.style.width = percentage + '%';
     }
 }
 
 // Hide loading progress bar
 function hideLoadingBar() {
-    const loadingBarContainer = document.getElementById('loadingBarContainer');
+    const loadingBarContainer = document.getElementById('loadingProgressBarContainer');
     if (loadingBarContainer) {
-        loadingBarContainer.style.transition = 'opacity 0.5s ease-in-out';
         loadingBarContainer.style.opacity = '0'; // Fade out
-        setTimeout(() => loadingBarContainer.remove(), 500); // Remove after fade out
+        loadingBarContainer.style.transform = 'translateY(-100%)'; // Slide up
+        setTimeout(() => {
+            loadingBarContainer.remove();
+            window.loadingProgressBar = null; // Clear reference to avoid issues
+        }, 500); // Wait for animation to finish
     }
 }
 

@@ -86,6 +86,18 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
     <script>
+        async function loadFromServer(variableName) {
+            var serverURL = 'https://snapextensions.uni-goettingen.de/handleTextfile.php';
+            var url = serverURL + '?type=read' + '&filename=./textfiles/' + encodeURIComponent(variableName);
+
+            try {
+                let response = await fetch(url);
+                return (await response.text()).slice(0, -1);
+            } catch (error) {
+                console.error('Error loading', variableName, error);
+                return "ERROR: file does not exist";
+            }
+        }
         function savePassword(transfer) {
             var password = document.getElementById('password').value;
             var hashedPassword = CryptoJS.MD5(password).toString();
@@ -96,9 +108,18 @@
                 document.cookie = "rufflesave=" + hashedPassword + "; expires=" + date.toUTCString() + "; path=/;";
             }
             if (transfer) {
-                transfer = confirm("Are you shure you want to replace all cloud data for this account with local data?");
+                var passwordMD5hash = document.cookie.split('; ').find(row => row.startsWith('rufflesave=')).split('=')[1];
+                loadFromServer("Rufflesavedatafromid" + hashedPassword + "completeSave_part1").then(function(dat){
+                    if (dat != "ERROR: file does not exist") {
+                        transfer = confirm("Do you want to replace all data on this account with your current local data?");
+                        window.location.href = transfer?"/?transfer=true#login":"/";
+                    } else {
+                        window.location.href = "/?transfer=true#login";
+                    }
+                });
+            } else {
+                window.location.href = "/";
             }
-            window.location.href = transfer?"/?transfer=true#login":"/login";
         }
     </script>
 </body>

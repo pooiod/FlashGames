@@ -180,7 +180,7 @@ document.addEventListener('contextmenu', function(e) {
         contextMenu.removeChild(contextMenu.lastElementChild);
     }
 
-    if (window.screen.height >= 430) {
+    if (window.screen.height >= 500) {
         addButton('Save data to cloud', async function() {
             shadowRoot.querySelector('#context-menu-overlay').classList.add("hidden");
             if (savekeydebounce) {

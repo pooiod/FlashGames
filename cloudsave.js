@@ -274,14 +274,17 @@ async function savePackedData() {
                     allPartCheck.push(partData);
                 }
             }
+            let combinedData = allParts.join('');
+            let parsedData = JSON.parse(combinedData);
+            parsedData = parsedData.map(item => item.value);
         } catch (error) {
             showNotification("Failed to save packed data: " + error, "#ffbaba");
             hideSaveProgressBar();
             savekeydebounce = false;
             return;
         } finally {
-            alert(allPartCheck == chunks)
-            console.log(allPartCheck)
+            alert(parsedData == chunks)
+            console.log(parsedData)
             console.log(chunks)
             hideSaveProgressBar();
             savekeydebounce = false;

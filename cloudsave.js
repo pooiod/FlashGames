@@ -281,6 +281,8 @@ async function savePackedData() {
             return;
         } finally {
             alert(allPartCheck == chunks)
+            console.log(allPartCheck)
+            console.log(chunks)
             hideSaveProgressBar();
             savekeydebounce = false;
             console.log("Data save finished.");

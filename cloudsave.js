@@ -180,16 +180,19 @@ document.addEventListener('contextmenu', function(e) {
         contextMenu.removeChild(contextMenu.lastElementChild);
     }
 
-    addButton('Save data to cloud', async function() {
-        shadowRoot.querySelector('#context-menu-overlay').classList.add("hidden");
-        if (savekeydebounce) {
-            showNotification("Spamming may corrupt your save data!", "#ffbaba");
-            return;
-        }
-        savekeydebounce = true;
-        showSaveProgressBar();
-        await savePackedData();
-    });
+    if (window.screen.height >= 430) {
+        addButton('Save data to cloud', async function() {
+            shadowRoot.querySelector('#context-menu-overlay').classList.add("hidden");
+            if (savekeydebounce) {
+                showNotification("Spamming may corrupt your save data!", "#ffbaba");
+                return;
+            }
+            savekeydebounce = true;
+            showSaveProgressBar();
+            await savePackedData();
+        });
+    }
+
     addButton('Back to games', async function() {
         shadowRoot.querySelector('#context-menu-overlay').classList.add("hidden");
         window.location.href = "/";
@@ -512,7 +515,7 @@ if (!new URLSearchParams(window.location.search).get('transfer')) {
             showSaveProgressBar();
             await savePackedData();
         }
-    }, 60 * 1000);
+    }, 60 * (3) * 1000); // 3 mins save interval
 } else {
     const overlay = document.createElement('div');
     overlay.id = 'loadingOverlay';

@@ -180,7 +180,12 @@ document.addEventListener('contextmenu', function(e) {
         contextMenu.removeChild(contextMenu.lastElementChild);
     }
 
-    if (window.screen.height >= 500) {
+    addButton('Back to games', async function() {
+        shadowRoot.querySelector('#context-menu-overlay').classList.add("hidden");
+        window.location.href = "/";
+    });
+
+    if (window.screen.height >= 300) {
         addButton('Save data to cloud', async function() {
             shadowRoot.querySelector('#context-menu-overlay').classList.add("hidden");
             if (savekeydebounce) {
@@ -192,11 +197,6 @@ document.addEventListener('contextmenu', function(e) {
             await savePackedData();
         });
     }
-
-    addButton('Back to games', async function() {
-        shadowRoot.querySelector('#context-menu-overlay').classList.add("hidden");
-        window.location.href = "/";
-    });
 });
 
 setTimeout(function(){
@@ -239,19 +239,35 @@ async function savePackedData() {
     try {
         for (let i = 0; i < chunks.length; i++) {
             await saveUserData(`completeSave_part${i + 1}`, chunks[i]);
-            updateSaveProgressBar((i + 1) / chunks.length * 100); // Update progress bar
+            updateSaveProgressBar((i + 1) / chunks.length * 50);
         }
-        updateSaveProgressBar(100);
+        updateSaveProgressBar(50);
         await saveUserData(`completeSave_part${chunks.length + 1}`, "end");
-        console.log("Data saved successfully.");
 
-        // showNotification("Your data has been saved.", "#fff", 1000);
-        hideSaveProgressBar();
-        savekeydebounce = false;
+        console.log("Checking save data...");
 
-        return true;
+        let partIndex = 1;
+        try {
+            while (true) {
+                updateSaveProgressBar((partIndex) / chunks.length * 50 + 50);
+                let partData = await loadUserData(`completeSave_part${partIndex}`);
+                if (partData === "end") break;
+                if (partData === "ERROR: file does not exist") {
+                    showNotification("Failed to save packed data: server responded with a 404", "#ffbaba");
+                    return;
+                }
+            }
+        } catch (error) {
+            showNotification("Failed to save packed data: " + error, "#ffbaba");
+            return;
+        } finally {
+            hideSaveProgressBar();
+            savekeydebounce = false;
+            console.log("Data save finished.");
+            return true;
+        }
     } catch (error) {
-        showNotification("Failed to save packed data!", "#ffbaba");
+        showNotification("Failed to save packed data: " + error, "#ffbaba");
         console.error("Failed to save packed data", error);
     }
 }

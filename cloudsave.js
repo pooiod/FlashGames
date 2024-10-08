@@ -1,6 +1,6 @@
 // anti dupe code:
 if (window.saveloader) {
-    return;
+    throw new error("CloudSave already loaded");
 } else {
     window.saveloader = true;
 }

@@ -286,9 +286,11 @@ async function savePackedData() {
             let combinedData = allPartCheck.join(''); console.log(combinedData)
             let parsedData = JSON.parse(combinedData);
     
+            let index = 0;
             parsedData.forEach(item => {
+                index += 1;
                 if (!localStorage.getItem(item.key) == item.value) {
-                    throw new Error("Data didn't save");
+                    throw new Error(`Item ${index} saved incorrectly`);
                 }
             });
 

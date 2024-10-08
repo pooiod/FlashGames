@@ -290,7 +290,7 @@ async function savePackedData() {
             parsedData.forEach(item => {
                 index += 1;
                 if (!localStorage.getItem(item.key) == item.value) {
-                    throw new Error(`Item ${index} saved incorrectly`);
+                    throw new Error(`Item "${index}: ${item.key}" saved incorrectly`);
                 }
             });
 

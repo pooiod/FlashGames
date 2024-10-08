@@ -258,6 +258,7 @@ async function savePackedData() {
         console.log("Checking save data...");
 
         let partIndex = 1;
+        let allPartCheck = [];
         try {
             while (true) {
                 partIndex += 1;
@@ -269,6 +270,8 @@ async function savePackedData() {
                     hideSaveProgressBar();
                     savekeydebounce = false;
                     return;
+                } else {
+                    allPartCheck.push(partData);
                 }
             }
         } catch (error) {
@@ -277,6 +280,7 @@ async function savePackedData() {
             savekeydebounce = false;
             return;
         } finally {
+            alert(allPartCheck == chunks)
             hideSaveProgressBar();
             savekeydebounce = false;
             console.log("Data save finished.");

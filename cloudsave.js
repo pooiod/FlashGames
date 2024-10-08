@@ -6,6 +6,7 @@ if (window.saveloader) {
 }
 
 
+
 // Server libs
 async function saveToServer(variableName, content) {
     var serverURL = 'https://snapextensions.uni-goettingen.de/handleTextfile.php';
@@ -265,11 +266,15 @@ async function savePackedData() {
                 if (partData === "end") break;
                 if (partData === "ERROR: file does not exist") {
                     showNotification("Failed to save packed data: server responded with a 404", "#ffbaba");
+                    hideSaveProgressBar();
+                    savekeydebounce = false;
                     return;
                 }
             }
         } catch (error) {
             showNotification("Failed to save packed data: " + error, "#ffbaba");
+            hideSaveProgressBar();
+            savekeydebounce = false;
             return;
         } finally {
             hideSaveProgressBar();

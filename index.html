@@ -343,6 +343,48 @@
             }, 500);
             setTimeout(function () {
                 fixruffle();
+                if (!document.cookie.includes('rufflesave')) {
+                    document.addEventListener('contextmenu', function(e) {
+                        function addButton(text, onClick) {
+                            const contextMenu = shadowRoot.querySelector('#context-menu');
+                            
+                            if (contextMenu) {
+                                const menuItem = document.createElement('li');
+                                menuItem.className = 'menu-item';
+                                menuItem.textContent = text;
+                        
+                                menuItem.addEventListener('click', async function(e) {
+                                    e.preventDefault();
+                                    await onClick(e);
+                                });
+                        
+                                contextMenu.appendChild(menuItem);
+                            }
+                        }
+                        function addSeparator() {
+                            const contextMenu = shadowRoot.querySelector('#context-menu');
+                            
+                            if (contextMenu) {
+                                const separator = document.createElement('li');
+                                separator.className = 'menu-separator';
+                                separator.innerHTML = '<hr>';
+                        
+                                contextMenu.appendChild(separator);
+                            }
+                        }
+
+                        const contextMenu = shadowRoot.querySelector('#context-menu');
+                        
+                        if (contextMenu && contextMenu.lastElementChild) {
+                            contextMenu.removeChild(contextMenu.lastElementChild);
+                        }
+
+                        addButton('Back to games', async function() {
+                            shadowRoot.querySelector('#context-menu-overlay').classList.add("hidden");
+                            window.location.href = "/";
+                        });
+                    });
+                }
             }, 3000);
 
             (function() {

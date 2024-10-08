@@ -259,6 +259,7 @@ async function savePackedData() {
 
         let partIndex = 1;
         let allPartCheck = [];
+        let parsedData
         try {
             while (true) {
                 partIndex += 1;
@@ -274,9 +275,8 @@ async function savePackedData() {
                     allPartCheck.push(partData);
                 }
             }
-            let combinedData = allParts.join('');
-            let parsedData = JSON.parse(combinedData);
-            parsedData = parsedData.map(item => item.value);
+            let combinedData = allPartCheck.join('');
+            parsedData = JSON.parse(combinedData).map(item => item.value);
         } catch (error) {
             showNotification("Failed to save packed data: " + error, "#ffbaba");
             hideSaveProgressBar();

@@ -267,7 +267,7 @@ async function savePackedData() {
                 let partData = await loadUserData(`completeSave_part${partIndex}`);
                 if (partData === "end") break;
                 if (partData === "ERROR: file does not exist") {
-                    showNotification("Failed to save packed data: server responded with a 404", "#ffbaba");
+                    showNotification("Failed to check save data: server responded with a 404", "#ffbaba");
                     hideSaveProgressBar();
                     savekeydebounce = false;
                     return;
@@ -390,7 +390,7 @@ async function loadPackedData() {
         }
     });
 
-    showLoadingBar(); // Show loading bar in Ruffle container
+    showLoadingBar();
 
     try {
         while (true) {

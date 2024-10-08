@@ -283,9 +283,15 @@ async function savePackedData() {
             savekeydebounce = false;
             return;
         } finally {
-            alert(parsedData == chunks)
-            console.log(parsedData)
-            console.log(chunks)
+            let combinedData = allParts.join('');
+            let parsedData = JSON.parse(combinedData);
+    
+            parsedData.forEach(item => {
+                if (!localStorage.getItem(item.key) == item.value) {
+                    throw new Error("Data didn't save");
+                }
+            });
+
             hideSaveProgressBar();
             savekeydebounce = false;
             console.log("Data save finished.");

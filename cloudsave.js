@@ -541,13 +541,15 @@ function isB64SOL(str) {
 
 // Initialize the automatic load and reload process
 if (!new URLSearchParams(window.location.search).get('transfer')) {
-    autoLoadAndReload();
-    setInterval(async function(){
-        if (!shadowRoot.getElementById('saveProgressBarContainer') && document.hasFocus()){
-            showSaveProgressBar();
-            await savePackedData();
-        }
-    }, 60 * (3) * 1000); // 3 mins save interval
+    if (window.location.hash) { // disables auto load / save for local games
+        autoLoadAndReload();
+        setInterval(async function(){
+            if (!shadowRoot.getElementById('saveProgressBarContainer') && document.hasFocus()){
+                showSaveProgressBar();
+                await savePackedData();
+            }
+        }, 60 * (3) * 1000); // 3 mins save interval
+    }
 } else {
     const overlay = document.createElement('div');
     overlay.id = 'loadingOverlay';

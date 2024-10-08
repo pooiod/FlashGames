@@ -472,7 +472,7 @@ function showLoadingBar() {
     
     const loadingBar = document.createElement('div');
     loadingBar.style.height = '100%';
-    loadingBar.style.backgroundColor = '#2196F3';
+    loadingBar.style.backgroundColor = '#fff';
     loadingBar.style.width = '0%';
     loadingBar.style.transition = 'width 0.5s ease-in-out';
     

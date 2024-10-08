@@ -257,7 +257,7 @@ async function savePackedData() {
 
         console.log("Checking save data...");
 
-        let partIndex = 1;
+        let partIndex = 0;
         let allPartCheck = [];
         let parsedData
         try {
@@ -299,7 +299,7 @@ async function savePackedData() {
         }
     } catch (error) {
         showNotification("Failed to save packed data: " + error, "#ffbaba");
-        console.error("Failed to save packed data", error);
+        console.error("Failed to save packed data: " + error);
     }
 }
 

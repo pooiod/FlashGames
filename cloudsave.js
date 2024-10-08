@@ -1,3 +1,11 @@
+// anti dupe code:
+if (window.saveloader) {
+    return;
+} else {
+    window.saveloader = true;
+}
+
+
 // Server libs
 async function saveToServer(variableName, content) {
     var serverURL = 'https://snapextensions.uni-goettingen.de/handleTextfile.php';
@@ -126,7 +134,7 @@ function addSaveIcon() {
         rufflecontainer.appendChild(saveButton);
     } else {
         setTimeout(function(){
-            showNotification("Always save with the context menu before leaving!", "#fff");
+            // showNotification("Always save with the context menu before leaving!", "#fff");
         }, 1000);
     }
 }
@@ -225,6 +233,8 @@ setTimeout(function(){
 
 // Save data in chunks of 1000 chars
 async function savePackedData() {
+    console.log("Saving user data");
+
     let allData = [];
     Object.keys(localStorage).forEach(key => {
         let solData = localStorage.getItem(key);
@@ -249,6 +259,7 @@ async function savePackedData() {
         let partIndex = 1;
         try {
             while (true) {
+                partIndex += 1;
                 updateSaveProgressBar((partIndex) / chunks.length * 50 + 50);
                 let partData = await loadUserData(`completeSave_part${partIndex}`);
                 if (partData === "end") break;

@@ -283,7 +283,7 @@ async function savePackedData() {
             savekeydebounce = false;
             return;
         } finally {
-            let combinedData = allPartCheck.join(''); console.log(combinedData)
+            let combinedData = allPartCheck.join('');
             let parsedData = JSON.parse(combinedData);
     
             let index = 0;

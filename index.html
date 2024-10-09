@@ -494,20 +494,17 @@
         }
 
         async function loadGame(gameName) {
-            showLoading(true);
-            document.title = decodeURIComponent(gameName) + ".swf";
-            var item = await getGameByName(gameName);
-
-            stopreload = true;
-            window.location.hash = gameName;
-            setTimeout(function () {
-                stopreload = false;
-            }, 500);
-
-            console.log(games)
-            console.log(item);
-
             try {
+                showLoading(true);
+                document.title = decodeURIComponent(gameName) + ".swf";
+                var item = await getGameByName(gameName);
+
+                stopreload = true;
+                window.location.hash = gameName;
+                setTimeout(function () {
+                    stopreload = false;
+                }, 500);
+
                 if (!item && gameName != "login") {
                     throw new Error("Game not found");
                 }

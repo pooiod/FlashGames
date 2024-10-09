@@ -173,6 +173,7 @@
                 }
             }
             console.log(games)
+            name = decodeURI(name);
             const game = games.find(game => game.name === name);
             console.log(game)
             return game || null;

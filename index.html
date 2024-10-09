@@ -11,7 +11,7 @@
         var gamesJson = "games.json";
         var games = [];
         async function getGameByName(name) {
-            if (games == []) {
+            if (games == [] || !games) {
                 games = (await await fetch(gamesJson)).json();
                 console.log("games",games);
             }

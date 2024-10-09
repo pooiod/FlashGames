@@ -164,7 +164,7 @@
         var games = [];
         async function getGameByName(name) {
             console.log(games)
-            if (games == [] || !games || games.length < 1) {
+            if (games == [] || !games || games.length < 1) { console.log("updating");
                 games = [];
                 var tries = 0;
                 while (games.length < 1 && tries <= 20) {

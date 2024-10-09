@@ -1,26 +1,26 @@
 [
-  {"name": "mario63", "url": "/games/mario63.swf", "hidden": false},
+  {"name": "mario63", "url": "/games/mario63.swf", "hidden": false, "warning": "studders"},
 
   {"name": "Scratch", "url": "/games/Scratch.swf", "hidden": false, "warning": "unsuported"},
 
-  {"name": "mutalate a doll 2", "url": "/games/mutalate%20a%20doll%202.swf", "hidden": false},
+  {"name": "mutalate a doll 2", "url": "/games/mutalate%20a%20doll%202.swf", "hidden": false, "warning": "unsuported"},
 
   {"name": "Bloxorz", "url": "/games/Bloxorz.swf", "hidden": false},
 
-  {"name": "magic pen 2", "url": "/games/magic%20pen%202.swf", "hidden": false},
+  {"name": "magic pen 2", "url": "/games/magic%20pen%202.swf", "hidden": false, "warning": "studders"},
 
   {"name": "strikeforce-kitty-2", "url": "/games/strikeforce-kitty-2.swf", "hidden": false},
 
   {"name": "totaljerkface.com", "url": "/games/totaljerkface.com.swf", "hidden": false},
-  {"name": "HappyWheels", "url": "/games/HappyWheels.swf", "hidden": false},
+  {"name": "HappyWheels", "url": "/games/HappyWheels.swf", "hidden": false, "warning": "studders"},
 
   {"name": "bucket ball", "url": "/games/bucket%20ball.swf", "hidden": false},
 
   {"name": "2D world", "url": "/games/2D%20world.swf", "hidden": false},
 
-  {"name": "Learn to fly 1", "url": "/games/Learn%20to%20fly%201.swf", "hidden": false},
-  {"name": "Learn to fly 2", "url": "/games/Learn%20to%20fly%202.swf", "hidden": false},
-  {"name": "Learn to fly 3", "url": "/games/Learn%20to%20fly%203.swf", "hidden": false},
+  {"name": "Learn to fly 1", "url": "/games/Learn%20to%20fly%201.swf", "hidden": false, "warning": "studders"},
+  {"name": "Learn to fly 2", "url": "/games/Learn%20to%20fly%202.swf", "hidden": false, "warning": "studders"},
+  {"name": "Learn to fly 3", "url": "/games/Learn%20to%20fly%203.swf", "hidden": false, "warning": "studders"},
 
   {"name": "Worlds hardest game", "url": "/games/Worlds%20hardest%20game.swf", "hidden": false},
 
@@ -30,10 +30,10 @@
 
   {"name": "hexxagon", "url": "/games/hexxagon.swf", "hidden": false},
 
-  {"name": "jelly-truck", "url": "/games/jelly-truck.swf", "hidden": false},
+  {"name": "jelly-truck", "url": "/games/jelly-truck.swf", "hidden": false, "warning": "unsuported"},
 
-  {"name": "Red Ball 1", "url": "/games/Red%20Ball.swf", "hidden": false},
-  {"name": "Red Ball 2", "url": "/games/Red%20Ball%202.swf", "hidden": false},
+  {"name": "Red Ball 1", "url": "/games/Red%20Ball.swf", "hidden": false, "warning": "unsuported"},
+  {"name": "Red Ball 2", "url": "/games/Red%20Ball%202.swf", "hidden": false, "warning": "unsuported"},
   {"name": "Red Ball 3", "url": "/games/Red%20Ball%203.swf", "hidden": false},
   {"name": "Red Ball 4 Vol.1", "url": "/games/Red%20Ball%204%20Vol.1.swf", "hidden": false},
   {"name": "Red Ball 4 Vol.2", "url": "/games/Red%20Ball%204%20Vol.2.swf", "hidden": false},
@@ -64,26 +64,26 @@
 
   {"name": "Meat Boy", "url": "/games/Meat%20Boy.swf", "hidden": false},
 
-  {"name": "Bad Piggies HD", "url": "/games/Bad%20Piggies%20HD.swf", "hidden": false},
+  {"name": "Bad Piggies HD", "url": "/games/Bad%20Piggies%20HD.swf", "hidden": false, "warning": "studders"},
 
-  {"name": "Angry Birds", "url": "/games/Angry%20Birds.swf", "hidden": false},
-  {"name": "Angry Birds - Star Wars", "url": "/games/Angry%20Birds%20-%20Star%20Wars.swf", "hidden": false},
-  {"name": "Angry Birds Space", "url": "/games/Angry%20Birds%20Space.swf", "hidden": false},
-  {"name": "Angry Birds Rio", "url": "/games/Angry%20Birds%20Rio.swf", "hidden": false},
-  {"name": "Angry Birds Halloween", "url": "/games/Angry%20Birds%20Halloween.swf", "hidden": false},
+  {"name": "Angry Birds", "url": "/games/Angry%20Birds.swf", "hidden": false, "warning": "studders"},
+  {"name": "Angry Birds - Star Wars", "url": "/games/Angry%20Birds%20-%20Star%20Wars.swf", "hidden": false, "warning": "studders"},
+  {"name": "Angry Birds Space", "url": "/games/Angry%20Birds%20Space.swf", "hidden": false, "warning": "studders"},
+  {"name": "Angry Birds Rio", "url": "/games/Angry%20Birds%20Rio.swf", "hidden": false, "warning": "studders"},
+  {"name": "Angry Birds Halloween", "url": "/games/Angry%20Birds%20Halloween.swf", "hidden": false, "warning": "studders"},
 
-  {"name": "Ugly Birds 2", "url": "/games/Ugly%20Birds%202.swf", "hidden": false},
-  {"name": "Ugly Birds 1", "url": "/games/Ugly%20Birds%201.swf", "hidden": false},
+  {"name": "Ugly Birds 2", "url": "/games/Ugly%20Birds%202.swf", "hidden": false, "warning": "studders"},
+  {"name": "Ugly Birds 1", "url": "/games/Ugly%20Birds%201.swf", "hidden": false, "warning": "studders"},
 
   {"name": "qwop", "url": "/games/qwop.swf", "hidden": false},
 
   {"name": "The Fancy Pants Adventure 1", "url": "/games/The%20Fancy%20Pants%20Adventure%201.swf", "hidden": false},
   {"name": "The Fancy Pants Adventure 2", "url": "/games/The%20Fancy%20Pants%20Adventure%202.swf", "hidden": false},
 
-  {"name": "One-Man World", "url": "/games/One-Man%20World.swf", "hidden": false},
-  {"name": "Bombs and Bees", "url": "/games/Bombs%20and%20Bees.swf", "hidden": false},
-  {"name": "Car Chase 3D", "url": "/games/Car%20Chase%203D.swf", "hidden": false},
-  {"name": "sityopolis", "url": "/games/sityopolis.swf", "hidden": false},
+  {"name": "One-Man World", "url": "/games/One-Man%20World.swf", "hidden": false, "warning": "unsuported"},
+  {"name": "Bombs and Bees", "url": "/games/Bombs%20and%20Bees.swf", "hidden": false, "warning": "unsuported"},
+  {"name": "Car Chase 3D", "url": "/games/Car%20Chase%203D.swf", "hidden": false, "warning": "unsuported"},
+  {"name": "sityopolis", "url": "/games/sityopolis.swf", "hidden": false, "warning": "unsuported"},
 
   {"name": "Riddle transfer 2", "url": "/games/Riddle%20transfer%202.swf", "hidden": false},
   {"name": "Riddle transfer", "url": "/games/Riddle%20transfer.swf", "hidden": false},
@@ -99,20 +99,20 @@
 
   {"name": "ultimate flash sonic widescreen", "url": "/games/ultimate%20flash%20sonic%20widescreen.swf", "hidden": false},
 
-  {"name": "doodal", "url": "/games/doodal.swf", "hidden": false},
+  {"name": "doodal", "url": "/games/doodal.swf", "hidden": false, "warning": "studders"},
 
-  {"name": "Run 2", "url": "/games/Run%202.swf", "hidden": false},
-  {"name": "Run 3", "url": "/games/Run%203.swf", "hidden": false},
+  {"name": "Run 2", "url": "/games/Run%202.swf", "hidden": false, "warning": "studders"},
+  {"name": "Run 3", "url": "/games/Run%203.swf", "hidden": false, "warning": "studders"},
 
   {"name": "ATV Offroad Thunder", "url": "/games/ATV%20Offroad%20Thunder.swf", "hidden": false},
 
-  {"name": "dummy never fails", "url": "/games/dummy%20never%20fails.swf", "hidden": false},
+  {"name": "dummy never fails", "url": "/games/dummy%20never%20fails.swf", "hidden": false, "warning": "studders"},
 
   {"name": "hardest game", "url": "/games/hardest%20game.swf", "hidden": false},
 
   {"name": "Boloons td 1", "url": "/games/Boloons%20td%201.swf", "hidden": false},
   {"name": "Boloons td 4", "url": "/games/Boloons%20td%204.swf", "hidden": false},
-  {"name": "bloons tower defense 5", "url": "/games/bloons%20tower%20defense%205.swf", "hidden": false},
+  {"name": "bloons tower defense 5", "url": "/games/bloons%20tower%20defense%205.swf", "hidden": false, "warning": "studders"},
 
   {"name": "Papas Freezeria", "url": "/games/Papas%20Freezeria.swf", "hidden": false},
   {"name": "Papas Pizzeria", "url": "/games/Papas%20Pizzeria.swf", "hidden": false},

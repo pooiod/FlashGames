@@ -163,19 +163,16 @@
         var gamesJson = "/games.json";
         var games = [];
         async function getGameByName(name) {
-            console.log(games)
-            if (games == [] || !games || games.length < 1) { console.log("starting update");
+            if (games == [] || !games || games.length < 1) {
                 games = [];
                 var tries = 0;
-                while (games.length < 1 && tries <= 20) {console.log("updating");
+                while (games.length < 1 && tries <= 20) {
                     var games = await (await fetch(gamesJson)).json();
                     tries += 1;
                 }
             }
-            console.log(games)
             name = decodeURI(name);
             const game = games.find(game => game.name === name);
-            console.log(game)
             return game || null;
         }
         var warnings = {

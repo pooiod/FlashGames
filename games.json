@@ -1,124 +1,130 @@
-[ 
-  "mario63",
-  
-  "Scratch",
-  
-  "mutalate a doll 2",
-  
-  "Bloxorz",
+[
+  {"name": "mario63", "url": "/games/mario63.swf", "hidden": false},
 
-  "magic pen 2",
-  
-  "strikeforce-kitty-2",
-  
-  "totaljerkface.com",
-  "HappyWheels",
+  {"name": "Scratch", "url": "/games/Scratch.swf", "hidden": false},
 
-  "bucket ball",
+  {"name": "mutalate a doll 2", "url": "/games/mutalate%20a%20doll%202.swf", "hidden": false},
 
-  "2D world",
+  {"name": "Bloxorz", "url": "/games/Bloxorz.swf", "hidden": false},
 
-  "Learn to fly 1",
-  "Learn to fly 2",
-  "Learn to fly 3",
+  {"name": "magic pen 2", "url": "/games/magic%20pen%202.swf", "hidden": false},
 
-  "Worlds hardest game",
+  {"name": "strikeforce-kitty-2", "url": "/games/strikeforce-kitty-2.swf", "hidden": false},
 
-  "bejeweled 2",
-  "cut the rope",
-  "hexxagon",
+  {"name": "totaljerkface.com", "url": "/games/totaljerkface.com.swf", "hidden": false},
+  {"name": "HappyWheels", "url": "/games/HappyWheels.swf", "hidden": false},
 
-  "jelly-truck",
+  {"name": "bucket ball", "url": "/games/bucket%20ball.swf", "hidden": false},
 
-  "Red Ball",
-  "Red Ball 2",
-  "Red Ball 3",
-  "Red Ball 4 Vol.1",
-  "Red Ball 4 Vol.2",
-  "Red Ball 4 Vol.3",
-  
-  "Red&Blue Balls",
-  "Red&Blue Balls 2",
-  "Red&Blue Balls 3",
+  {"name": "2D world", "url": "/games/2D%20world.swf", "hidden": false},
 
-  "flappy bird",
+  {"name": "Learn to fly 1", "url": "/games/Learn%20to%20fly%201.swf", "hidden": false},
+  {"name": "Learn to fly 2", "url": "/games/Learn%20to%20fly%202.swf", "hidden": false},
+  {"name": "Learn to fly 3", "url": "/games/Learn%20to%20fly%203.swf", "hidden": false},
 
-  "pacxon",
-  "Bang, Boom, Splat!",
-  "5asterisk30α",
+  {"name": "Worlds hardest game", "url": "/games/Worlds%20hardest%20game.swf", "hidden": false},
 
-  "bowman",
-  
-  "Duck life 4",
-  "Duck life 3",
-  "Duck life 2",
-  "Duck life 1",
+  {"name": "bejeweled 2", "url": "/games/bejeweled%202.swf", "hidden": false},
 
-  "The worlds easiest game",
-  "The impossible quiz",
-  
-  "Meat Boy",
+  {"name": "cut the rope", "url": "/games/cut%20the%20rope.swf", "hidden": false},
 
-  "Bad Piggies HD",
+  {"name": "hexxagon", "url": "/games/hexxagon.swf", "hidden": false},
 
-  "Angry Birds",
-  "Angry Birds - Star Wars",
-  "Angry Birds Space",
-  "Angry Birds Rio",
-  "Angry Birds Halloween",
+  {"name": "jelly-truck", "url": "/games/jelly-truck.swf", "hidden": false},
 
-  "Ugly Birds 2",
-  "Ugly Birds 1",
+  {"name": "Red Ball 1", "url": "/games/Red%20Ball.swf", "hidden": false},
+  {"name": "Red Ball 2", "url": "/games/Red%20Ball%202.swf", "hidden": false},
+  {"name": "Red Ball 3", "url": "/games/Red%20Ball%203.swf", "hidden": false},
+  {"name": "Red Ball 4 Vol.1", "url": "/games/Red%20Ball%204%20Vol.1.swf", "hidden": false},
+  {"name": "Red Ball 4 Vol.2", "url": "/games/Red%20Ball%204%20Vol.2.swf", "hidden": false},
+  {"name": "Red Ball 4 Vol.3", "url": "/games/Red%20Ball%204%20Vol.3.swf", "hidden": false},
 
-  "qwop",
+  {"name": "Red&Blue Balls", "url": "/games/Red&Blue%20Balls.swf", "hidden": false},
+  {"name": "Red&Blue Balls 2", "url": "/games/Red&Blue%20Balls%202.swf", "hidden": false},
+  {"name": "Red&Blue Balls 3", "url": "/games/Red&Blue%20Balls%203.swf", "hidden": false},
 
-  "The Fancy Pants Adventure 1",
-  "The Fancy Pants Adventure 2",
+  {"name": "flappy bird", "url": "/games/flappy%20bird.swf", "hidden": false},
 
-  "One-Man World",
-  "Bombs and Bees",
-  "Car Chase 3D",
-  "sityopolis",
+  {"name": "pacxon", "url": "/games/pacxon.swf", "hidden": false},
 
-  "Riddle transfer 2",
-  "Riddle transfer",
-  "Riddle school 5",
-  "Riddle school 4",
-  "Riddle school 3",
-  "Riddle school 2",
-  "Riddle school 1",
+  {"name": "Bang, Boom, Splat!", "url": "/games/Bang,%20Boom,%20Splat!.swf", "hidden": false},
 
-  "2048",
-  
-  "Line Rider",
-    
-  "ultimate flash sonic widescreen",
+  {"name": "5asterisk30α", "url": "/games/5asterisk30%CE%B1.swf", "hidden": false},
 
-  "doodal",
+  {"name": "bowman", "url": "/games/bowman.swf", "hidden": false},
 
-  "Run 2",
-  "Run 3",
+  {"name": "Duck life 4", "url": "/games/Duck%20life%204.swf", "hidden": false},
+  {"name": "Duck life 3", "url": "/games/Duck%20life%203.swf", "hidden": false},
+  {"name": "Duck life 2", "url": "/games/Duck%20life%202.swf", "hidden": false},
+  {"name": "Duck life 1", "url": "/games/Duck%20life%201.swf", "hidden": false},
 
-  "ATV Offroad Thunder",
-  "dummy never fails",
+  {"name": "The worlds easiest game", "url": "/games/The%20worlds%20easiest%20game.swf", "hidden": false},
 
-  "hardest game",
+  {"name": "The impossible quiz", "url": "/games/The%20impossible%20quiz.swf", "hidden": false},
 
-  "Boloons td 1",
-  "Boloons td 4",
-  "bloons tower defense 5",
+  {"name": "Meat Boy", "url": "/games/Meat%20Boy.swf", "hidden": false},
 
-  "Papas Freezeria",
-  "Papas Pizzeria",
-  "papas burgeria",
-  "papas donuteria",
-  "papas wingeria",
-  "papas pastaria",
-  "papas pancakeria",
-  "papas scooperia",
-  "papas cupcakeria",
+  {"name": "Bad Piggies HD", "url": "/games/Bad%20Piggies%20HD.swf", "hidden": false},
 
-  "Portal flash 2D",
+  {"name": "Angry Birds", "url": "/games/Angry%20Birds.swf", "hidden": false},
+  {"name": "Angry Birds - Star Wars", "url": "/games/Angry%20Birds%20-%20Star%20Wars.swf", "hidden": false},
+  {"name": "Angry Birds Space", "url": "/games/Angry%20Birds%20Space.swf", "hidden": false},
+  {"name": "Angry Birds Rio", "url": "/games/Angry%20Birds%20Rio.swf", "hidden": false},
+  {"name": "Angry Birds Halloween", "url": "/games/Angry%20Birds%20Halloween.swf", "hidden": false},
 
-  "Jefs big adventure"
+  {"name": "Ugly Birds 2", "url": "/games/Ugly%20Birds%202.swf", "hidden": false},
+  {"name": "Ugly Birds 1", "url": "/games/Ugly%20Birds%201.swf", "hidden": false},
+
+  {"name": "qwop", "url": "/games/qwop.swf", "hidden": false},
+
+  {"name": "The Fancy Pants Adventure 1", "url": "/games/The%20Fancy%20Pants%20Adventure%201.swf", "hidden": false},
+  {"name": "The Fancy Pants Adventure 2", "url": "/games/The%20Fancy%20Pants%20Adventure%202.swf", "hidden": false},
+
+  {"name": "One-Man World", "url": "/games/One-Man%20World.swf", "hidden": false},
+  {"name": "Bombs and Bees", "url": "/games/Bombs%20and%20Bees.swf", "hidden": false},
+  {"name": "Car Chase 3D", "url": "/games/Car%20Chase%203D.swf", "hidden": false},
+  {"name": "sityopolis", "url": "/games/sityopolis.swf", "hidden": false},
+
+  {"name": "Riddle transfer 2", "url": "/games/Riddle%20transfer%202.swf", "hidden": false},
+  {"name": "Riddle transfer", "url": "/games/Riddle%20transfer.swf", "hidden": false},
+  {"name": "Riddle school 5", "url": "/games/Riddle%20school%205.swf", "hidden": false},
+  {"name": "Riddle school 4", "url": "/games/Riddle%20school%204.swf", "hidden": false},
+  {"name": "Riddle school 3", "url": "/games/Riddle%20school%203.swf", "hidden": false},
+  {"name": "Riddle school 2", "url": "/games/Riddle%20school%202.swf", "hidden": false},
+  {"name": "Riddle school 1", "url": "/games/Riddle%20school%201.swf", "hidden": false},
+
+  {"name": "2048", "url": "/games/2048.swf", "hidden": false},
+
+  {"name": "Line Rider", "url": "/games/Line%20Rider.swf", "hidden": false},
+
+  {"name": "ultimate flash sonic widescreen", "url": "/games/ultimate%20flash%20sonic%20widescreen.swf", "hidden": false},
+
+  {"name": "doodal", "url": "/games/doodal.swf", "hidden": false},
+
+  {"name": "Run 2", "url": "/games/Run%202.swf", "hidden": false},
+  {"name": "Run 3", "url": "/games/Run%203.swf", "hidden": false},
+
+  {"name": "ATV Offroad Thunder", "url": "/games/ATV%20Offroad%20Thunder.swf", "hidden": false},
+
+  {"name": "dummy never fails", "url": "/games/dummy%20never%20fails.swf", "hidden": false},
+
+  {"name": "hardest game", "url": "/games/hardest%20game.swf", "hidden": false},
+
+  {"name": "Boloons td 1", "url": "/games/Boloons%20td%201.swf", "hidden": false},
+  {"name": "Boloons td 4", "url": "/games/Boloons%20td%204.swf", "hidden": false},
+  {"name": "bloons tower defense 5", "url": "/games/bloons%20tower%20defense%205.swf", "hidden": false},
+
+  {"name": "Papas Freezeria", "url": "/games/Papas%20Freezeria.swf", "hidden": false},
+  {"name": "Papas Pizzeria", "url": "/games/Papas%20Pizzeria.swf", "hidden": false},
+  {"name": "papas burgeria", "url": "/games/papas%20burgeria.swf", "hidden": false},
+  {"name": "papas donuteria", "url": "/games/papas%20donuteria.swf", "hidden": false},
+  {"name": "papas wingeria", "url": "/games/papas%20wingeria.swf", "hidden": false},
+  {"name": "papas pastaria", "url": "/games/papas%20pastaria.swf", "hidden": false},
+  {"name": "papas pancakeria", "url": "/games/papas%20pancakeria.swf", "hidden": false},
+  {"name": "papas scooperia", "url": "/games/papas%20scooperia.swf", "hidden": false},
+  {"name": "papas cupcakeria", "url": "/games/papas%20cupcakeria.swf", "hidden": false},
+
+  {"name": "Portal flash 2D", "url": "/games/Portal%20flash%202D.swf", "hidden": false},
+
+  {"name": "Jefs big adventure", "url": "/games/Jefs%20big%20adventure.swf", "hidden": false, "scary": true}
 ]

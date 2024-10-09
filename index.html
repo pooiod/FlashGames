@@ -9,37 +9,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
         var gamesJson = "games.json";
-        var gamesPath = "games";
-        var lowperformance = [
-            "One-Man World",
-            "jelly-truck",
-            "mutalate a doll 2",
-            "sityopolis",
-            "Bombs and Bees",
-            "Car Chase 3D",
-            "Red Ball - Definitive Edition",
-            "Red Ball 2 - Definitive Edition",
-        ];
-        var somestudders = [
-            "bloons tower defense 5",
-            "Run 2",
-            "Run 3",
-            "HappyWheels",
-            "Red Ball 3 - Definitive Edition",
-            "mario63",
-            "Angry Birds",
-            "Angry Birds - Star Wars",
-            "Angry Birds Space",
-            "Angry Birds Rio",
-            "Angry Birds Halloween",
-            "Ugly Birds 2",
-            "Ugly Birds 1"
-        ];
-        var linkwarning = [
-            "Learn to fly 3",
-            "Red&Blue Balls 2 - Definitive Edition",
-            "Run 3"
-        ];
+        var games = [];
+        function getGameByName(name) {
+            const game = games.find(game => game.name === name);
+            return game ? JSON.stringify(game) : null;
+        }
     </script>
     <style>
         body {
@@ -426,7 +400,7 @@
             showLoading(true);
             try {
                 const response = await fetch(gamesJson);
-                const gameNames = await response.json();
+                games = await response.json();
                 
                 const customSwfItem = document.createElement('div');
                 customSwfItem.classList.add('game-item');
@@ -434,7 +408,8 @@
                 customSwfItem.onclick = () => fileInput.click();
                 gameList.appendChild(customSwfItem);
                 
-                gameNames.forEach(gameName => {
+                games.forEach(item => {
+                    var gameName = item.name;
                     var gameItem = document.createElement('div');
                     gameItem.classList.add('game-item');
                     gameItem.textContent = gameName;
@@ -451,18 +426,18 @@
                         }, 500);
                     };
                 
-                    setTimeout(function(){
-                        if (!isFlashSupported()) {
-                            if (lowperformance.includes(gameName)) {
-                                gameItem.classList.add('lowsupport');
-                            } else if (somestudders.includes(gameName)) {
-                                gameItem.classList.add('lowperformance');
-                                gameItem.appendChild(downloadButton);
-                            } else {
-                                gameItem.appendChild(downloadButton);
-                            }
-                        }
-                    }, 100);
+                    // setTimeout(function(){
+                    //     if (!isFlashSupported()) {
+                    //         if (lowperformance.includes(gameName)) {
+                    //             gameItem.classList.add('lowsupport');
+                    //         } else if (somestudders.includes(gameName)) {
+                    //             gameItem.classList.add('lowperformance');
+                    //             gameItem.appendChild(downloadButton);
+                    //         } else {
+                    //             gameItem.appendChild(downloadButton);
+                    //         }
+                    //     }
+                    // }, 100);
                 
                     gameItem.onclick = (event) => {
                         if (event.ctrlKey) {
@@ -475,7 +450,9 @@
                         }
                     };
                 
-                    gameList.appendChild(gameItem);
+                    if (!item.hidden) {
+                        gameList.appendChild(gameItem);
+                    }
                 });
                 
                 if (gameList.children.length === 0) {
@@ -510,6 +487,7 @@
         async function loadGame(gameName) {
             showLoading(true);
             document.title = decodeURIComponent(gameName) + ".swf";
+            var item = getGameByName(gameName);
 
             stopreload = true;
             window.location.hash = gameName;
@@ -518,7 +496,7 @@
             }, 500);
 
             try {
-                const gameUrl = `${gamesPath}/${gameName}.swf`;
+                const gameUrl = `item.url`;
                 gameContainer.innerHTML = `<object data="${gameUrl}" type="application/x-shockwave-flash"></object>`;
                 gameContainer.style.display = "block";
                 loadruffle();
@@ -530,9 +508,11 @@
             }
         }
 
-        function handleHash() {
+        async function handleHash() {
             const hash = window.location.hash.substring(1);
             if (hash) {
+                const response = await fetch(gamesJson);
+                games = await response.json();
                 loadGame(hash);
             }
         }

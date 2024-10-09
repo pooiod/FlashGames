@@ -16,7 +16,7 @@
                 console.log("games",games);
             }
             const game = games.find(game => game.name === name);
-            return game ? JSON.stringify(game) : null;
+            return game ? game : null;
         }
         var warnings = {
             unsuported: ["This game is not yet fully supported by ruffle, try <a href='https://flash.pm'><p style='display:inline;color:white;'>flash.pm</p></a> for a better gaming experience.", "5000"],

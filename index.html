@@ -307,7 +307,7 @@
         }
 
         var ruffleused = false;
-        function loadruffle() { 
+        function loadruffle(item) { 
             document.getElementById('gameListContainer').style.display = 'none';
             setTimeout(function () {
                 fixruffle();
@@ -378,19 +378,21 @@
 
                 installedActuallFlash = isFlashSupported();
 
-                if (lowperformance.includes(decodeURIComponent(window.location.hash.substring(1)))) {
-                    displaymessage("This game is not yet fully supported by ruffle, try <a href='https://flash.pm'><p style='display:inline;color:white;'>flash.pm</p></a> for a better gaming experience.", 5000);              
-                } else if (somestudders.includes(decodeURIComponent(window.location.hash.substring(1)))) {
-                    displaymessage("You may experience ocasional studders while playing this game.", 5000);
-                    setTimeout(function(){
-                        if (linkwarning.includes(decodeURIComponent(window.location.hash.substring(1)))) {
-                            displaymessage("Some external links may cause game crashing and data loss.", 3000);
-                        }
-                    }, 5000);
-                } else if (linkwarning.includes(decodeURIComponent(window.location.hash.substring(1)))) {
-                    displaymessage("Some external links may cause game crashing and data loss.", 3000);
-                } if (decodeURIComponent(window.location.hash.substring(1)) == "Jefs big adventure") {
-                    displaymessage("Loud sound warning!", 5000);
+                if (item) {
+                    if (lowperformance.includes(decodeURIComponent(window.location.hash.substring(1)))) {
+                        displaymessage("This game is not yet fully supported by ruffle, try <a href='https://flash.pm'><p style='display:inline;color:white;'>flash.pm</p></a> for a better gaming experience.", 5000);              
+                    } else if (somestudders.includes(decodeURIComponent(window.location.hash.substring(1)))) {
+                        displaymessage("You may experience ocasional studders while playing this game.", 5000);
+                        setTimeout(function(){
+                            if (linkwarning.includes(decodeURIComponent(window.location.hash.substring(1)))) {
+                                displaymessage("Some external links may cause game crashing and data loss.", 3000);
+                            }
+                        }, 5000);
+                    } else if (linkwarning.includes(decodeURIComponent(window.location.hash.substring(1)))) {
+                        displaymessage("Some external links may cause game crashing and data loss.", 3000);
+                    } if (decodeURIComponent(window.location.hash.substring(1)) == "Jefs big adventure") {
+                        displaymessage("Loud sound warning!", 5000);
+                    }
                 }
             }
         }
@@ -499,7 +501,7 @@
                 const gameUrl = `item.url`;
                 gameContainer.innerHTML = `<object data="${gameUrl}" type="application/x-shockwave-flash"></object>`;
                 gameContainer.style.display = "block";
-                loadruffle();
+                loadruffle(item);
                 window.location.hash = `#${gameName}`;
             } catch (error) {
                 showError(`Error loading game: ${error.message}`);

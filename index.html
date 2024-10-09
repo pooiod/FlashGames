@@ -15,6 +15,7 @@
                 games = (await await fetch(gamesJson)).json();
             }
             const game = games.find(game => game.name === name);
+            console.log(game)
             return game || null;
         }
         var warnings = {

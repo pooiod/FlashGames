@@ -11,6 +11,7 @@
         var gamesJson = "/games.json";
         var games = [];
         async function getGameByName(name) {
+            console.log(games)
             if (games == [] || !games || games.length < 1) {
                 games = [];
                 var tries = 0;
@@ -19,6 +20,7 @@
                     tries += 1;
                 }
             }
+            console.log(games)
             const game = games.find(game => game.name === name);
             return game || null;
         }

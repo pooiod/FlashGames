@@ -490,7 +490,7 @@
             document.title = decodeURIComponent(gameName) + ".swf";
             var item = await getGameByName(gameName);
             if (!item) {
-                alert("game not found");
+                throw new Error("Game not found");
             }
 
             stopreload = true;

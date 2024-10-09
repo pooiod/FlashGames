@@ -239,7 +239,7 @@ async function savePackedData() {
     let allData = [];
     Object.keys(localStorage).forEach(key => {
         let solData = localStorage.getItem(key);
-        if (isB64SOL(solData)) {
+        if (isB64SOL(solData, key)) {
             allData.push({ key: key, value: solData });
         }
     });
@@ -385,7 +385,7 @@ async function loadPackedData() {
 
     Object.keys(localStorage).forEach(key => {
         let solData = localStorage.getItem(key);
-        if (isB64SOL(solData)) {
+        if (isB64SOL(solData, key)) {
             localStorage.removeItem(key);
         }
     });
@@ -547,12 +547,12 @@ async function autoLoadAndReload() {
 }
 
 // Utility function to check if the data is Base64 SOL
-function isB64SOL(str) {
+function isB64SOL(str, name) {
     try {
         let decodedData = atob(str);
-        return decodedData.slice(6, 10) === 'TCSO';
+        return decodedData.slice(6, 10) === 'TCSO' || name ~= "loadedData";
     } catch(e) {
-        return false;
+        return name ~= "loadedData";
     }
 }
 

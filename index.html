@@ -11,11 +11,10 @@
         var gamesJson = "games.json";
         var games = [];
         async function getGameByName(name) {
-            if (games == [] || !games) {
+            if (games == [] || !games || true) {
                 games = (await await fetch(gamesJson)).json();
             }
             const game = games.find(game => game.name === name);
-            console.log(game)
             return game || null;
         }
         var warnings = {

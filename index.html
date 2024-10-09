@@ -493,7 +493,7 @@
             }, 500);
 
             try {
-                const gameUrl = `item.url`;
+                const gameUrl = item.url;
                 gameContainer.innerHTML = `<object data="${gameUrl}" type="application/x-shockwave-flash"></object>`;
                 gameContainer.style.display = "block";
                 loadruffle(item);

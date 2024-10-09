@@ -12,7 +12,7 @@
         var games = [];
         async function getGameByName(name) {
             if (games == [] || !games || true) {
-                games = (await fetch(gamesJson)).json();
+                games = await (await fetch(gamesJson)).json();
                 console.log(games);
             }
             const game = games.find(game => game.name === name);

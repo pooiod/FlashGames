@@ -7,30 +7,6 @@
     <title>Flash Loader</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script>
-        var gamesJson = "/games.json";
-        var games = [];
-        async function getGameByName(name) {
-            console.log(games)
-            if (games == [] || !games || games.length < 1) {
-                games = [];
-                var tries = 0;
-                while (games.length < 1 && tries <= 20) {
-                    var games = await (await fetch(gamesJson)).json();
-                    tries += 1;
-                }
-            }
-            console.log(games)
-            const game = games.find(game => game.name === name);
-            return game || null;
-        }
-        var warnings = {
-            unsuported: ["This game is not yet fully supported by ruffle, try <a href='https://flash.pm'><p style='display:inline;color:white;'>flash.pm</p></a> for a better gaming experience.", "5000"],
-            badlinks: ["Some external links may cause game crashing and data loss.", 3000],
-            studders: ["You may experience ocasional studders while playing this game.", "5000"],
-            jumpscare: ["Warning: scary!", 3000]
-        }
-    </script>
     <style>
         body {
             margin: 0;
@@ -183,6 +159,29 @@
         const gameContainer = document.getElementById('gameContainer');
         const fileInput = document.getElementById('fileInput');
         const searchBar = document.getElementById('searchBar');
+
+        var gamesJson = "/games.json";
+        var games = [];
+        async function getGameByName(name) {
+            console.log(games)
+            if (games == [] || !games || games.length < 1) {
+                games = [];
+                var tries = 0;
+                while (games.length < 1 && tries <= 20) {
+                    var games = await (await fetch(gamesJson)).json();
+                    tries += 1;
+                }
+            }
+            console.log(games)
+            const game = games.find(game => game.name === name);
+            return game || null;
+        }
+        var warnings = {
+            unsuported: ["This game is not yet fully supported by ruffle, try <a href='https://flash.pm'><p style='display:inline;color:white;'>flash.pm</p></a> for a better gaming experience.", "5000"],
+            badlinks: ["Some external links may cause game crashing and data loss.", 3000],
+            studders: ["You may experience ocasional studders while playing this game.", "5000"],
+            jumpscare: ["Warning: scary!", 3000]
+        }
 
         var installedActuallFlash = false;
         function isFlashSupported() {

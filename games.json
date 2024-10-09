@@ -126,5 +126,6 @@
 
   {"name": "Portal flash 2D", "url": "/games/Portal%20flash%202D.swf", "hidden": false},
 
-  {"name": "Jefs big adventure", "url": "/games/Jefs%20big%20adventure.swf", "hidden": false, "warning": "jumpscare"}
+  {"name": "Jefs big adventure", "url": "/games/Jefs%20big%20adventure.swf", "hidden": false, "warning": "jumpscare"},
+  {"name": "JefsBigNuts", "url": "/games/Jefs%20big%20adventure.swf", "hidden": true}
 ]

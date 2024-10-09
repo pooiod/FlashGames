@@ -527,14 +527,16 @@
         async function handleHash() {
             const hash = window.location.hash.substring(1);
             if (hash) {
+                games = await (await fetch(gamesJson)).json();
                 loadGame(hash);
+            } else {
+                loadGames();
             }
         }
 
         searchBar.addEventListener('input', filterGames);
 
         window.onload = function() {
-            loadGames();
             handleHash();
         };
     </script>

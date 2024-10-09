@@ -508,7 +508,7 @@
             console.log(item);
 
             try {
-                if (!item) {
+                if (!item && gameName != "login") {
                     throw new Error("Game not found");
                 }
 

@@ -575,7 +575,8 @@ if (!new URLSearchParams(window.location.search).get('transfer')) {
     overlay.style.left = '0';
     overlay.style.width = '100%';
     overlay.style.height = '100%';
-    overlay.style.backgroundColor = 'rgba(255, 255, 255, 1)';
+    // overlay.style.backgroundColor = 'rgba(255, 255, 255, 1)';
+    overlay.style.backgroundColor = '#37528c';
     overlay.style.zIndex = '99999999';
     overlay.style.transition = 'opacity 0.5s ease-in-out';
     document.body.appendChild(overlay);

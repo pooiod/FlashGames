@@ -426,18 +426,18 @@
                         }, 500);
                     };
                 
-                    // setTimeout(function(){
-                    //     if (!isFlashSupported()) {
-                    //         if (lowperformance.includes(gameName)) {
-                    //             gameItem.classList.add('lowsupport');
-                    //         } else if (somestudders.includes(gameName)) {
-                    //             gameItem.classList.add('lowperformance');
-                    //             gameItem.appendChild(downloadButton);
-                    //         } else {
-                    //             gameItem.appendChild(downloadButton);
-                    //         }
-                    //     }
-                    // }, 100);
+                    setTimeout(function(){
+                        if (!isFlashSupported()) {
+                            if (item.warning && item.warning == "unsuported") {
+                                gameItem.classList.add('lowsupport');
+                            } else if (item.warning && item.warning == "studders") {
+                                gameItem.classList.add('lowperformance');
+                                gameItem.appendChild(downloadButton);
+                            } else {
+                                gameItem.appendChild(downloadButton);
+                            }
+                        }
+                    }, 100);
                 
                     gameItem.onclick = (event) => {
                         if (event.ctrlKey) {

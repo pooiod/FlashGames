@@ -489,9 +489,6 @@
             showLoading(true);
             document.title = decodeURIComponent(gameName) + ".swf";
             var item = await getGameByName(gameName);
-            if (!item) {
-                throw new Error("Game not found");
-            }
 
             stopreload = true;
             window.location.hash = gameName;
@@ -502,6 +499,10 @@
             console.log(item);
 
             try {
+                if (!item) {
+                    throw new Error("Game not found");
+                }
+                
                 const gameUrl = item.url;
                 gameContainer.innerHTML = `<object data="${gameUrl}" type="application/x-shockwave-flash"></object>`;
                 gameContainer.style.display = "block";

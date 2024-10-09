@@ -11,9 +11,9 @@
         var gamesJson = "games.json";
         var games = [];
         async function getGameByName(name) {
-            if (games == [] || !games || true) {
+            await games;
+            if (games == [] || !games) {
                 games = await (await fetch(gamesJson)).json();
-                console.log(games);
             }
             const game = games.find(game => game.name === name);
             return game || null;

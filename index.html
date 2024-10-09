@@ -488,7 +488,7 @@
         async function loadGame(gameName) {
             showLoading(true);
             document.title = decodeURIComponent(gameName) + ".swf";
-            var item = getGameByName(gameName);
+            var item = await getGameByName(gameName);
 
             stopreload = true;
             window.location.hash = gameName;

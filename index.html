@@ -15,8 +15,7 @@
                 games = [];
                 var tries = 0;
                 while (games == [] && tries <= 20) {
-                    var games2 = await (await fetch(gamesJson)).json();
-                    if (games2 != []) games = games2;
+                    var games = await (await fetch(gamesJson)).json();
                     tries += 1;
                 }
             }

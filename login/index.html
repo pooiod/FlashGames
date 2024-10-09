@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,7 +9,7 @@
         body {
             background-color: #2b3f6c;
             font-family: Arial, sans-serif;
-            color: #333;
+            color: #fff;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -19,7 +20,8 @@
             background-color: #37528c;
             padding: 2rem;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(234, 234, 234, 0.1);
+            /*box-shadow: 0 4px 8px rgba(234, 234, 234, 0.1);*/
+            border: 1px solid #4262a8;
             max-width: 400px;
             width: 100%;
         }
@@ -40,7 +42,9 @@
         .login-field input[type="password"] {
             width: 100%;
             padding: 0.5rem;
-            border: 1px solid #4565aa;
+            background: #25365c;
+            color: #fff;
+            border: 1px solid #4262a8;
             border-radius: 4px;
             font-size: 1rem;
             box-sizing: border-box;
@@ -56,24 +60,24 @@
         .login-button {
             width: 100%;
             padding: 0.75rem;
-            background-color: #285e2a;
-            color: #000;
-            border: none;
+            background-color: #334b80;
+            color: #fff;
+            border: 1px solid #4262a8;
             border-radius: 4px;
             font-size: 1rem;
             cursor: pointer;
         }
         .login-button:hover {
-            background-color: #2e6b31;
+            background-color: #2b3f6c;
         }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <div class="login-header">FlashLoader Login / Signup</div>
+        <div class="login-header"><b>FlashLoader</b> Login / Signup</div>
         <div class="login-field">
             <input type="text" id="username" name="username" value="Ruffle Save Code" style="display: none;">
-            <label for="password">Login code</label>
+            <label for="password">Login code:</label>
             <input type="password" id="password">
         </div>
         <div class="login-checkbox">
@@ -81,7 +85,7 @@
             <label for="remember">Remember me for 3 months</label>
         </div>
         <button class="login-button" onclick="savePassword(false)">Login</button>
-        <button class="login-button" onclick="savePassword(true)" style="margin-top: 5px;">Create account</button>
+        <button class="login-button" onclick="savePassword(true)" style="margin-top: 10px;">Create account</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
@@ -99,6 +103,7 @@
             }
         }
         function savePassword(transfer) {
+            document.querySelector('.login-container').style.display = 'none';
             var password = document.getElementById('password').value;
             var hashedPassword = CryptoJS.MD5(password).toString();
             var expires = document.getElementById('remember').checked ? 90 : 1;
@@ -111,7 +116,7 @@
                 var passwordMD5hash = document.cookie.split('; ').find(row => row.startsWith('rufflesave=')).split('=')[1];
                 loadFromServer("Rufflesavedatafromid" + hashedPassword + "completeSave_part1").then(function(dat){
                     if (dat != "ERROR: file does not exist") {
-                        transfer = confirm("Do you want to replace all data on this account with your current local data?");
+                        transfer = confirm("This account already exists, do you want to replace all data on this account with your current local data?");
                         window.location.href = transfer?"/?transfer=true#login":"/";
                     } else {
                         window.location.href = "/?transfer=true#login";

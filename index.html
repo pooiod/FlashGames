@@ -11,10 +11,10 @@
         var gamesJson = "/games.json";
         var games = [];
         async function getGameByName(name) {
-            if (games == [] || !games || true) {
+            if (games == [] || !games || games.length < 1) {
                 games = [];
                 var tries = 0;
-                while (games == [] && tries <= 20) {
+                while (games.length < 1 && tries <= 20) {
                     var games = await (await fetch(gamesJson)).json();
                     tries += 1;
                 }

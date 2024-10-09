@@ -164,10 +164,10 @@
         var games = [];
         async function getGameByName(name) {
             console.log(games)
-            if (games == [] || !games || games.length < 1) { console.log("updating");
+            if (games == [] || !games || games.length < 1) { console.log("starting update");
                 games = [];
                 var tries = 0;
-                while (games.length < 1 && tries <= 20) {
+                while (games.length < 1 && tries <= 20) {console.log("updating");
                     var games = await (await fetch(gamesJson)).json();
                     tries += 1;
                 }
@@ -515,7 +515,7 @@
                     throw new Error("Failed to find swf");
                 }
 
-                var gameUrl;
+                var gameUrl = "";
                 if (gameName != "login") {
                     gameUrl = item.url;
                 }

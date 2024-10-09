@@ -1,7 +1,7 @@
 [
   {"name": "mario63", "url": "/games/mario63.swf", "hidden": false},
 
-  {"name": "Scratch", "url": "/games/Scratch.swf", "hidden": false},
+  {"name": "Scratch", "url": "/games/Scratch.swf", "hidden": false, "warning": "unsuported"},
 
   {"name": "mutalate a doll 2", "url": "/games/mutalate%20a%20doll%202.swf", "hidden": false},
 

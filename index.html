@@ -489,6 +489,9 @@
             showLoading(true);
             document.title = decodeURIComponent(gameName) + ".swf";
             var item = await getGameByName(gameName);
+            if (!item) {
+                alert("game not found");
+            }
 
             stopreload = true;
             window.location.hash = gameName;

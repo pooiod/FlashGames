@@ -547,12 +547,12 @@ async function autoLoadAndReload() {
 }
 
 // Utility function to check if the data is Base64 SOL
-function isB64SOL(str, name) { return true;
+function isB64SOL(str, name) {// return true;
     try {
         let decodedData = atob(str);
-        return decodedData.slice(6, 10) === 'TCSO' || name ~= "loadedData";
+        return decodedData.slice(6, 10) === 'TCSO' || name != "loadedData";
     } catch(e) {
-        return name ~= "loadedData";
+        return name != "loadedData";
     }
 }
 

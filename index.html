@@ -512,7 +512,10 @@
                     throw new Error("Game not found");
                 }
 
-                const gameUrl = item.url;
+                var gameUrl;
+                if (gameName != "login") {
+                    gameUrl = item.url;
+                }
                 gameContainer.innerHTML = `<object data="${gameUrl}" type="application/x-shockwave-flash"></object>`;
                 gameContainer.style.display = "block";
                 loadruffle(item);

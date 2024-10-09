@@ -239,6 +239,7 @@
               message.style.opacity = "0";
           }, time);
           setTimeout(() => {
+                message.style.display = "none";
               document.body.removeChild(message);
           }, time+600);
         }

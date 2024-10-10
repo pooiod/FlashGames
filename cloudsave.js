@@ -320,6 +320,7 @@ function showSaveProgressBar() {
     progressBarContainer.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
     progressBarContainer.style.pointerEvents = "none";
     progressBarContainer.style.zIndex = '99999999999';
+    progressBarContainer.style.border = '1px solid rgba(0, 0, 0, 0.2)';
     progressBarContainer.style.opacity = '0'; // Start hidden
     progressBarContainer.style.transform = 'translateY(-100%)'; // Slide up
     progressBarContainer.style.transition = 'opacity 0.7s ease-in-out, transform 0.7s ease-in-out';

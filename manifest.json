@@ -2,24 +2,29 @@
   "id": "P7FlashLoader",
   "name": "Flash Loader",
   "short_name": "FlashLoader",
-
+  
   "theme_color": "#37528c",
   "background_color": "#37528c",
 
-  "description": "A simple way to play flash games.",
+  "description": "Easily play classic flash games.",
 
   "start_url": "https://flashloader.pages.dev/",
+  "scope": "/",
+
+  "display": "standalone",
 
   "icons": [
     {
       "src": "icon.ico",
       "sizes": "256x256",
-      "type": "image/ico"
+      "type": "image/x-icon"
     }
   ],
 
   "categories": [
     "entertainment",
     "games"
-  ]
+  ],
+
+  "lang": "en"
 }

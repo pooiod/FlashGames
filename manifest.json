@@ -1,0 +1,23 @@
+{
+  "id": "P7FlashLoader",
+  "name": "Flash Loader",
+  "short_name": "FlashLoader",
+
+  "theme_color": "#37528c",
+  "background_color": "#37528c",
+
+  "description": "A simple way to play flash games.",
+
+  "icons": [
+    {
+      "src": "icon.ico",
+      "sizes": "256x256",
+      "type": "image/ico"
+    }
+  ],
+
+  "categories": [
+    "entertainment",
+    "games"
+  ]
+}

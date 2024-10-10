@@ -464,7 +464,7 @@ function showLoadingBar() {
     loadingBarContainer.style.width = '100%';
     loadingBarContainer.style.height = '10px';
     // loadingBarContainer.style.backgroundColor = '#5475ba';
-    loadingBarContainer.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+    // loadingBarContainer.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
     loadingBarContainer.style.pointerEvents = "none";
     loadingBarContainer.style.zIndex = '99999999999';
     loadingBarContainer.style.opacity = '0'; // Start hidden

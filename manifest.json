@@ -8,6 +8,8 @@
 
   "description": "A simple way to play flash games.",
 
+  "start_url": "https://flashloader.pages.dev/",
+
   "icons": [
     {
       "src": "icon.ico",

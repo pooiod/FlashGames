@@ -597,10 +597,6 @@
                     console.error("File system access api is not available");
                 }
             }
-
-            self.addEventListener('fetch', function(event) {
-                event.respondWith(fetch(event.request));
-            });
         }
     </script>
 </body>

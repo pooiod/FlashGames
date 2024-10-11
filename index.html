@@ -586,7 +586,6 @@
             if ('launchQueue' in window) {
                 launchQueue.setConsumer((launchParams) => {
                     if (launchParams.files.length) {
-                        alert("file"); console.log(file)
                         launchParams.files[0].getFile().then(file => loadLocalSWF(file));
                     }
                 });

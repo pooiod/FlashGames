@@ -46,6 +46,17 @@
     }
   ],
 
+  "orientation": "any", 
+
+  "file_handlers": [
+    {
+      "action": "/",
+      "accept": {
+        "application/x-shockwave-flash": [".swf"]
+      }
+    }
+  ],
+
   "categories": [
     "entertainment",
     "games"

@@ -553,9 +553,37 @@
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('worker.js')
-            .then(reg => console.log('Service Worker Registered', reg))
-            .catch(err => console.log('Service Worker Failed to Register', err));
+                .then(reg => console.log('Service Worker Registered', reg))
+                .catch(err => console.log('Service Worker Failed to Register', err));
+
+            navigator.serviceWorker.addEventListener('message', (event) => {
+                if (event.data.type === 'FILE_RECEIVED') {
+                    const fileInput = document.getElementById('fileInput');
+                    const file = new File([new Blob()], event.data.fileName);
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    fileInput.files = dataTransfer.files;
+
+                    // Trigger the change event
+                    fileInput.dispatchEvent(new Event('change'));
+                }
+            });
+
+            if ('launchQueue' in window) {
+                launchQueue.setConsumer(async (launchParams) => {
+                    if (launchParams.files.length) {
+                        const file = launchParams.files[0];
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        fileInput.files = dataTransfer.files; // Assign the file to the input
+                        fileInput.dispatchEvent(new Event('change')); // Trigger change event
+                    }
+                });
+            }
         }
+        // self.addEventListener('fetch', function(event) {
+        //     event.respondWith(fetch(event.request));
+        // });
     </script>
 </body>
 </html>

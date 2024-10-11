@@ -1,1 +1,75 @@
-<h1> Ofline :( </h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#37528c">
+    <title>Offline</title>
+    <style>
+        body {
+            background-color: #37528c;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: scale(0.8); }
+            50% { opacity: 0.5; transform: scale(1.05); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes fadeOut {
+            0% { opacity: 1; transform: scale(1) rotate(0deg); }
+            50% { opacity: 0.5; transform: scale(1.1) rotate(5deg); }
+            100% { opacity: 0; transform: scale(0.8) rotate(-10deg); }
+        }
+        .container {
+            text-align: center;
+            animation: fadeIn 0.8s ease forwards;
+        }
+        .icon {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+            animation: fadeIn 0.8s ease forwards;
+        }
+        h1 {
+            animation: fadeIn 0.8s ease 0.3s forwards;
+            opacity: 0;
+        }
+        p {
+            animation: fadeIn 0.8s ease 0.6s forwards;
+            opacity: 0;
+        }
+        .fade-out {
+            animation: fadeOut 0.8s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 2a10 10 0 0 0-10 10 10 10 0 0 0 20 0 10 10 0 0 0-10-10zm0 18a8 8 0 0 1-8-8 8 8 0 0 1 16 0 8 8 0 0 1-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+        <h1>You're Offline</h1>
+        <p>Please check your internet connection and try again.</p>
+    </div>
+    
+    <script>
+        const checkConnectionAndReload = () => {
+            if (navigator.onLine) {
+                document.querySelector('.container').classList.add('fade-out');
+                setTimeout(() => {
+                    window.location.href = "/";
+                }, 800);
+            } else {
+                setTimeout(checkConnectionAndReload, 10000);
+            }
+        };
+
+        setTimeout(checkConnectionAndReload, 10000);
+    </script>
+</body>
+</html>

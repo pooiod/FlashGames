@@ -583,7 +583,6 @@
                 }
             });
 
-            console.log('launchQueue' in window)
             if ('launchQueue' in window) {
                 launchQueue.setConsumer((launchParams) => {
                     if (launchParams.files.length) {
@@ -591,6 +590,13 @@
                         launchParams.files[0].getFile().then(file => loadLocalSWF(file));
                     }
                 });
+            } else {
+                var navuser = navigator.userAgent;
+                if (navigator.brave && navigator.brave.isBrave()) { // why is this disabled by default?
+                    alert("Please enable brave://flags/#file-system-access-api to allow for .swf files to be opened with FlashLoader");
+                } else {
+                    console.error("File system access api is not available");
+                }
             }
         }
     </script>

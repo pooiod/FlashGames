@@ -275,19 +275,23 @@
             }
         });
 
+        function loadLocalSWF(file) {
+            const gameUrl = URL.createObjectURL(file);
+            gameContainer.innerHTML = `<object data="${gameUrl}" type="application/x-shockwave-flash"></object>`;
+            gameContainer.style.display = "block";
+            document.title = file.name;
+            loadruffle();
+            setTimeout(function () {
+                fixruffle();
+            }, 2000);
+            errorScreen.style.display = 'none';
+        }
+
         fileInput.addEventListener('change', function () {
             if (fileInput.files.length > 0) {
                 const file = fileInput.files[0];
                 if (file.type === 'application/x-shockwave-flash' || true) {
-                    const gameUrl = URL.createObjectURL(file);
-                    gameContainer.innerHTML = `<object data="${gameUrl}" type="application/x-shockwave-flash"></object>`;
-                    gameContainer.style.display = "block";
-                    document.title = file.name;
-                    loadruffle();
-                    setTimeout(function () {
-                        fixruffle();
-                    }, 2000);
-                    errorScreen.style.display = 'none';
+                    loadLocalSWF(file)
                 } else {
                     showError('Selected file is not a valid SWF.');
                 }
@@ -580,13 +584,9 @@
             });
 
             if ('launchQueue' in window) {
-                launchQueue.setConsumer(async (launchParams) => {
+                launchQueue.setConsumer((launchParams) => {
                     if (launchParams.files.length) {
-                        const file = launchParams.files[0];
-                        const dataTransfer = new DataTransfer();
-                        dataTransfer.items.add(file);
-                        fileInput.files = dataTransfer.files; // Assign the file to the input
-                        fileInput.dispatchEvent(new Event('change')); // Trigger change event
+                        launchParams.files[0].getFile().then(file => loadLocalSWF(file));
                     }
                 });
             }

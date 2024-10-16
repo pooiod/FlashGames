@@ -11,7 +11,7 @@
   "start_url": "https://flashloader.pages.dev/",
   "scope": "/",
 
-  "display": "standalone",
+  "display": "minimal-ui",
 
   "icons": [
     {

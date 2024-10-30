@@ -225,6 +225,7 @@
                 button.style.borderRadius = '5px';
                 button.style.cursor = 'pointer';
                 button.style.zIndex = '1';
+                button.id = "loginbutton";
                 
                 button.addEventListener('click', () => {
                     window.location.href = 'login';
@@ -355,6 +356,7 @@
         var ruffleused = false;
         function loadruffle(item) { 
             document.getElementById('gameListContainer').style.display = 'none';
+            document.getElementById("loginbutton")?.remove();
             setTimeout(function () {
                 fixruffle();
             }, 1000);

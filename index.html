@@ -214,7 +214,7 @@
         } installedActuallFlash = isFlashSupported();
 
         if (!installedActuallFlash) {
-            if (!document.cookie.split('; ').find(row => row.startsWith('rufflesave='))) {
+            if (!document.cookie.split('; ').find(row => row.startsWith('rufflesave=')) && !serverdown) {
                 const button = document.createElement('button');
                 button.textContent = 'Log in to save online';
                 button.style.position = 'fixed';

@@ -178,6 +178,8 @@
         const searchBar = document.getElementById('searchBar');
 
         var gamesJson = "/games.json";
+        var serverdown = true;
+        
         var games = [];
         async function getGameByName(name) {
             if (games == [] || !games || games.length < 1) {
@@ -413,7 +415,7 @@
                 if (document.cookie.includes('rufflesave')) {
                     var autosavescript = document.createElement('script');
                     autosavescript.src = 'cloudsave.js';
-                    document.head.appendChild(autosavescript);
+                    if (!serverdown) document.head.appendChild(autosavescript);
                 }
             })();
             

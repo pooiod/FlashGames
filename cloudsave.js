@@ -384,12 +384,12 @@ async function loadPackedData() {
     let partIndex = 1;
     let partData;
 
-    Object.keys(localStorage).forEach(key => {
-        let solData = localStorage.getItem(key);
-        if (isB64SOL(solData, key)) {
-            localStorage.removeItem(key);
-        }
-    });
+    // Object.keys(localStorage).forEach(key => {
+    //     let solData = localStorage.getItem(key);
+    //     if (isB64SOL(solData, key)) {
+    //         localStorage.removeItem(key);
+    //     }
+    // });
 
     showLoadingBar();
 

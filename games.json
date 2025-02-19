@@ -37,7 +37,11 @@
 
   {"name": "David water run", "url": "//yeetyourfiles.lol/download/69fd7af1-e586-46bb-af85-3f9c925cd76a", "hidden": false},
 
+  {"name": "Bejeweled twist", "url": "/games/Bejeweled.swf", "hidden": false},
   {"name": "Bejeweled 2", "url": "/games/bejeweled%202.swf", "hidden": false},
+  {"name": "Bejeweled 1", "url": "/games/BejeweledTwist.swf", "hidden": false},
+
+  {"name": "Suma - The Lost Treasure", "url": "/games/Suma-The-Lost-Treasure.swf", "hidden": false},
 
   {"name": "Cut the rope", "url": "/games/cut%20the%20rope.swf", "hidden": false},
 
@@ -98,6 +102,16 @@
 
   {"name": "The Fancy Pants Adventure 1", "url": "/games/The%20Fancy%20Pants%20Adventure%201.swf", "hidden": false},
   {"name": "The Fancy Pants Adventure 2", "url": "/games/The%20Fancy%20Pants%20Adventure%202.swf", "hidden": false},
+
+  {"name": "Talking Tom", "url": "/games/TalkingTom2.swf", "hidden": false},
+
+  {"name": "Whack your boss", "url": "/games/dont_whack_your_boss.swf", "hidden": false},
+
+  {"name": "Interactive buddy", "url": "/games/interactive%20buddy.swf", "hidden": false},
+
+  {"name": "Doom", "url": "/games/doom.swf", "hidden": false, "warning": "studders"},
+
+  {"name": "Swords and Sandals 2", "url": "/games/Swords%20and%20Sandals%202.swf", "hidden": false},
 
   {"name": "One-Man World", "url": "/games/One-Man%20World.swf", "hidden": false, "warning": "unsuported"},
   {"name": "Bombs and Bees", "url": "/games/Bombs%20and%20Bees.swf", "hidden": false, "warning": "unsuported"},

@@ -143,17 +143,17 @@
 
   {"name": "Hardest game", "url": "/games/hardest%20game.swf", "hidden": false},
 
-  {"name": "Fishdom", "url": "/games/fishdom.swf", "hidden": false, "warning": "studders"},
+  {"name": "Fishdom", "url": "/games/fishdom.swf", "hidden": false},
 
-  {"name": "Build a snowman", "url": "/games/buildasnowman.swf", "hidden": false, "warning": "studders"},
+  {"name": "Build a snowman", "url": "/games/buildasnowman.swf", "hidden": false},
 
-  {"name": "Breakout", "url": "/games/breakout.swf", "hidden": false, "warning": "studders"},
+  {"name": "Breakout", "url": "/games/breakout.swf", "hidden": false},
 
-  {"name": "Billiards", "url": "/games/billiards.swf", "hidden": false, "warning": "studders"},
+  {"name": "Billiards", "url": "/games/billiards.swf", "hidden": false},
 
-  {"name": "Bikinibottom carnival", "url": "/games/bikinibottomcarnival.swf", "hidden": false, "warning": "studders"},
+  {"name": "Bikinibottom carnival", "url": "/games/bikinibottomcarnival.swf", "hidden": false},
 
-  {"name": "Bikinibottom bustup", "url": "/games/bikinibottombustup.swf", "hidden": false, "warning": "studders"},
+  {"name": "Bikinibottom bustup", "url": "/games/bikinibottombustup.swf", "hidden": false},
 
   {"name": "Boloons td 1", "url": "/games/Boloons%20td%201.swf", "hidden": false},
   {"name": "Boloons td 4", "url": "/games/Boloons%20td%204.swf", "hidden": false},

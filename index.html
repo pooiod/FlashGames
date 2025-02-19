@@ -181,20 +181,18 @@
         const fileInput = document.getElementById('fileInput');
         const searchBar = document.getElementById('searchBar');
 
-async function isSiteUp(url) {
-    try {
-        const response = await fetch(url, { method: 'HEAD' });
-        return response.ok;
-    } catch (error) {
-        return false;
-    }
-}
-var noYeet = false;
-isSiteUp('https://yeetyourfiles.lol/').then(status => {noYeet = !status});
+        async function isSiteUp(url) {
+            try {
+                const response = await fetch(url, { method: 'HEAD' });
+                return response.ok;
+            } catch (error) {
+                return false;
+            }
+        }
 
         var gamesJson = "/games.json";
         var serverdown = true;
-        
+    
         var games = [];
         async function getGameByName(name) {
             if (games == [] || !games || games.length < 1) {
@@ -463,7 +461,17 @@ isSiteUp('https://yeetyourfiles.lol/').then(status => {noYeet = !status});
                 customSwfItem.textContent = 'Load your own game (.swf)';
                 customSwfItem.onclick = () => fileInput.click();
                 gameList.appendChild(customSwfItem);
-                
+
+                var noYeet = false;
+                var checkYeet = [];
+                isSiteUp('https://yeetyourfiles.lol/').then(status => {
+                    noYeet = !status;
+                    if (status )return;
+                    checkYeet.forEach(item => {
+                        item[0].classList.add('noYeet');
+                    })
+                });
+
                 games.forEach(item => {
                     var gameName = item.name;
                     var gameItem = document.createElement('div');
@@ -494,8 +502,8 @@ isSiteUp('https://yeetyourfiles.lol/').then(status => {noYeet = !status});
                             }
                         }
 
-                        if (noYeet && gameItem.url.includes("yeetyourfiles.lol")) {
-                            gameItem.classList.add('noYeet');
+                        if (item.url.includes("yeetyourfiles.lol")) {
+                            checkYeet.push([gameItem, item]);
                         }
                     }, 100);
                 

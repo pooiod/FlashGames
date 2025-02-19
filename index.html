@@ -123,6 +123,7 @@
 
         .noYeet {
             opacity: 0.2;
+            background: transparent;
         }
 
         .game-item:hover {
@@ -469,7 +470,8 @@
                     if (status )return;
                     checkYeet.forEach(item => {
                         item[0].classList.add('noYeet');
-                    })
+                    });
+                    displaymessage("Some games are unavailable at this time.", "3000");
                 });
 
                 games.forEach(item => {

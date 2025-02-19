@@ -121,6 +121,10 @@
             opacity: 0.8;
         }
 
+        .noYeet {
+            opacity: 0.2;
+        }
+
         .game-item:hover {
             background-color: #334c82;
         }
@@ -176,6 +180,17 @@
         const gameContainer = document.getElementById('gameContainer');
         const fileInput = document.getElementById('fileInput');
         const searchBar = document.getElementById('searchBar');
+
+async function isSiteUp(url) {
+    try {
+        const response = await fetch(url, { method: 'HEAD' });
+        return response.ok;
+    } catch (error) {
+        return false;
+    }
+}
+var noYeet = false;
+isSiteUp('https://yeetyourfiles.lol/').then(status => {noYeet = !status});
 
         var gamesJson = "/games.json";
         var serverdown = true;
@@ -477,6 +492,10 @@
                             } else {
                                 gameItem.appendChild(downloadButton);
                             }
+                        }
+
+                        if (noYeet && gameItem.url.includes("yeetyourfiles.lol")) {
+                            gameItem.classList.add('noYeet');
                         }
                     }, 100);
                 

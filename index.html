@@ -173,6 +173,7 @@
     <div id="gameContainer" style="display:none;"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cloudsaver2.pages.dev/main.js"></script>
     <script>
         const loadingScreen = document.getElementById('loading');
         const errorScreen = document.getElementById('error');
@@ -192,8 +193,7 @@
         }
 
         var gamesJson = "/games.json";
-        var serverdown = true;
-    
+
         var games = [];
         async function getGameByName(name) {
             if (games == [] || !games || games.length < 1) {
@@ -228,27 +228,7 @@
         } installedActuallFlash = isFlashSupported();
 
         if (!installedActuallFlash) {
-            if (!document.cookie.split('; ').find(row => row.startsWith('rufflesave=')) && !serverdown) {
-                const button = document.createElement('button');
-                button.textContent = 'Log in to save online';
-                button.style.position = 'fixed';
-                button.style.bottom = '10px';
-                button.style.left = '10px';
-                button.style.padding = '10px 15px';
-                button.style.backgroundColor = '#007bff';
-                button.style.color = '#fff';
-                button.style.border = 'none';
-                button.style.borderRadius = '5px';
-                button.style.cursor = 'pointer';
-                button.style.zIndex = '1';
-                button.id = "loginbutton";
-                
-                button.addEventListener('click', () => {
-                    window.location.href = 'login';
-                });
-                
-                document.body.appendChild(button);
-            }
+            CloudSaver.init();
         }
 
         function displaymessage(msg, time) {
@@ -266,7 +246,7 @@
           message.id = "message";
           message.pointerEvents = "none";
           document.body.appendChild(message);
-          
+
           setTimeout(() => {
               message.style.opacity = "1";
           }, 100);
@@ -324,7 +304,7 @@
                 var shadowHost = document.querySelector('#gameContainer > ruffle-object:nth-child(1)');
                 var shadowRoot = shadowHost.shadowRoot;
                 var container = shadowRoot.querySelector('#container');
-                
+
                 const style = document.createElement('style');
                 style.textContent = `
                   #save-manager, #volume-controls-modal {
@@ -345,7 +325,7 @@
                       margin-top: 40vh;
                   }
                 `;
-                
+
                 shadowRoot.appendChild(style);
 
                 if (/Mobi|Android/i.test(navigator.userAgent)) {
@@ -370,7 +350,7 @@
         }
 
         var ruffleused = false;
-        function loadruffle(item) { 
+        function loadruffle(item) {
             document.getElementById('gameListContainer').style.display = 'none';
             document.getElementById("loginbutton")?.remove();
             setTimeout(function () {
@@ -385,34 +365,34 @@
                     document.addEventListener('contextmenu', function(e) {
                         function addButton(text, onClick) {
                             const contextMenu = shadowRoot.querySelector('#context-menu');
-                            
+
                             if (contextMenu) {
                                 const menuItem = document.createElement('li');
                                 menuItem.className = 'menu-item';
                                 menuItem.textContent = text;
-                        
+
                                 menuItem.addEventListener('click', async function(e) {
                                     e.preventDefault();
                                     await onClick(e);
                                 });
-                        
+
                                 contextMenu.appendChild(menuItem);
                             }
                         }
                         function addSeparator() {
                             const contextMenu = shadowRoot.querySelector('#context-menu');
-                            
+
                             if (contextMenu) {
                                 const separator = document.createElement('li');
                                 separator.className = 'menu-separator';
                                 separator.innerHTML = '<hr>';
-                        
+
                                 contextMenu.appendChild(separator);
                             }
                         }
 
                         const contextMenu = shadowRoot.querySelector('#context-menu');
-                        
+
                         if (contextMenu && contextMenu.lastElementChild) {
                             contextMenu.removeChild(contextMenu.lastElementChild);
                         }
@@ -425,14 +405,6 @@
                 }
             }, 3000);
 
-            (function() {
-                if (document.cookie.includes('rufflesave')) {
-                    var autosavescript = document.createElement('script');
-                    autosavescript.src = 'cloudsave.js';
-                    if (!serverdown) document.head.appendChild(autosavescript);
-                }
-            })();
-            
             const ruffleScript = document.createElement('script');
             ruffleScript.src = 'https://unpkg.com/@ruffle-rs/ruffle';
             // ruffleScript.onload = () => {};
@@ -444,7 +416,7 @@
 
                 if (item) {
                     if (item.warning) {
-                        displaymessage(warnings[item.warning][0], warnings[item.warning][1]);              
+                        displaymessage(warnings[item.warning][0], warnings[item.warning][1]);
                     }
                 }
             }
@@ -456,7 +428,7 @@
             try {
                 const response = await fetch(gamesJson);
                 games = await response.json();
-                
+
                 const customSwfItem = document.createElement('div');
                 customSwfItem.classList.add('game-item');
                 customSwfItem.textContent = 'Load your own game (.swf)';
@@ -479,7 +451,7 @@
                     var gameItem = document.createElement('div');
                     gameItem.classList.add('game-item');
                     gameItem.textContent = gameName;
-                    
+
                     var downloadButton = document.createElement('button');
                     downloadButton.textContent = 'Download';
                     downloadButton.classList.add('download-button');
@@ -491,7 +463,7 @@
                             downloading = false;
                         }, 500);
                     };
-                
+
                     setTimeout(function(){
                         if (!isFlashSupported()) {
                             if (item.warning && item.warning == "unsuported") {
@@ -508,7 +480,7 @@
                             checkYeet.push([gameItem, item]);
                         }
                     }, 100);
-                
+
                     gameItem.onclick = (event) => {
                         if (event.ctrlKey) {
                             event.preventDefault();
@@ -519,12 +491,12 @@
                             }
                         }
                     };
-                
+
                     if (!item.hidden) {
                         gameList.appendChild(gameItem);
                     }
                 });
-                
+
                 if (gameList.children.length === 0) {
                     showError('No games found.');
                 } else {

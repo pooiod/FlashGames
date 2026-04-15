@@ -7,8 +7,6 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <meta name="theme-color" content="#37528c" />
     <link rel="manifest" href="/manifest.json">
-    <meta name="description" content="A collection of Flash games using the Ruffle emulator"/>
-
     <style>
         :root {
             --bg-primary: #37528c;
@@ -17,10 +15,8 @@
         }
 
         body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
             font-family: Arial, sans-serif;
             background-color: var(--bg-primary);
             color: var(--text-main);
@@ -28,70 +24,67 @@
         }
 
         .overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
+            display: none; position: fixed; inset: 0;
             background-color: var(--bg-primary);
-            color: #f4f4f4;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
+            color: #f4f4f4; justify-content: center;
+            align-items: center; flex-direction: column; z-index: 9999;
         }
 
+        .spinner {
+            width: 50px; height: 50px;
+            border: 5px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
         #gameListContainer {
-            padding: 20px;
-            width: 100%;
-            height: 100%;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
+            padding: 20px; width: 100%; height: 100%;
+            box-sizing: border-box; display: flex;
+            flex-direction: column; overflow-y: auto;
         }
 
         #searchBar {
-            padding: 12px;
-            margin-bottom: 15px;
+            padding: 12px; margin-bottom: 15px;
             border: 1px solid var(--bg-secondary);
-            background-color: #223254;
-            color: #fff;
-            border-radius: 8px;
-            width: 100%;
-            box-sizing: border-box;
+            background-color: #223254; color: #fff;
+            border-radius: 8px; width: 100%; box-sizing: border-box;
         }
 
         .game-item {
-            padding: 12px 20px;
-            background-color: var(--bg-secondary);
-            border: 1px solid #2e4678;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 12px 20px; background-color: var(--bg-secondary);
+            border: 1px solid #2e4678; border-radius: 6px;
+            cursor: pointer; margin-bottom: 10px;
         }
 
         #gameContainer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            display: none;
-            background-color: #000;
-            z-index: 10;
+            position: fixed; top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            display: none; background-color: #000; z-index: 10;
         }
 
-        /* Ensures the custom player fills the div */
-        ruffle-player {
-            width: 100% !important;
-            height: 100% !important;
+        #auth-controls {
+            position: fixed; bottom: 20px; right: 20px; z-index: 100;
         }
+
+        .auth-btn {
+            padding: 10px 20px; background: #223254;
+            color: white; border: 1px solid var(--bg-secondary);
+            border-radius: 5px; cursor: pointer; margin-left: 10px;
+        }
+
+        ruffle-player { width: 100% !important; height: 100% !important; }
     </style>
 </head>
 
 <body>
-    <div id="loading" class="overlay">Loading...</div>
+    <div id="loading" class="overlay">
+        <div class="spinner"></div>
+        <div id="loadingStatus">Syncing Saves...</div>
+    </div>
     <div id="error" class="overlay"><pre id="errorMessage"></pre></div>
 
     <div id="gameListContainer">
@@ -101,25 +94,73 @@
 
     <div id="gameContainer"></div>
 
+    <div id="auth-controls"></div>
+
     <input type="file" id="fileInput" style="display: none;" accept=".swf">
 
+    <script src="https://cloudsaver2.pages.dev/main.js"></script>
     <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
     <script>
         const App = {
             games: [],
-            config: {
-                jsonPath: "/games.json"
-            },
+            saveInterval: null,
 
             async init() {
+                this.loadSession();
                 this.bindEvents();
+                await this.updateAuthUI();
                 await this.route();
+            },
+
+            loadSession() {
+                const cookie = document.cookie.split('; ').find(row => row.startsWith('cs_user='));
+                if (cookie) {
+                    try { CloudSaver.usr = JSON.parse(decodeURIComponent(cookie.split('=')[1])); }
+                    catch(e) { console.error("Session load failed"); }
+                }
+            },
+
+            saveSession() {
+                if (CloudSaver.usr) {
+                    document.cookie = `cs_user=${encodeURIComponent(JSON.stringify(CloudSaver.usr))}; path=/; max-age=31536000`;
+                }
             },
 
             bindEvents() {
                 document.getElementById('searchBar').addEventListener('input', (e) => this.filterGames(e.target.value));
                 window.addEventListener('hashchange', () => this.route());
                 document.getElementById('fileInput').addEventListener('change', (e) => this.handleFileSelect(e));
+            },
+
+            async updateAuthUI() {
+                const container = document.getElementById('auth-controls');
+                container.innerHTML = '';
+                const isVerified = await CloudSaver.VerifyUser();
+
+                if (!isVerified) {
+                    const loginBtn = this.createEl('button', 'auth-btn', 'Login');
+                    loginBtn.onclick = async () => {
+                        await CloudSaver.ShowLoginPopup();
+                        if (CloudSaver.usr) {
+                            this.saveSession();
+                            location.reload();
+                        }
+                    };
+                    container.appendChild(loginBtn);
+                } else {
+                    const manageBtn = this.createEl('button', 'auth-btn', 'Manage Data');
+                    manageBtn.onclick = async () => {
+                        await CloudSaver.OpenDataManager();
+                        location.reload();
+                    };
+                    const logoutBtn = this.createEl('button', 'auth-btn', 'Logout');
+                    logoutBtn.onclick = () => {
+                        document.cookie = "cs_user=; max-age=0; path=/;";
+                        location.reload();
+                    };
+                    container.appendChild(manageBtn);
+                    container.appendChild(logoutBtn);
+                }
             },
 
             async route() {
@@ -134,9 +175,9 @@
 
             async loadGameData() {
                 if (this.games.length > 0) return;
-                this.toggleLoading(true);
+                this.toggleLoading(true, "Fetching Games...");
                 try {
-                    const res = await fetch(this.config.jsonPath);
+                    const res = await fetch("/games.json");
                     this.games = await res.json();
                 } catch (err) {
                     this.showError("Failed to fetch game list.");
@@ -146,6 +187,7 @@
             },
 
             showListView() {
+                if (this.saveInterval) clearInterval(this.saveInterval);
                 document.getElementById('gameListContainer').style.display = 'flex';
                 document.getElementById('gameContainer').style.display = 'none';
                 document.getElementById('gameContainer').innerHTML = '';
@@ -172,12 +214,20 @@
             async playGame(name) {
                 const game = this.games.find(g => g.name === name);
                 if (!game) return this.showError("Game not found.");
+
+                this.toggleLoading(true, "Syncing Saves...");
+                await CloudSaver.LoadSaves();
+
                 this.bootRuffle(game.url, name);
+
+                this.saveInterval = setInterval(() => {
+                    CloudSaver.SaveChanges();
+                }, 10000);
             },
 
             bootRuffle(url, title) {
-                this.toggleLoading(true);
-                document.title = title || "Playing Flash";
+                this.toggleLoading(true, "Starting Ruffle...");
+                document.title = title;
                 document.getElementById('gameListContainer').style.display = 'none';
 
                 const container = document.getElementById('gameContainer');
@@ -186,11 +236,7 @@
 
                 const ruffle = window.RufflePlayer.newest();
                 const player = ruffle.createPlayer();
-
                 container.appendChild(player);
-
-                player.style.width = "100%";
-                player.style.height = "100%";
 
                 player.load({
                     url: url,
@@ -199,22 +245,18 @@
                     maxExecutionDuration: 99999999999
                 }).then(() => {
                     this.toggleLoading(false);
-                }).catch((err) => {
-                    this.showError("Ruffle failed to load: " + err);
-                });
+                }).catch(err => this.showError(err));
             },
 
             handleFileSelect(e) {
                 const file = e.target.files[0];
-                if (!file) return;
-                const url = URL.createObjectURL(file);
-                this.bootRuffle(url, file.name);
+                if (file) this.bootRuffle(URL.createObjectURL(file), file.name);
             },
 
             filterGames(query) {
                 const q = query.toLowerCase();
                 document.querySelectorAll('.game-item').forEach(el => {
-                    el.style.display = el.textContent.toLowerCase().includes(q) ? 'flex' : 'none';
+                    el.style.display = el.textContent.toLowerCase().includes(q) ? 'block' : 'none';
                 });
             },
 
@@ -225,8 +267,10 @@
                 return el;
             },
 
-            toggleLoading(show) {
-                document.getElementById('loading').style.display = show ? 'flex' : 'none';
+            toggleLoading(show, status = "") {
+                const el = document.getElementById('loading');
+                document.getElementById('loadingStatus').textContent = status;
+                el.style.display = show ? 'flex' : 'none';
             },
 
             showError(msg) {

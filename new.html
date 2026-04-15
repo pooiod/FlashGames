@@ -13,9 +13,7 @@
         :root {
             --bg-primary: #37528c;
             --bg-secondary: #4161a7;
-            --bg-dark: #16223a;
             --text-main: #ffffff;
-            --accent: #c7d3f0;
         }
 
         body, html {
@@ -74,31 +72,27 @@
         }
 
         #gameContainer {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
             display: none;
             background-color: #000;
+            z-index: 10;
         }
 
-        /* Forces Ruffle to take up the full container */
-        ruffle-player,
-        #gameContainer object,
-        #gameContainer embed {
+        /* Ensures the custom player fills the div */
+        ruffle-player {
             width: 100% !important;
             height: 100% !important;
-            display: block;
         }
     </style>
 </head>
 
 <body>
     <div id="loading" class="overlay">Loading...</div>
-    <div id="error" class="overlay">
-        <pre id="errorMessage"></pre>
-    </div>
+    <div id="error" class="overlay"><pre id="errorMessage"></pre></div>
 
     <div id="gameListContainer">
         <input type="text" id="searchBar" placeholder="Search games...">
@@ -109,18 +103,12 @@
 
     <input type="file" id="fileInput" style="display: none;" accept=".swf">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
     <script>
         const App = {
             games: [],
             config: {
-                jsonPath: "/games.json",
-                warnings: {
-                    unsuported: "Limited Ruffle support.",
-                    badlinks: "External links may crash the game.",
-                    studders: "Performance lag expected.",
-                    jumpscare: "Warning: Scary content!"
-                }
+                jsonPath: "/games.json"
             },
 
             async init() {
@@ -184,25 +172,35 @@
             async playGame(name) {
                 const game = this.games.find(g => g.name === name);
                 if (!game) return this.showError("Game not found.");
+                this.bootRuffle(game.url, name);
+            },
 
+            bootRuffle(url, title) {
                 this.toggleLoading(true);
+                document.title = title || "Playing Flash";
                 document.getElementById('gameListContainer').style.display = 'none';
 
                 const container = document.getElementById('gameContainer');
                 container.style.display = 'block';
-                container.innerHTML = `<object data="${game.url}" type="application/x-shockwave-flash"></object>`;
+                container.innerHTML = '';
 
-                await this.initRuffle();
-                this.toggleLoading(false);
-            },
+                const ruffle = window.RufflePlayer.newest();
+                const player = ruffle.createPlayer();
 
-            async initRuffle() {
-                if (window.RufflePlayer) return;
-                return new Promise(resolve => {
-                    const script = document.createElement('script');
-                    script.src = 'https://unpkg.com/@ruffle-rs/ruffle';
-                    script.onload = resolve;
-                    document.head.appendChild(script);
+                container.appendChild(player);
+
+                player.style.width = "100%";
+                player.style.height = "100%";
+
+                player.load({
+                    url: url,
+                    autoplay: "on",
+                    unmuteOverlay: "hidden",
+                    maxExecutionDuration: 99999999999
+                }).then(() => {
+                    this.toggleLoading(false);
+                }).catch((err) => {
+                    this.showError("Ruffle failed to load: " + err);
                 });
             },
 
@@ -210,11 +208,7 @@
                 const file = e.target.files[0];
                 if (!file) return;
                 const url = URL.createObjectURL(file);
-                document.getElementById('gameListContainer').style.display = 'none';
-                const container = document.getElementById('gameContainer');
-                container.style.display = 'block';
-                container.innerHTML = `<object data="${url}" type="application/x-shockwave-flash"></object>`;
-                this.initRuffle();
+                this.bootRuffle(url, file.name);
             },
 
             filterGames(query) {

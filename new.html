@@ -7,11 +7,14 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <meta name="theme-color" content="#37528c" />
     <link rel="manifest" href="/manifest.json">
+
     <style>
         :root {
             --bg-primary: #37528c;
             --bg-secondary: #4161a7;
+            --bg-dark: #16223a;
             --text-main: #ffffff;
+            --accent: #5c85d6;
         }
 
         body, html {
@@ -23,58 +26,125 @@
             overflow: hidden;
         }
 
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 0;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #7da0e6;
+        }
+
         .overlay {
-            display: none; position: fixed; inset: 0;
+            display: none;
+            position: fixed;
+            inset: 0;
             background-color: var(--bg-primary);
-            color: #f4f4f4; justify-content: center;
-            align-items: center; flex-direction: column; z-index: 9999;
+            color: #f4f4f4;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        #gameListContainer {
+            padding: 20px;
+            width: 100%; height: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding-bottom: 80px;
+        }
+
+        #searchBar {
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid var(--bg-secondary);
+            background-color: #223254;
+            color: #fff;
+            border-radius: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .game-item {
+            padding: 12px 20px;
+            background-color: var(--bg-secondary);
+            border: 1px solid #2e4678;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        #gameContainer {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            display: none;
+            background-color: #000;
+            z-index: 10;
         }
 
         .spinner {
             width: 50px; height: 50px;
             border: 5px solid rgba(255,255,255,0.3);
+            border-top: 5px solid #fff;
             border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-            margin-bottom: 15px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        #authWrapper {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
         }
 
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        #gameListContainer {
-            padding: 20px; width: 100%; height: 100%;
-            box-sizing: border-box; display: flex;
-            flex-direction: column; overflow-y: auto;
-        }
-
-        #searchBar {
-            padding: 12px; margin-bottom: 15px;
+        #authMenu {
+            display: none;
+            background: var(--bg-dark);
             border: 1px solid var(--bg-secondary);
-            background-color: #223254; color: #fff;
-            border-radius: 8px; width: 100%; box-sizing: border-box;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
 
-        .game-item {
-            padding: 12px 20px; background-color: var(--bg-secondary);
-            border: 1px solid #2e4678; border-radius: 6px;
-            cursor: pointer; margin-bottom: 10px;
+        .menu-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
         }
 
-        #gameContainer {
-            position: fixed; top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            display: none; background-color: #000; z-index: 10;
-        }
+        .menu-item:hover { background: var(--bg-secondary); }
+        .menu-item svg { width: 18px; height: 18px; fill: white; }
 
-        #auth-controls {
-            position: fixed; bottom: 20px; right: 20px; z-index: 100;
+        .icon-btn {
+            background: var(--bg-dark);
+            border: 1px solid var(--bg-secondary);
+            border-radius: 50%;
+            width: 50px; height: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
-
-        .auth-btn {
-            padding: 10px 20px; background: #223254;
-            color: white; border: 1px solid var(--bg-secondary);
-            border-radius: 5px; cursor: pointer; margin-left: 10px;
-        }
+        .icon-btn svg { width: 24px; height: 24px; fill: white; }
 
         ruffle-player { width: 100% !important; height: 100% !important; }
     </style>
@@ -83,7 +153,7 @@
 <body>
     <div id="loading" class="overlay">
         <div class="spinner"></div>
-        <div id="loadingStatus">Syncing Saves...</div>
+        <div id="loadingText">Syncing data...</div>
     </div>
     <div id="error" class="overlay"><pre id="errorMessage"></pre></div>
 
@@ -94,35 +164,84 @@
 
     <div id="gameContainer"></div>
 
-    <div id="auth-controls"></div>
+    <div id="authWrapper">
+        <div id="authMenu"></div>
+        <button id="mainControlBtn" class="icon-btn"></button>
+    </div>
 
     <input type="file" id="fileInput" style="display: none;" accept=".swf">
 
     <script src="https://cloudsaver2.pages.dev/main.js"></script>
     <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+
     <script>
         const App = {
             games: [],
             saveInterval: null,
+            menuCheckInterval: null,
+            isLoggedIn: false,
+            icons: {
+                logout: `<svg viewBox="0 0 24 24"><path d="M13 3h-2v10h2v-10zm4.83 2.17l-1.42 1.42c1.6 1.6 2.59 3.81 2.59 6.41 0 4.97-4.03 9-9 9s-9-4.03-9-9c0-2.6 1-4.81 2.59-6.41l-1.42-1.42c-2.19 2.19-3.5 5.21-3.5 8.83 0 6.63 5.37 12 12 12s12-5.37 12-12c0-3.62-1.31-6.64-3.5-8.83z"/></svg>`,
+                settings: `<svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>`,
+                user: `<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`
+            },
 
             async init() {
-                this.loadSession();
+                this.loadSessionFromCookie();
                 this.bindEvents();
                 await this.updateAuthUI();
                 await this.route();
             },
 
-            loadSession() {
-                const cookie = document.cookie.split('; ').find(row => row.startsWith('cs_user='));
+            loadSessionFromCookie() {
+                const cookie = document.cookie.split('; ').find(row => row.startsWith('cs_usr='));
                 if (cookie) {
-                    try { CloudSaver.usr = JSON.parse(decodeURIComponent(cookie.split('=')[1])); }
-                    catch(e) { console.error("Session load failed"); }
+                    try {
+                        const userData = JSON.parse(decodeURIComponent(cookie.split('=')[1]));
+                        Object.assign(CloudSaver.usr, userData);
+                    } catch (e) {}
                 }
             },
 
-            saveSession() {
-                if (CloudSaver.usr) {
-                    document.cookie = `cs_user=${encodeURIComponent(JSON.stringify(CloudSaver.usr))}; path=/; max-age=31536000`;
+            async updateAuthUI() {
+                const btn = document.getElementById('mainControlBtn');
+                const menu = document.getElementById('authMenu');
+                const hasCookie = !!document.cookie.split('; ').find(row => row.startsWith('cs_usr='));
+
+                this.isLoggedIn = hasCookie && await CloudSaver.VerifyUser();
+                btn.innerHTML = this.icons.user;
+
+                if (!this.isLoggedIn) {
+                    btn.onclick = async () => {
+                        await CloudSaver.ShowLoginPopup();
+                        if (CloudSaver.usr) {
+                            document.cookie = `cs_usr=${encodeURIComponent(JSON.stringify(CloudSaver.usr))}; path=/; max-age=31536000; SameSite=Lax`;
+                            location.reload();
+                        }
+                    };
+                } else {
+                    btn.onclick = (e) => {
+                        e.stopPropagation();
+                        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+                    };
+
+                    menu.innerHTML = '';
+                    const manageItem = this.createEl('div', 'menu-item');
+                    manageItem.innerHTML = `${this.icons.settings} <span>Manage Data</span>`;
+                    manageItem.onclick = async () => {
+                        await CloudSaver.OpenDataManager();
+                        location.reload();
+                    };
+
+                    const logoutItem = this.createEl('div', 'menu-item');
+                    logoutItem.innerHTML = `${this.icons.logout} <span>Log Out</span>`;
+                    logoutItem.onclick = () => {
+                        document.cookie = "cs_usr=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+                        location.reload();
+                    };
+
+                    menu.appendChild(manageItem);
+                    menu.appendChild(logoutItem);
                 }
             },
 
@@ -130,37 +249,7 @@
                 document.getElementById('searchBar').addEventListener('input', (e) => this.filterGames(e.target.value));
                 window.addEventListener('hashchange', () => this.route());
                 document.getElementById('fileInput').addEventListener('change', (e) => this.handleFileSelect(e));
-            },
-
-            async updateAuthUI() {
-                const container = document.getElementById('auth-controls');
-                container.innerHTML = '';
-                const isVerified = await CloudSaver.VerifyUser();
-
-                if (!isVerified) {
-                    const loginBtn = this.createEl('button', 'auth-btn', 'Login');
-                    loginBtn.onclick = async () => {
-                        await CloudSaver.ShowLoginPopup();
-                        if (CloudSaver.usr) {
-                            this.saveSession();
-                            location.reload();
-                        }
-                    };
-                    container.appendChild(loginBtn);
-                } else {
-                    const manageBtn = this.createEl('button', 'auth-btn', 'Manage Data');
-                    manageBtn.onclick = async () => {
-                        await CloudSaver.OpenDataManager();
-                        location.reload();
-                    };
-                    const logoutBtn = this.createEl('button', 'auth-btn', 'Logout');
-                    logoutBtn.onclick = () => {
-                        document.cookie = "cs_user=; max-age=0; path=/;";
-                        location.reload();
-                    };
-                    container.appendChild(manageBtn);
-                    container.appendChild(logoutBtn);
-                }
+                document.addEventListener('click', () => { document.getElementById('authMenu').style.display = 'none'; });
             },
 
             async route() {
@@ -175,9 +264,9 @@
 
             async loadGameData() {
                 if (this.games.length > 0) return;
-                this.toggleLoading(true, "Fetching Games...");
+                this.toggleLoading(true, "Fetching games...");
                 try {
-                    const res = await fetch("/games.json");
+                    const res = await fetch("games.json");
                     this.games = await res.json();
                 } catch (err) {
                     this.showError("Failed to fetch game list.");
@@ -187,9 +276,11 @@
             },
 
             showListView() {
-                if (this.saveInterval) clearInterval(this.saveInterval);
+                clearInterval(this.saveInterval);
+                clearInterval(this.menuCheckInterval);
                 document.getElementById('gameListContainer').style.display = 'flex';
                 document.getElementById('gameContainer').style.display = 'none';
+                document.getElementById('authWrapper').style.display = 'flex';
                 document.getElementById('gameContainer').innerHTML = '';
                 this.renderList();
             },
@@ -198,7 +289,6 @@
                 await this.loadGameData();
                 const container = document.getElementById('gameList');
                 container.innerHTML = '';
-
                 const localBtn = this.createEl('div', 'game-item', 'Load local SWF file');
                 localBtn.onclick = () => document.getElementById('fileInput').click();
                 container.appendChild(localBtn);
@@ -215,20 +305,22 @@
                 const game = this.games.find(g => g.name === name);
                 if (!game) return this.showError("Game not found.");
 
-                this.toggleLoading(true, "Syncing Saves...");
-                await CloudSaver.LoadSaves();
+                if (this.isLoggedIn) {
+                    this.toggleLoading(true, "Syncing saves...");
+                    await CloudSaver.LoadSaves();
+                }
 
                 this.bootRuffle(game.url, name);
-
-                this.saveInterval = setInterval(() => {
-                    CloudSaver.SaveChanges();
-                }, 10000);
+                if (this.isLoggedIn) {
+                    this.saveInterval = setInterval(() => CloudSaver.SaveChanges(), 10000);
+                }
             },
 
             bootRuffle(url, title) {
                 this.toggleLoading(true, "Starting Ruffle...");
                 document.title = title;
                 document.getElementById('gameListContainer').style.display = 'none';
+                document.getElementById('authWrapper').style.display = 'none';
 
                 const container = document.getElementById('gameContainer');
                 container.style.display = 'block';
@@ -244,13 +336,33 @@
                     unmuteOverlay: "hidden",
                     maxExecutionDuration: 99999999999
                 }).then(() => {
+                    const shadow = document.querySelector('ruffle-player').shadowRoot;
+                    CloudSaver.document = shadow;
+
+                    this.menuCheckInterval = setInterval(() => {
+                        const targetLi = shadow.querySelector('li[data-text*="About Ruffle"]');
+                        if (targetLi && targetLi.textContent !== "Save") {
+                            const newLi = targetLi.cloneNode(true);
+                            newLi.textContent = "Save";
+                            newLi.onclick = (e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                CloudSaver.SaveChanges();
+                                const overlay = shadow.getElementById('context-menu-overlay');
+                                if (overlay) overlay.classList.add('hidden');
+                            };
+                            targetLi.replaceWith(newLi);
+                        }
+                    }, 100);
+
                     this.toggleLoading(false);
-                }).catch(err => this.showError(err));
+                }).catch(err => this.showError("Ruffle Error: " + err));
             },
 
             handleFileSelect(e) {
                 const file = e.target.files[0];
-                if (file) this.bootRuffle(URL.createObjectURL(file), file.name);
+                if (!file) return;
+                this.bootRuffle(URL.createObjectURL(file), file.name);
             },
 
             filterGames(query) {
@@ -267,10 +379,10 @@
                 return el;
             },
 
-            toggleLoading(show, status = "") {
-                const el = document.getElementById('loading');
-                document.getElementById('loadingStatus').textContent = status;
-                el.style.display = show ? 'flex' : 'none';
+            toggleLoading(show, text = "Loading...") {
+                const loader = document.getElementById('loading');
+                document.getElementById('loadingText').textContent = text;
+                loader.style.display = show ? 'flex' : 'none';
             },
 
             showError(msg) {

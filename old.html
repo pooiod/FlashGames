@@ -227,6 +227,10 @@
             return hasFlash && !window.RufflePlayer;
         } installedActuallFlash = isFlashSupported();
 
+        if (!installedActuallFlash) {
+            CloudSaver.init();
+        }
+
         function displaymessage(msg, time) {
           const message = document.createElement("div");
           message.innerHTML = msg;

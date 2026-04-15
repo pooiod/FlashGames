@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flash Loader</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <meta name="theme-color" content="#37528c" />
+    <link rel="manifest" href="/manifest.json">
+    <meta name="description" content="A collection of Flash games using the Ruffle emulator"/>
+
+    <style>
+        :root {
+            --bg-primary: #37528c;
+            --bg-secondary: #4161a7;
+            --bg-dark: #16223a;
+            --text-main: #ffffff;
+            --accent: #c7d3f0;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        * { scrollbar-color: var(--accent) var(--bg-primary); }
+        *::-webkit-scrollbar-track { background: var(--bg-primary); }
+        *::-webkit-scrollbar-thumb { background-color: var(--accent); }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background-color: var(--bg-primary);
+            color: #f4f4f4;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        #error { background-color: var(--bg-dark); }
+
+        #gameListContainer {
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #searchBar {
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid var(--bg-secondary);
+            background-color: #223254;
+            color: #fff;
+            border-radius: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .game-item {
+            padding: 12px 20px;
+            background-color: var(--bg-secondary);
+            border: 1px solid #2e4678;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: transform 0.1s, background 0.2s;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .game-item:hover { background-color: #334c82; transform: translateY(-1px); }
+        .lowsupport { opacity: 0.5; }
+        .lowperformance { opacity: 0.8; }
+        .unavailable { opacity: 0.2; pointer-events: none; }
+
+        .download-btn {
+            background: var(--bg-primary);
+            border-radius: 4px;
+            padding: 4px 10px;
+            border: 1px solid #2e4678;
+            color: #fff;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        #gameContainer {
+            flex: 1;
+            display: none;
+            background-color: #000;
+        }
+
+        ruffle-player { width: 100%; height: 100%; }
+    </style>
+</head>
+
+<body>
+    <div id="loading" class="overlay">Loading...</div>
+    <div id="error" class="overlay">
+        <pre id="errorMessage"></pre>
+        <button onclick="location.reload()" style="margin-top:20px">Retry</button>
+    </div>
+
+    <div id="gameListContainer">
+        <input type="text" id="searchBar" placeholder="Search games...">
+        <div id="gameList"></div>
+    </div>
+
+    <div id="gameContainer"></div>
+
+    <input type="file" id="fileInput" style="display: none;" accept=".swf">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script>
+        const App = {
+            games: [],
+            config: {
+                jsonPath: "/games.json",
+                isSiteUp: false,
+                warnings: {
+                    unsuported: { msg: "Limited Ruffle support. Try FlashBrowser.", time: 5000 },
+                    badlinks: { msg: "External links may crash the game.", time: 3000 },
+                    studders: { msg: "Performance lag expected.", time: 5000 },
+                    jumpscare: { msg: "Warning: Scary content!", time: 3000 }
+                }
+            },
+
+            async init() {
+                this.bindEvents();
+                this.checkExternalStatus();
+                await this.route();
+                this.initServiceWorker();
+            },
+
+            bindEvents() {
+                document.getElementById('searchBar').addEventListener('input', (e) => this.filterGames(e.target.value));
+                window.addEventListener('hashchange', () => this.route());
+                document.getElementById('fileInput').addEventListener('change', (e) => this.handleFileSelect(e));
+            },
+
+            async checkExternalStatus() {
+                try {
+                    const res = await fetch('https://yyf.mubilop.com/', { method: 'HEAD', mode: 'no-cors' });
+                    this.config.isSiteUp = true;
+                } catch (e) {
+                    this.config.isSiteUp = false;
+                }
+            },
+
+            async route() {
+                const hash = window.location.hash.substring(1);
+                if (hash) {
+                    await this.loadGameData();
+                    this.playGame(decodeURIComponent(hash));
+                } else {
+                    this.showListView();
+                }
+            },
+
+            async loadGameData() {
+                if (this.games.length > 0) return;
+                this.toggleLoading(true);
+                try {
+                    const res = await fetch(this.config.jsonPath);
+                    this.games = await res.json();
+                } catch (err) {
+                    this.showError("Failed to fetch game list.");
+                } finally {
+                    this.toggleLoading(false);
+                }
+            },
+
+            showListView() {
+                document.getElementById('gameListContainer').style.display = 'flex';
+                document.getElementById('gameContainer').style.display = 'none';
+                this.renderList();
+            },
+
+            async renderList() {
+                await this.loadGameData();
+                const container = document.getElementById('gameList');
+                container.innerHTML = '';
+
+                const customBtn = this.createEl('div', 'game-item', '📂 Load local .swf');
+                customBtn.onclick = () => document.getElementById('fileInput').click();
+                container.appendChild(customBtn);
+
+                this.games.forEach(game => {
+                    if (game.hidden) return;
+                    const el = this.createEl('div', 'game-item', game.name);
+
+                    if (game.warning) el.classList.add(`low${game.warning}`);
+                    if (!this.config.isSiteUp && game.url.includes("yeetyourfiles")) el.classList.add('unavailable');
+
+                    const dlBtn = this.createEl('button', 'download-btn', 'Download');
+                    dlBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        window.location.href = `download.html?game=${encodeURIComponent(game.name)}`;
+                    };
+
+                    el.appendChild(dlBtn);
+                    el.onclick = () => window.location.hash = game.name;
+                    container.appendChild(el);
+                });
+            },
+
+            async playGame(name) {
+                const game = this.games.find(g => g.name === name);
+                if (!game) return this.showError("Game not found.");
+
+                this.toggleLoading(true);
+                document.title = `${name} | FlashLoader`;
+                document.getElementById('gameListContainer').style.display = 'none';
+
+                const container = document.getElementById('gameContainer');
+                container.style.display = 'block';
+                container.innerHTML = `<object data="${game.url}" type="application/x-shockwave-flash"></object>`;
+
+                await this.initRuffle();
+                if (game.warning) this.toast(this.config.warnings[game.warning]);
+                this.toggleLoading(false);
+            },
+
+            async initRuffle() {
+                if (window.RufflePlayer) return;
+                return new Promise(resolve => {
+                    const script = document.createElement('script');
+                    script.src = 'https://unpkg.com/@ruffle-rs/ruffle';
+                    script.onload = resolve;
+                    document.head.appendChild(script);
+                });
+            },
+
+            handleFileSelect(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const url = URL.createObjectURL(file);
+                document.getElementById('gameListContainer').style.display = 'none';
+                const container = document.getElementById('gameContainer');
+                container.style.display = 'block';
+                container.innerHTML = `<object data="${url}" type="application/x-shockwave-flash"></object>`;
+                this.initRuffle();
+            },
+
+            filterGames(query) {
+                const q = query.toLowerCase();
+                document.querySelectorAll('.game-item').forEach(el => {
+                    el.style.display = el.textContent.toLowerCase().includes(q) ? 'flex' : 'none';
+                });
+            },
+
+            toast({ msg, time }) {
+                const div = this.createEl('div', '', msg);
+                Object.assign(div.style, {
+                    position: 'fixed', top: '20px', right: '20px', background: '#333',
+                    padding: '10px 20px', borderRadius: '5px', zIndex: 10000, transition: 'opacity 0.5s'
+                });
+                document.body.appendChild(div);
+                setTimeout(() => div.style.opacity = '0', time);
+                setTimeout(() => div.remove(), time + 500);
+            },
+
+            createEl(tag, className, text) {
+                const el = document.createElement(tag);
+                if (className) el.className = className;
+                if (text) el.textContent = text;
+                return el;
+            },
+
+            toggleLoading(show) {
+                document.getElementById('loading').style.display = show ? 'flex' : 'none';
+            },
+
+            showError(msg) {
+                const err = document.getElementById('error');
+                document.getElementById('errorMessage').textContent = msg;
+                err.style.display = 'flex';
+                this.toggleLoading(false);
+            },
+
+            initServiceWorker() {
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.register('worker.js').catch(console.error);
+                }
+            }
+        };
+
+        window.onload = () => App.init();
+    </script>
+</body>
+</html>

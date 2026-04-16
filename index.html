@@ -348,7 +348,7 @@
                             newLi.onclick = (e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
-                                CloudSaver.SaveChanges();
+                                CloudSaver.Save();
                                 const overlay = shadow.getElementById('context-menu-overlay');
                                 if (overlay) overlay.classList.add('hidden');
                             };

@@ -8,6 +8,7 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <meta name="theme-color" content="#37528c" />
     <link rel="manifest" href="/manifest.json">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
     <style>
         :root {
@@ -111,6 +112,8 @@
             margin-bottom: 10px;
             overflow: hidden;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
         .menu-item {
@@ -120,8 +123,10 @@
             align-items: center;
             gap: 10px;
             white-space: nowrap;
+            border-bottom: 1px solid #2e4678;
         }
 
+        .menu-item:last-child { border-bottom: none; }
         .menu-item:hover { background: var(--bg-secondary); }
 
         .text-btn {
@@ -139,6 +144,36 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
+        .data-modal {
+            display: none;
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg-dark);
+            padding: 20px;
+            border-radius: 12px;
+            z-index: 11000;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 10999;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #2e4678;
+        }
+
         ruffle-player, ruffle-embed { width: 100% !important; height: 100% !important; }
         embed { width: 100%; height: 100%; }
     </style>
@@ -150,6 +185,13 @@
         <div id="loadingText">Syncing data...</div>
     </div>
     <div id="error" class="overlay"><pre id="errorMessage"></pre></div>
+
+    <div id="modalOverlay" class="modal-overlay"></div>
+    <div id="dataModal" class="data-modal">
+        <h3>Unsaved Large Data</h3>
+        <div id="dataContent" style="max-height: 300px; overflow-y: auto;"></div>
+        <button onclick="App.closeModal()" style="margin-top: 15px; width: 100%; padding: 10px;">Close</button>
+    </div>
 
     <div id="gameListContainer">
         <input type="text" id="searchBar" placeholder="Search games...">
@@ -164,6 +206,7 @@
     </div>
 
     <input type="file" id="fileInput" style="display: none;" accept=".swf">
+    <input type="file" id="importInput" style="display: none;">
 
     <script src="https://cloudsaver2.pages.dev/main.js"></script>
 
@@ -219,36 +262,37 @@
                 const hasCookie = !!document.cookie.split('; ').find(row => row.startsWith('cs_usr='));
 
                 this.isLoggedIn = hasCookie && await CloudSaver.VerifyUser();
-
                 btn.style.display = 'flex';
+                btn.textContent = this.isLoggedIn ? "Account" : "Data";
+
+                btn.onclick = (e) => {
+                    e.stopPropagation();
+                    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+                };
+
+                menu.innerHTML = '';
 
                 if (!this.isLoggedIn) {
-                    btn.textContent = "Log In";
-                    btn.onclick = async () => {
+                    const loginItem = this.createEl('div', 'menu-item', 'Log In');
+                    loginItem.onclick = async () => {
                         await CloudSaver.ShowLoginPopup();
                         if (CloudSaver.usr) {
                             document.cookie = `cs_usr=${encodeURIComponent(JSON.stringify(CloudSaver.usr))}; path=/; max-age=31536000; SameSite=Lax`;
                             location.reload();
                         }
                     };
+                    menu.appendChild(loginItem);
                 } else {
-                    btn.textContent = "Account";
-                    btn.onclick = (e) => {
-                        e.stopPropagation();
-                        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-                    };
+                    const reloadItem = this.createEl('div', 'menu-item', 'Reload cloud saves');
+                    reloadItem.onclick = () => CloudSaver.LoadSaves();
 
-                    menu.innerHTML = '';
+                    const forceSaveItem = this.createEl('div', 'menu-item', 'Overide Previous Session');
+                    forceSaveItem.onclick = () => CloudSaver.Save();
 
-                    const manageItem = this.createEl('div', 'menu-item', 'Manage Data');
+                    const manageItem = this.createEl('div', 'menu-item', 'Manage cloud data');
                     manageItem.onclick = async () => {
                         await CloudSaver.OpenDataManager();
                         location.reload();
-                    };
-
-                    const forceSaveItem = this.createEl('div', 'menu-item', 'Overide Previous Session');
-                    forceSaveItem.onclick = async () => {
-                        await CloudSaver.Save();
                     };
 
                     const logoutItem = this.createEl('div', 'menu-item', 'Log Out');
@@ -257,9 +301,103 @@
                         location.reload();
                     };
 
-                    menu.appendChild(manageItem);
+                    menu.appendChild(reloadItem);
                     menu.appendChild(forceSaveItem);
+                    menu.appendChild(manageItem);
                     menu.appendChild(logoutItem);
+                }
+
+                const checkItem = this.createEl('div', 'menu-item', 'Check unsaved data');
+                checkItem.onclick = () => this.checkLargeData();
+                menu.appendChild(checkItem);
+
+                const exportItem = this.createEl('div', 'menu-item', 'Download all saves');
+                exportItem.onclick = () => this.downloadAllSaves();
+                menu.appendChild(exportItem);
+
+                const importItem = this.createEl('div', 'menu-item', 'Upload a save');
+                importItem.onclick = () => document.getElementById('importInput').click();
+                menu.appendChild(importItem);
+            },
+
+            checkLargeData() {
+                const content = document.getElementById('dataContent');
+                content.innerHTML = '';
+                let found = false;
+
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    const val = localStorage.getItem(key);
+                    const size = val.length * 2; // Rough byte estimate for UTF-16
+
+                    if (size > 1.5 * 1024 * 1024) {
+                        found = true;
+                        const row = this.createEl('div', 'data-row');
+                        row.innerHTML = `
+                            <span>${key.substring(0, 20)}...</span>
+                            <div>
+                                <button onclick="App.downloadSingle('${key}')">Download</button>
+                                <button onclick="App.deleteSingle('${key}')">Delete</button>
+                            </div>
+                        `;
+                        content.appendChild(row);
+                    }
+                }
+
+                if (!found) content.innerHTML = '<p>No large unsaved items found.</p>';
+
+                document.getElementById('modalOverlay').style.display = 'block';
+                document.getElementById('dataModal').style.display = 'block';
+            },
+
+            downloadSingle(key) {
+                const blob = new Blob([localStorage.getItem(key)], { type: 'application/octet-stream' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${key}.sav`;
+                a.click();
+            },
+
+            deleteSingle(key) {
+                localStorage.removeItem(key);
+                this.checkLargeData();
+            },
+
+            closeModal() {
+                document.getElementById('modalOverlay').style.display = 'none';
+                document.getElementById('dataModal').style.display = 'none';
+            },
+
+            async downloadAllSaves() {
+                const zip = new JSZip();
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    zip.file(key, localStorage.getItem(key));
+                }
+                const content = await zip.generateAsync({ type: "blob" });
+                const url = URL.createObjectURL(content);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = "all_saves.zip";
+                a.click();
+            },
+
+            async handleImport(file) {
+                if (!file) return;
+                const name = file.name.toLowerCase();
+
+                if (name.endsWith('.zip')) {
+                    localStorage.clear();
+                    const zip = await JSZip.loadAsync(file);
+                    zip.forEach(async (path, zipEntry) => {
+                        const content = await zipEntry.async("string");
+                        localStorage.setItem(path, content);
+                    });
+                } else if (name.endsWith('.sav')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => localStorage.setItem(file.name.replace('.sav', ''), e.target.result);
+                    reader.readAsText(file);
                 }
             },
 
@@ -267,6 +405,7 @@
                 document.getElementById('searchBar').addEventListener('input', (e) => this.filterGames(e.target.value));
                 window.addEventListener('hashchange', () => this.route());
                 document.getElementById('fileInput').addEventListener('change', (e) => this.handleFileSelect(e));
+                document.getElementById('importInput').addEventListener('change', (e) => this.handleImport(e.target.files[0]));
                 document.addEventListener('click', () => { document.getElementById('authMenu').style.display = 'none'; });
             },
 

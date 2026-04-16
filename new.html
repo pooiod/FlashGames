@@ -182,13 +182,13 @@
 <body>
     <div id="loading" class="overlay">
         <div class="spinner"></div>
-        <div id="loadingText">Syncing data...</div>
+        <div id="loadingText">Downloading save data...</div>
     </div>
     <div id="error" class="overlay"><pre id="errorMessage"></pre></div>
 
     <div id="modalOverlay" class="modal-overlay"></div>
     <div id="dataModal" class="data-modal">
-        <h3>Unsaved Large Data</h3>
+        <h3>Unsaved Data</h3>
         <div id="dataContent" style="max-height: 300px; overflow-y: auto;"></div>
         <button onclick="App.closeModal()" style="margin-top: 15px; width: 100%; padding: 10px;">Close</button>
     </div>
@@ -344,7 +344,7 @@
                     }
                 }
 
-                if (!found) content.innerHTML = '<p>No large unsaved items found.</p>';
+                if (!found) content.innerHTML = '<p>You don\'t have any files that are too big for cloud saving</p>';
 
                 document.getElementById('modalOverlay').style.display = 'block';
                 document.getElementById('dataModal').style.display = 'block';

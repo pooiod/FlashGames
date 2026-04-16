@@ -475,7 +475,7 @@
                 await this.loadRuffleScript();
                 this.bootRuffle(game.url, name);
                 if (this.isLoggedIn) {
-                    this.saveInterval = setInterval(() => CloudSaver.SaveChanges(), 10000);
+                    this.saveInterval = setInterval(() => CloudSaver.SaveChanges(), 60000);
                 }
             },
 

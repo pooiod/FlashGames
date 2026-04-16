@@ -166,7 +166,6 @@
     <input type="file" id="fileInput" style="display: none;" accept=".swf">
 
     <script src="https://cloudsaver2.pages.dev/main.js"></script>
-    <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
 
     <script>
         const App = {
@@ -175,6 +174,7 @@
             menuCheckInterval: null,
             isLoggedIn: false,
             hasNativeFlash: false,
+            ruffleLoaded: false,
 
             async init() {
                 this.checkFlash();
@@ -188,6 +188,19 @@
                 const hasPlugin = navigator.plugins && navigator.plugins.length > 0;
                 const hasMime = navigator.mimeTypes && navigator.mimeTypes['application/x-shockwave-flash'];
                 this.hasNativeFlash = (hasPlugin && !!navigator.plugins["Shockwave Flash"]) || (hasMime && hasMime.enabledPlugin);
+            },
+
+            async loadRuffleScript() {
+                if (this.ruffleLoaded) return true;
+                return new Promise((resolve) => {
+                    const script = document.createElement('script');
+                    script.src = "https://unpkg.com/@ruffle-rs/ruffle";
+                    script.onload = () => {
+                        this.ruffleLoaded = true;
+                        resolve(true);
+                    };
+                    document.head.appendChild(script);
+                });
             },
 
             loadSessionFromCookie() {
@@ -320,6 +333,7 @@
                     await CloudSaver.LoadSaves();
                 }
 
+                await this.loadRuffleScript();
                 this.bootRuffle(game.url, name);
                 if (this.isLoggedIn) {
                     this.saveInterval = setInterval(() => CloudSaver.SaveChanges(), 10000);
@@ -357,14 +371,19 @@
                     unmuteOverlay: "hidden",
                     maxExecutionDuration: 99999999999
                 }).then(() => {
-                    const shadow = (document.querySelector('ruffle-player') || document.querySelector('ruffle-embed')).shadowRoot;
-                    CloudSaver.document = shadow;
+                    this.toggleLoading(false);
+                }).catch(err => this.showError("Ruffle Error: " + err));
 
-                    this.menuCheckInterval = setInterval(() => {
+                this.menuCheckInterval = setInterval(() => {
+                    const ruffleEl = document.querySelector('ruffle-player') || document.querySelector('ruffle-embed');
+                    if (ruffleEl && ruffleEl.shadowRoot) {
+                        const shadow = ruffleEl.shadowRoot;
+                        CloudSaver.document = shadow;
+
                         const targetLi = shadow.querySelector('li[data-text*="About Ruffle"]');
                         if (targetLi && targetLi.textContent !== "Upload saves to cloud") {
                             const newLi = targetLi.cloneNode(true);
-                            newLi.textContent = "Save";
+                            newLi.textContent = "Upload saves to cloud";
                             newLi.onclick = (e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
@@ -374,19 +393,18 @@
                             };
                             targetLi.replaceWith(newLi);
                         }
-                    }, 100);
-
-                    this.toggleLoading(false);
-                }).catch(err => this.showError("Ruffle Error: " + err));
+                    }
+                }, 100);
             },
 
-            handleFileSelect(e) {
+            async handleFileSelect(e) {
                 const file = e.target.files[0];
                 if (!file) return;
                 const url = URL.createObjectURL(file);
                 if (this.hasNativeFlash) {
                     this.bootNativeFlash(url, file.name);
                 } else {
+                    await this.loadRuffleScript();
                     this.bootRuffle(url, file.name);
                 }
             },

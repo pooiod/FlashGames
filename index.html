@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,19 +27,10 @@
             overflow: hidden;
         }
 
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-primary);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--accent);
-            border-radius: 0;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #7da0e6;
-        }
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 0; }
+        ::-webkit-scrollbar-thumb:hover { background: #7da0e6; }
 
         .overlay {
             display: none;
@@ -133,22 +123,24 @@
         }
 
         .menu-item:hover { background: var(--bg-secondary); }
-        .menu-item svg { width: 18px; height: 18px; fill: white; }
 
-        .icon-btn {
+        .text-btn {
+            display: none;
             background: var(--bg-dark);
             border: 1px solid var(--bg-secondary);
-            border-radius: 50%;
-            width: 50px; height: 50px;
+            border-radius: 8px;
+            padding: 0 20px;
+            height: 45px;
             cursor: pointer;
-            display: flex;
             align-items: center;
             justify-content: center;
+            color: white;
+            font-weight: bold;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
-        .icon-btn svg { width: 24px; height: 24px; fill: white; }
 
-        ruffle-player { width: 100% !important; height: 100% !important; }
+        ruffle-player, ruffle-embed { width: 100% !important; height: 100% !important; }
+        embed { width: 100%; height: 100%; }
     </style>
 </head>
 
@@ -168,13 +160,12 @@
 
     <div id="authWrapper">
         <div id="authMenu"></div>
-        <button id="mainControlBtn" class="icon-btn"></button>
+        <button id="mainControlBtn" class="text-btn"></button>
     </div>
 
     <input type="file" id="fileInput" style="display: none;" accept=".swf">
 
     <script src="https://cloudsaver2.pages.dev/main.js"></script>
-    <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
 
     <script>
         const App = {
@@ -182,17 +173,34 @@
             saveInterval: null,
             menuCheckInterval: null,
             isLoggedIn: false,
-            icons: {
-                logout: `<svg viewBox="0 0 24 24"><path d="M13 3h-2v10h2v-10zm4.83 2.17l-1.42 1.42c1.6 1.6 2.59 3.81 2.59 6.41 0 4.97-4.03 9-9 9s-9-4.03-9-9c0-2.6 1-4.81 2.59-6.41l-1.42-1.42c-2.19 2.19-3.5 5.21-3.5 8.83 0 6.63 5.37 12 12 12s12-5.37 12-12c0-3.62-1.31-6.64-3.5-8.83z"/></svg>`,
-                settings: `<svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>`,
-                user: `<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`
-            },
+            hasNativeFlash: false,
+            ruffleLoaded: false,
 
             async init() {
+                this.checkFlash();
                 this.loadSessionFromCookie();
                 this.bindEvents();
                 await this.updateAuthUI();
                 await this.route();
+            },
+
+            checkFlash() {
+                const hasPlugin = navigator.plugins && navigator.plugins.length > 0;
+                const hasMime = navigator.mimeTypes && navigator.mimeTypes['application/x-shockwave-flash'];
+                this.hasNativeFlash = (hasPlugin && !!navigator.plugins["Shockwave Flash"]) || (hasMime && hasMime.enabledPlugin);
+            },
+
+            async loadRuffleScript() {
+                if (this.ruffleLoaded) return true;
+                return new Promise((resolve) => {
+                    const script = document.createElement('script');
+                    script.src = "https://unpkg.com/@ruffle-rs/ruffle";
+                    script.onload = () => {
+                        this.ruffleLoaded = true;
+                        resolve(true);
+                    };
+                    document.head.appendChild(script);
+                });
             },
 
             loadSessionFromCookie() {
@@ -211,9 +219,11 @@
                 const hasCookie = !!document.cookie.split('; ').find(row => row.startsWith('cs_usr='));
 
                 this.isLoggedIn = hasCookie && await CloudSaver.VerifyUser();
-                btn.innerHTML = this.icons.user;
+
+                btn.style.display = 'flex';
 
                 if (!this.isLoggedIn) {
+                    btn.textContent = "Log In";
                     btn.onclick = async () => {
                         await CloudSaver.ShowLoginPopup();
                         if (CloudSaver.usr) {
@@ -222,27 +232,33 @@
                         }
                     };
                 } else {
+                    btn.textContent = "Account";
                     btn.onclick = (e) => {
                         e.stopPropagation();
                         menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
                     };
 
                     menu.innerHTML = '';
-                    const manageItem = this.createEl('div', 'menu-item');
-                    manageItem.innerHTML = `${this.icons.settings} <span>Manage Data</span>`;
+
+                    const manageItem = this.createEl('div', 'menu-item', 'Manage Data');
                     manageItem.onclick = async () => {
                         await CloudSaver.OpenDataManager();
                         location.reload();
                     };
 
-                    const logoutItem = this.createEl('div', 'menu-item');
-                    logoutItem.innerHTML = `${this.icons.logout} <span>Log Out</span>`;
+                    const forceSaveItem = this.createEl('div', 'menu-item', 'Overide Previous Session');
+                    forceSaveItem.onclick = async () => {
+                        await CloudSaver.Save();
+                    };
+
+                    const logoutItem = this.createEl('div', 'menu-item', 'Log Out');
                     logoutItem.onclick = () => {
                         document.cookie = "cs_usr=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
                         location.reload();
                     };
 
                     menu.appendChild(manageItem);
+                    menu.appendChild(forceSaveItem);
                     menu.appendChild(logoutItem);
                 }
             },
@@ -307,15 +323,30 @@
                 const game = this.games.find(g => g.name === name);
                 if (!game) return this.showError("Game not found.");
 
+                if (this.hasNativeFlash) {
+                    this.bootNativeFlash(game.url, name);
+                    return;
+                }
+
                 if (this.isLoggedIn) {
                     this.toggleLoading(true, "Syncing saves...");
                     await CloudSaver.LoadSaves();
                 }
 
+                await this.loadRuffleScript();
                 this.bootRuffle(game.url, name);
                 if (this.isLoggedIn) {
                     this.saveInterval = setInterval(() => CloudSaver.SaveChanges(), 10000);
                 }
+            },
+
+            bootNativeFlash(url, title) {
+                document.title = title;
+                document.getElementById('gameListContainer').style.display = 'none';
+                document.getElementById('authWrapper').style.display = 'none';
+                const container = document.getElementById('gameContainer');
+                container.style.display = 'block';
+                container.innerHTML = `<embed src="${url}" type="application/x-shockwave-flash">`;
             },
 
             bootRuffle(url, title) {
@@ -328,8 +359,10 @@
                 container.style.display = 'block';
                 container.innerHTML = '';
 
-                const ruffle = window.RufflePlayer.newest();
-                const player = ruffle.createPlayer();
+                var ruffle = window.RufflePlayer.newest();
+                var player = ruffle.createPlayer();
+                player.style.width = "100%";
+                player.style.height = "100%";
                 container.appendChild(player);
 
                 player.load({
@@ -338,14 +371,19 @@
                     unmuteOverlay: "hidden",
                     maxExecutionDuration: 99999999999
                 }).then(() => {
-                    const shadow = document.querySelector('ruffle-player').shadowRoot;
-                    CloudSaver.document = shadow;
+                    this.toggleLoading(false);
+                }).catch(err => this.showError("Ruffle Error: " + err));
 
-                    this.menuCheckInterval = setInterval(() => {
+                this.menuCheckInterval = setInterval(() => {
+                    const ruffleEl = document.querySelector('ruffle-player') || document.querySelector('ruffle-embed');
+                    if (ruffleEl && ruffleEl.shadowRoot) {
+                        const shadow = ruffleEl.shadowRoot;
+                        CloudSaver.document = shadow;
+
                         const targetLi = shadow.querySelector('li[data-text*="About Ruffle"]');
-                        if (targetLi && targetLi.textContent !== "Save") {
+                        if (targetLi && targetLi.textContent !== "Upload saves to cloud") {
                             const newLi = targetLi.cloneNode(true);
-                            newLi.textContent = "Save";
+                            newLi.textContent = "Upload saves to cloud";
                             newLi.onclick = (e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
@@ -355,16 +393,20 @@
                             };
                             targetLi.replaceWith(newLi);
                         }
-                    }, 100);
-
-                    this.toggleLoading(false);
-                }).catch(err => this.showError("Ruffle Error: " + err));
+                    }
+                }, 100);
             },
 
-            handleFileSelect(e) {
+            async handleFileSelect(e) {
                 const file = e.target.files[0];
                 if (!file) return;
-                this.bootRuffle(URL.createObjectURL(file), file.name);
+                const url = URL.createObjectURL(file);
+                if (this.hasNativeFlash) {
+                    this.bootNativeFlash(url, file.name);
+                } else {
+                    await this.loadRuffleScript();
+                    this.bootRuffle(url, file.name);
+                }
             },
 
             filterGames(query) {

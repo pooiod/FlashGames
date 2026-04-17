@@ -283,10 +283,10 @@
                     };
                     menu.appendChild(loginItem);
                 } else {
-                    const reloadItem = this.createEl('div', 'menu-item', 'Reload cloud saves');
+                    const reloadItem = this.createEl('div', 'menu-item', 'Load cloud saves');
                     reloadItem.onclick = () => CloudSaver.LoadSaves();
 
-                    const forceSaveItem = this.createEl('div', 'menu-item', 'Overide Previous Session');
+                    const forceSaveItem = this.createEl('div', 'menu-item', 'Upload saves to cloud');
                     forceSaveItem.onclick = () => CloudSaver.Save();
 
                     const manageItem = this.createEl('div', 'menu-item', 'Manage cloud data');

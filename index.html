@@ -283,7 +283,7 @@
                     };
                     menu.appendChild(loginItem);
                 } else {
-                    const reloadItem = this.createEl('div', 'menu-item', 'Load cloud saves');
+                    const reloadItem = this.createEl('div', 'menu-item', 'Load current cloud saves');
                     reloadItem.onclick = () => CloudSaver.LoadSaves();
 
                     const forceSaveItem = this.createEl('div', 'menu-item', 'Upload saves to cloud');
